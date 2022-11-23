@@ -3,6 +3,9 @@ import React from 'react'
 import { ReactComponent as FbIcon } from '../../assets/socials/facebook.svg'
 import { ReactComponent as InIcon } from '../../assets/socials/instagram.svg'
 import { ReactComponent as TwIcon } from '../../assets/socials/twitter.svg'
+
+import Logo from '../../assets/icons/new-logo.png'
+
 export default function Footer() {
   return (
     <div>
@@ -11,7 +14,7 @@ export default function Footer() {
 <div className="md:flex md:justify-between">
     <div className="mb-6 md:mb-0">
         <a href="https://flowbite.com/" className="flex items-center">
-            <img src="https://flowbite.com/docs/images/logo.svg" className="mr-3 h-8" alt="FlowBite Logo" />
+            <img src={Logo} className="mr-3 h-8" alt="Suhstei Logo" />
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Suhstei</span>
         </a>
     </div>

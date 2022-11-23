@@ -1,21 +1,22 @@
-// import { Link } from 'react-router-dom';
-// import Logo from '../../assets/icons/new-logo.png'
+// import { Link, NavLink } from 'react-router-dom';
+import Logo from '../../assets/icons/new-logo.png'
 
 import { Navbar, Dropdown, Avatar } from 'flowbite-react';
 
-
 export default function Navigation() {
+
   return (
- <header>
+ <header >
  <Navbar
  fluid={true}
  rounded={true}
+ className='fixed-top'
 >
  <Navbar.Brand href="/">
    <img
-     src="https://flowbite.com/docs/images/logo.svg"
+     src={Logo}
      className="mr-3 h-6 sm:h-9"
-     alt="Flowbite Logo"
+     alt="Suhstei Logo"
    />
    <span className="self-center whitespace-nowrap text-xl font-bold dark:text-white">
      Suhstei
@@ -25,55 +26,67 @@ export default function Navigation() {
    <Dropdown
      arrowIcon={false}
      inline={true}
-     label={<Avatar alt="User settings" img="https://flowbite.com/docs/images/people/profile-picture-5.jpg" rounded={true}/>}
-     className="pl-5"
+     label={
+      <Avatar 
+        alt="User settings" 
+        img="https://flowbite.com/docs/images/people/profile-picture-3.jpg" 
+        rounded={true}
+        status="online"
+        statusPosition="top-right"
+      />
+    }
+     className="mx-6 px-6"
    >
      <Dropdown.Header>
-       <span className="block text-sm">
-         Bonnie Green
+       <span className="block text-sm mb-2">
+         John Doe
        </span>
        <span className="block truncate text-sm font-medium">
-         name@flowbite.com
+         johnDoe@mail.com
        </span>
      </Dropdown.Header>
-     <Dropdown.Item>
-       Dashboard
-     </Dropdown.Item>
-     <Dropdown.Item>
-       Settings
-     </Dropdown.Item>
-     <Dropdown.Item>
-       Earnings
-     </Dropdown.Item>
-     <Dropdown.Divider />
-     <Dropdown.Item>
-       Sign out
-     </Dropdown.Item>
+        <Dropdown.Item>
+          Dashboard
+        </Dropdown.Item>
+        <Dropdown.Item>
+          Settings
+        </Dropdown.Item>
+        <Dropdown.Item>
+          My Books
+        </Dropdown.Item>
+        <Dropdown.Divider />
+        <Dropdown.Item>
+          Sign out
+        </Dropdown.Item>
    </Dropdown>
-   <Navbar.Toggle />
+   <Navbar.Toggle className='ml-2' />
  </div>
- <Navbar.Collapse>
-   <Navbar.Link
-     href="/navbars"
-     active={true}
-   >
-     Home
-   </Navbar.Link>
-   <Navbar.Link href="/navbars">
-     About
-   </Navbar.Link>
-   <Navbar.Link href="/navbars">
-     Services
-   </Navbar.Link>
-   <Navbar.Link href="/navbars">
-     Pricing
-   </Navbar.Link>
-   <Navbar.Link href="/navbars">
-     Contact
-   </Navbar.Link>
+ <Navbar.Collapse className=''>
+  <Navbar.Link
+  href="/"
+  active={true}
+  >
+  Home
+  </Navbar.Link>
+  <Navbar.Link href="/Books">
+  Books
+  </Navbar.Link>
+  <Navbar.Link href="/Community">
+  Community
+  </Navbar.Link>
+  <Navbar.Link href="/about-us">
+  About Us
+  </Navbar.Link>
+  <Navbar.Link href="/contact">
+  Contact
+  </Navbar.Link>
+    
+   
  </Navbar.Collapse>
 </Navbar>
 
 </header>
   )
 }
+
+
