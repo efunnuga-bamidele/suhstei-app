@@ -1,33 +1,32 @@
+import { Fragment } from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+//pages
+import ErrorPage from './pages/error/error.page';
+import HomePage from './pages/home/home.page';
+
+//styles
 import './App.css';
-import Navigation from './components/navigation/navigation.component';
+
+// import HeroBg1 from './assets/images/hero_bg_1.jpg'
+// import HeroBg2 from './assets/images/hero_bg_2.jpg'
+// import HeroBg3 from './assets/images/hero_bg_3.png'
+// import HeroBg4 from './assets/images/hero_bg_4.png'
 
 
 function App() {
-
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <HomePage />,
+    errorElement: <ErrorPage />
+  }
+])
 
   return (
-    <div className='bg-gray-200 mx-2 font-body'>
-      <Navigation />
-      <main className='bg-gray-200'>{/* */}
-          <section>{/* */}
-            
-          </section>{/* */}
-
-          <section>{/* */}
-              <div></div>{/* */}
-              <div></div>{/* */}
-              <div></div>{/* */}
-              <div></div>{/* */}
-          </section>{/* */}
-
-          <section> {/* */}
-
-          </section>{/* */}
-      </main>{/* */}
-      <footer>{/* */}
-      </footer>{/* */}
-    </div>
+    <Fragment>
+      <RouterProvider router={router} />
+    </Fragment>
   );
 }
 

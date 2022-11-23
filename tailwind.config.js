@@ -2,6 +2,9 @@
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
+    "./node_modules/tw-elements/dist/js/**/*.js",
+    './node_modules/flowbite/**/*.{js,jsx,ts,tsx}',
+    './node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}'
   ],
   theme: {
     extend: {
@@ -14,16 +17,12 @@ module.exports = {
         info: '#17a2b8',
         warning: '#ffc107',
         danger: '#dc3545',
-        // primary: '#1976D2',
-        // secondary: '#424242',
-        // accent: '#82B1FF',
-        // error: '#FF5252',
-        // info: '#2196F3',
-        // success: '#4CAF50',
-        // warning: '#FFC107',
       },
       fontFamily:{
-        body: ['Nunito']
+        body: ['Nunito'],
+        poppins: ['Poppins'],
+        signika: ['Signika'],
+        lato: ['Lato']
       },
       keyframes: {
         wiggle: {
@@ -33,5 +32,8 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('tw-elements/dist/plugin'),
+    require('flowbite/plugin')
+  ],
 }
