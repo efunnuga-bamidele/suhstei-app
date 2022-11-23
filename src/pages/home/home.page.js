@@ -1,3 +1,5 @@
+
+
 import Navigation from '../../components/navigation/navigation.component';
 import Footer from '../../components/footer/footer.component';
 
@@ -7,10 +9,12 @@ import NetworkIcon from '../../assets/icons/network.svg';
 import BookIcon from '../../assets/icons/emojione_green-book.svg';
 import ReceiveIcon from '../../assets/icons/icons8_recieve.svg';
 import GiveIcon from '../../assets/icons/icons8_give.svg';
+import Book1 from '../../assets/books-image/book1.png'
+import BookItem from '../../components/book-item/book-item-component';
 
 export default function HomePage (){
     return (
-        <div className='bg-gray-100 mx-1 font-body'>
+        <div className='bg-gray-100 mx-1 font-body scroll-smooth'>
             <Navigation />
             <main className='bg-gray-100 mt-10'>{/* */}
                 <section className='mt-3'>{/* */}
@@ -36,10 +40,19 @@ export default function HomePage (){
                     </div>
                 </section>{/* */}
     {/*How we work*/}
-            
-                <section className='my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2'>{/* */}
+                <section>
+                    <div className='black justify-center mt-6'>
+                        <h5 className="block text-3xl font-thin tracking-tight text-slate-800 dark:text-white text-center">
+                            How it works
+                        </h5>
+                        <p className="block text-lg font-thin tracking-tight text-slate-400 dark:text-white text-center">
+                            Looking for a book or need a book to read? We’ve got you covered . Lend, Borrow, Review
+                            and connect with book lovers all over the world in 3 steps.
+                        </p>
+                    </div>
+                <div className='containermx-auto my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2'>{/* */}
                     <div className='group flex justify-center m-4'>{/*Search Book Card*/}
-                        <div className="block rounded-lg shadow lg bg-white max-w-sm text-center hover:bg-blue-500 transition ease-in-out duration-500 cursor-pointer  ">
+                        <div className="block rounded-lg shadow lg bg-white max-w-sm text-center hover:bg-blue-500 transition ease-in-out duration-500 cursor-pointer">
                             <div className="py-3 px-6 border-b border-gray-300 flex justify-center group-hover:bg-white group-hover:rounded-t-lg">
                                 <img src={SearchIcon} alt="Search-Icon" className='group-hover:text-white group-hover:animate-[bounce_1s_ease-in-out_3]'/>
                             </div>
@@ -52,7 +65,7 @@ export default function HomePage (){
                                 </p>
                             </div>
                             <div className="py-3 px-6 border-t border-gray-300 text-gray-600 group-hover:text-white">
-                                2 days ago
+                                Step 1
                             </div>
                         </div>
                     </div>{/* */}
@@ -70,7 +83,7 @@ export default function HomePage (){
                             </p>
                         </div>
                         <div className="py-3 px-6 border-t border-gray-300 text-gray-600 group-hover:text-white">
-                            2 days ago
+                            Step 2
                         </div>
                     </div>
                 </div>{/* */}
@@ -89,7 +102,7 @@ export default function HomePage (){
                         </p>
                     </div>
                     <div className="py-3 px-6 border-t border-gray-300 text-gray-600 group-hover:text-white">
-                        2 days ago
+                        Step 3
                     </div>
                 </div>
                  </div>{/* */}
@@ -108,18 +121,30 @@ export default function HomePage (){
                          </p>
                      </div>
                      <div className="py-3 px-6 border-t border-gray-300 text-gray-600 group-hover:text-white">
-                         2 days ago
+                        Step 4
                      </div>
                  </div>
                   </div>{/* */}
+                  </div>
                 </section>{/*End of how we work */}
     
-                <section className='grid grid-col-4'> {/* Top review Books*/}
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </section>{/*end of top review books */}
+                <section>
+                    <div className='black justify-center mt-6'>
+                        <h5 className="block text-3xl font-thin tracking-tight text-slate-800 dark:text-white text-center">
+                           Books Gallery
+                        </h5>
+                        <p className="block text-lg font-thin tracking-tight text-slate-400 dark:text-white text-center">
+                            Get some of the most exciting books you have always been looking for
+                        </p>
+                    </div>
+                    <div className='container mx-auto my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2 justify-center items-center place-content-center place-items-center justify-items-center justify-self-auto'> {/* Top review Books*/}
+                    
+                   
+                       <BookItem bookImage={Book1} title="Photographer’s trouble shooter" author="Michael Freeman" />
+                   
+                    
+                    </div>{/*end of top review books */}
+                </section>
             </main>{/* */}
             <Footer />
       </div>

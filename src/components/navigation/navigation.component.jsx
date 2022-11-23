@@ -10,7 +10,7 @@ export default function Navigation() {
  <Navbar
  fluid={true}
  rounded={true}
- className='fixed-top'
+ className='fixed-top inset-x-0'
 >
  <Navbar.Brand href="/">
    <img
