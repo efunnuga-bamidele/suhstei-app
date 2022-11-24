@@ -9,7 +9,14 @@ import NetworkIcon from '../../assets/icons/network.svg';
 import BookIcon from '../../assets/icons/emojione_green-book.svg';
 import ReceiveIcon from '../../assets/icons/icons8_recieve.svg';
 import GiveIcon from '../../assets/icons/icons8_give.svg';
+
 import Book1 from '../../assets/books-image/book1.png'
+import Book2 from '../../assets/books-image/book2.png'
+import Book3 from '../../assets/books-image/book3.png'
+import Book4 from '../../assets/books-image/book4.png'
+import Book5 from '../../assets/books-image/book5.png'
+import Book6 from '../../assets/books-image/book6.png'
+
 import BookItem from '../../components/book-item/book-item-component';
 
 export default function HomePage (){
@@ -50,7 +57,7 @@ export default function HomePage (){
                             and connect with book lovers all over the world in 3 steps.
                         </p>
                     </div>
-                <div className='containermx-auto my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2'>{/* */}
+                <div className='mx-auto my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2'>{/* */}
                     <div className='group flex justify-center m-4'>{/*Search Book Card*/}
                         <div className="block rounded-lg shadow lg bg-white max-w-sm text-center hover:bg-blue-500 transition ease-in-out duration-500 cursor-pointer">
                             <div className="py-3 px-6 border-b border-gray-300 flex justify-center group-hover:bg-white group-hover:rounded-t-lg">
@@ -129,20 +136,24 @@ export default function HomePage (){
                 </section>{/*End of how we work */}
     
                 <section>
-                    <div className='black justify-center mt-6'>
+                    <div className='black justify-center my-10'>
                         <h5 className="block text-3xl font-thin tracking-tight text-slate-800 dark:text-white text-center">
-                           Books Gallery
+                            Book Gallery
                         </h5>
                         <p className="block text-lg font-thin tracking-tight text-slate-400 dark:text-white text-center">
-                            Get some of the most exciting books you have always been looking for
+                            Get some of the most exciting books you have always been looking for.
                         </p>
                     </div>
-                    <div className='container mx-auto my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2 justify-center items-center place-content-center place-items-center justify-items-center justify-self-auto'> {/* Top review Books*/}
-                    
-                   
-                       <BookItem bookImage={Book1} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                   
-                    
+                    <div className='m-6 overflow-x-hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10'>{/* */}
+                            
+                        <BookItem bookImage={Book1} title="Photographer’s trouble shooter" author="Michael Freeman" />
+                        <BookItem bookImage={Book2} title="Photographer’s trouble shooter" author="Michael Freeman" />
+                        <BookItem bookImage={Book3} title="Photographer’s trouble shooter" author="Michael Freeman" />
+                        <BookItem bookImage={Book4} title="Photographer’s trouble shooter" author="Michael Freeman" />
+                        <BookItem bookImage={Book5} title="Photographer’s trouble shooter" author="Michael Freeman" />
+                        <BookItem bookImage={Book6} title="Photographer’s trouble shooter" author="Michael Freeman" />
+                                
+                            
                     </div>{/*end of top review books */}
                 </section>
             </main>{/* */}
