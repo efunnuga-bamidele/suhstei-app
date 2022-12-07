@@ -58,14 +58,14 @@ export default function HomePage (){
                             and connect with book lovers all over the world in 3 steps.
                         </p>
                     </div>
-                <div className='mx-auto my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2'>{/* */}
-                    {/* Platform Steps */}
-                    <StepItem icon={SearchIcon} title="Search for a book" content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat, cupiditate." step="Step 1" /> 
-                    <StepItem icon={NetworkIcon} title="Connect with book owner" content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat, cupiditate." step="Step 2" /> 
-                    <StepItem icon={ReceiveIcon} extraIcon={BookIcon} title="Recieve the required book" content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat, cupiditate." step="Step 3" preStyle="w-12 h-12" /> 
-                    <StepItem icon={BookIcon} extraIcon={GiveIcon} title="Return book after use" content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat, cupiditate." step="Step 4" postStyle="w-12 h-12" /> 
+                    <div className='mx-auto my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2'>
+                        {/* Platform Steps */}
+                        <StepItem icon={SearchIcon} title="Search for a book" content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat, cupiditate." step="Step 1"/> 
+                        <StepItem icon={NetworkIcon} title="Connect with book owner" content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat, cupiditate." step="Step 2" postStyle="" preStyle=""/> 
+                        <StepItem icon={ReceiveIcon} extraIcon={BookIcon} title="Recieve the required book" content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat, cupiditate." step="Step 3" preStyle="w-12 h-12" postStyle=""/> 
+                        <StepItem icon={BookIcon} extraIcon={GiveIcon} title="Return book after use" content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat, cupiditate." step="Step 4" postStyle="w-12 h-12" preStyle=''/>
 
-                  </div>
+                    </div>
                 </section>{/*End of how we work */}
     
                 <section>
