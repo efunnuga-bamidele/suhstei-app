@@ -6,7 +6,7 @@ import { useContext } from 'react';
 
 export default function Navigation() {
 
-  // const {user, setUser} = useContext('');
+  // const [user, setUser] = useContext('');
 
   return (
  <header >
@@ -82,6 +82,9 @@ export default function Navigation() {
   </Navbar.Link>
   <Navbar.Link href="/contact">
   Contact
+  </Navbar.Link>
+  <Navbar.Link href="/login">
+  Log-In
   </Navbar.Link>
     
    
