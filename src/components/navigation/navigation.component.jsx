@@ -1,14 +1,17 @@
-// import { Link, NavLink } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
+import { Navbar, Dropdown, Avatar } from 'flowbite-react';
 import Logo from '../../assets/icons/new-logo.png'
 
-import { Navbar, Dropdown, Avatar } from 'flowbite-react';
-import { useContext } from 'react';
+import './navigation.css';
+
 
 export default function Navigation() {
 
-  // const [user, setUser] = useContext('');
+  const [currentUser, setCurrentUser] = useState('');
 
   return (
+    
  <header >
  <Navbar
  fluid={true}
@@ -26,7 +29,8 @@ export default function Navigation() {
    </span>
  </Navbar.Brand>
  <div className="flex md:order-2">
-   <Dropdown
+    {currentUser ? 
+     <Dropdown
      arrowIcon={false}
      inline={true}
      label={
@@ -49,44 +53,51 @@ export default function Navigation() {
        </span>
      </Dropdown.Header>
         <Dropdown.Item>
-          Dashboard
+          <NavLink to="/dashboard" className="dropdown_hover">
+            Dashboard
+          </NavLink>
         </Dropdown.Item>
         <Dropdown.Item>
-          Settings
+          <NavLink to="/settings" className="dropdown_hover">
+            Settings
+          </NavLink>
         </Dropdown.Item>
         <Dropdown.Item>
-          My Books
+          <NavLink to="dropdown_hover">
+            My Books
+          </NavLink>
         </Dropdown.Item>
         <Dropdown.Divider />
         <Dropdown.Item>
-          Sign out
+          <NavLink to="/Signout" className="dropdown_hover">
+            Sign out
+          </NavLink>
         </Dropdown.Item>
-   </Dropdown>
+   </Dropdown> :
+    <Navbar className='list-none'>
+    <NavLink to="/login" className="dropdown_hover">
+      Sign-In
+    </NavLink>
+    </Navbar>
+  }
    <Navbar.Toggle className='ml-2' />
  </div>
  <Navbar.Collapse className=''>
-  <Navbar.Link
-  href="/"
-  active={true}
-  >
-  Home
-  </Navbar.Link>
-  <Navbar.Link href="/Books">
-  Books
-  </Navbar.Link>
-  <Navbar.Link href="/Community">
-  Community
-  </Navbar.Link>
-  <Navbar.Link href="/about-us">
-  About Us
-  </Navbar.Link>
-  <Navbar.Link href="/contact">
-  Contact
-  </Navbar.Link>
-  <Navbar.Link href="/login">
-  Log-In
-  </Navbar.Link>
-    
+   <NavLink to="/" className="nav_hover">
+      Home
+    </NavLink>
+    <NavLink to="/books" className="nav_hover">
+      Books
+    </NavLink>
+    <NavLink to="/community" className="nav_hover">
+      Community
+    </NavLink>
+    <NavLink to="/about-us" className="nav_hover">
+      About Us
+    </NavLink>
+    <NavLink to="/contact" className="nav_hover">
+      Contact
+    </NavLink>  
    
  </Navbar.Collapse>
 </Navbar>

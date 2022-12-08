@@ -9,6 +9,7 @@ import Book5 from '../../assets/books-image/book5.png'
 import Book6 from '../../assets/books-image/book6.png'
 
 import BookItem from '../../components/book-item/book-item-component'
+import Footer from '../../components/footer/footer.component'
 import Navigation from '../../components/navigation/navigation.component'
 
 export default function BooksPage() {
@@ -65,7 +66,7 @@ export default function BooksPage() {
             </div>{/*end of top review books */}
 
         </section>
-
+        <Footer />
     </main>
   )
 }
