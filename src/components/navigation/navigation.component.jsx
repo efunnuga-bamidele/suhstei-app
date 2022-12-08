@@ -75,10 +75,11 @@ export default function Navigation() {
         </Dropdown.Item>
    </Dropdown> :
     <Navbar className='list-none'>
-    <NavLink to="/login" className="dropdown_hover">
-      Sign-In
-    </NavLink>
+      <NavLink to="/login" className="dropdown_hover">
+        Sign-In
+      </NavLink>
     </Navbar>
+ 
   }
    <Navbar.Toggle className='ml-2' />
  </div>
