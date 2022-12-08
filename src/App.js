@@ -6,6 +6,7 @@ import ErrorPage from './pages/error/error.page';
 import HomePage from './pages/home/home.page';
 import LoginPage from './pages/login/login.page';
 import BooksPage from './pages/books/books.page';
+import CommunityPage from './pages/community/community.page';
 
 //styles
 import './App.css';
@@ -32,6 +33,11 @@ const router = createBrowserRouter([
   {
     path: '/books',
     element: <BooksPage />,
+    errorElement: <ErrorPage />
+  },
+  {
+    path: 'community',
+    element: <CommunityPage />,
     errorElement: <ErrorPage />
   }
 ])
