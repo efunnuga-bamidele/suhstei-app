@@ -1,4 +1,4 @@
-import { useNavigate, useNavigation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import Navigation from '../../components/navigation/navigation.component';
 import Footer from '../../components/footer/footer.component';
