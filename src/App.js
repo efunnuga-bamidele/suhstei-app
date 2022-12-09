@@ -1,10 +1,11 @@
-import { Fragment } from 'react';
+// import { Fragment } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 //pages
 import ErrorPage from './pages/error/error.page';
 import HomePage from './pages/home/home.page';
 import LoginPage from './pages/login/login.page';
+import SignupPage from './pages/sign-up/signup.page';
 import BooksPage from './pages/books/books.page';
 import CommunityPage from './pages/community/community.page';
 
@@ -27,6 +28,11 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
+    errorElement: <ErrorPage />
+  },
+  {
+    path: '/signup',
+    element: <SignupPage />,
     errorElement: <ErrorPage />
   }
   ,
