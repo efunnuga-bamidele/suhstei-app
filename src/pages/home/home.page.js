@@ -1,4 +1,4 @@
-
+import { useNavigate, useNavigation } from 'react-router-dom';
 
 import Navigation from '../../components/navigation/navigation.component';
 import Footer from '../../components/footer/footer.component';
@@ -21,6 +21,8 @@ import BookItem from '../../components/book-item/book-item-component';
 import StepItem from '../../components/step-item/step-item-component';
 
 export default function HomePage (){
+    const redirect = useNavigate()
+
     return (
         <div className='bg-gray-100 mx-1 font-body scroll-smooth'>
             <Navigation />
@@ -37,7 +39,7 @@ export default function HomePage (){
                             <h3 className="text-lg sm:text-2xl md:text-3xl font-light mb-3">where readers rule the world.</h3>
                             <h3 className="text-xs sm:text-sm md:text-xl mb-8 font-light">So let’s start connecting with other book lovers to lend books and start reading.</h3>
                         
-                            <button type="button"
+                            <button type="button" onClick={() => redirect('books')}
                             className="inline-block px-6 py-2.5 border-2 border-white text-white font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out"
                             data-mdb-ripple="true" data-mdb-ripple-color="light">
                             Get started
