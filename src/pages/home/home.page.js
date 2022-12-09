@@ -79,7 +79,7 @@ export default function HomePage (){
                             Get some of the most exciting books you have always been looking for.
                         </p>
                     </div>
-                    <div className='m-6 overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-10'>{/* */}
+                    <div className='m-6 overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-10 '>{/* */}
                             
                         <BookItem bookImage={Book1} title="Photographer’s trouble shooter" author="Michael Freeman" />
                         <BookItem bookImage={Book2} title="Photographer’s trouble shooter" author="Michael Freeman" />

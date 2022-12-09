@@ -6,7 +6,7 @@ import './bookitem.css'
 export default function BookItem({ bookImage, title, author}) {
   return (
 
-          <div className="group flex flex-col justify-center m-4">
+          <div className="group flex flex-col justify-center m-4 place-self-center">
          
             <div className="flex flex-col relative min-h-60 w-70 sm:min-h-60 sm:w-60 aspect-w-1 aspect-h-1 overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80 items-center">
 
@@ -15,7 +15,7 @@ export default function BookItem({ bookImage, title, author}) {
                 alt={title}
                 className="h-full w-full object-cover object-center lg:h-full lg:w-full"
               />
-             <button type="button" className="btn bottom-2 rounded-lg">
+             <button type="button" className="btn bottom-3 rounded-lg">
                 Review Book
               </button>
             </div>
