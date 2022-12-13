@@ -3,12 +3,19 @@ import { Link, NavLink } from 'react-router-dom';
 import { Navbar, Dropdown, Avatar } from 'flowbite-react';
 import Logo from '../../assets/icons/new-logo.png'
 
+//redux imports
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../book/user/user.selector'
+
+//firebase import 
+import { signOutUser } from '../../utils/firebase/firebase.utils';
+
 import './navigation.css';
 
 
 export default function Navigation() {
 
-  const [currentUser, setCurrentUser] = useState('');
+  const currentUser = useSelector(selectCurrentUser);
 
   return (
     
@@ -29,7 +36,8 @@ export default function Navigation() {
    </span>
  </Navbar.Brand>
  <div className="flex md:order-2">
-    {currentUser ? 
+    {
+      currentUser ? (
      <Dropdown
      arrowIcon={false}
      inline={true}
@@ -69,17 +77,17 @@ export default function Navigation() {
         </Dropdown.Item>
         <Dropdown.Divider />
         <Dropdown.Item>
-          <NavLink to="/Signout" className="dropdown_hover">
+          <NavLink as='span' onClick={signOutUser} className="dropdown_hover">
             Sign out
           </NavLink>
         </Dropdown.Item>
-   </Dropdown> :
+   </Dropdown> ) : (
     <Navbar className='list-none'>
       <NavLink to="/login" className="dropdown_hover">
         Sign-In
       </NavLink>
     </Navbar>
- 
+   )
   }
    <Navbar.Toggle className='ml-2' />
  </div>
