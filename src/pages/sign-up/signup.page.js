@@ -1,22 +1,80 @@
 import React, { useState, useMemo  } from 'react'
 import { Link } from 'react-router-dom'
 import countryList from 'react-select-country-list'
+import { Alert } from 'flowbite-react'
+import { HiOutlineInformationCircle } from "react-icons/hi"
+
+// Firebase
+import {
+    createAuthUserWithEmailAndPassword,
+    createUserDocumentFromAuth
+} from '../../utils/firebase/firebase.utils'
 
 import { ReactComponent as GoogleIcon} from '../../assets/socials/icons8_google.svg'
 import { ReactComponent as FacebookIcon} from '../../assets/socials/facebook.svg'
+import Signup_Image from '../../assets/auth/signup.webp'
 import Navigation from '../../components/navigation/navigation.component'
 import Footer from '../../components/footer/footer.component'
+import FormInput from '../../components/form-input/form-input.component'
+
+
+const defaultFormFields = {
+    displayName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    firstName: '',
+    lastName: '',
+    country: ''
+}
 
 export default function SignupPage() {
 
-    const [value, setValue] = useState('')
-    const options = useMemo(() => countryList().getData(), [])
-  
+    const options = useMemo(() => countryList().getData(), []);
+    const [formFields, setFormFields] = useState(defaultFormFields);
+    const { displayName, email, password, confirmPassword, firstName, lastName, country } = formFields;
+    const [error, setError] = useState('');
 
-    const changeHandler = event => {
-        setValue(value)
-        console.log(event.target.options[event.target.selectedIndex].text)
-      }
+    const resetFormFields = () => {
+        setFormFields(defaultFormFields);
+        const countryOption = document.querySelector('#floating_country')
+        countryOption.selectedIndex  = 0
+    }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setError('');
+        if (formFields.password !== formFields.confirmPassword){
+            setError('Passwords not a match');
+            setTimeout(() => setError(''), 10000)
+            return;
+        }
+
+        try{
+            const { user } = await createAuthUserWithEmailAndPassword(formFields.email, formFields.password);
+
+            await createUserDocumentFromAuth( user, { displayName, firstName, lastName, country });
+
+            resetFormFields();
+        }catch(err){
+            if (err.code === 'auth/email-already-in-use'){
+                setError('Cannot create user, email already in use');
+                setTimeout(() => setError(''), 10000)
+            }else{
+                setError('user creation encounted an error: ');
+                // console.log(err.message)
+                setTimeout(() => setError(''), 10000)
+            }
+        }
+
+    }
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormFields({...formFields, [name]:value});
+        console.log(formFields)
+    }
+
 
   return (
     <div className='overscroll-none'>
@@ -25,49 +83,99 @@ export default function SignupPage() {
         <div className="container px-6 py-12 h-full">
             <div className="flex justify-center items-center flex-wrap h-full g-6 text-gray-800">
                 <div className="md:w-8/12 lg:w-6/12 mb-12 md:mb-0">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" className="w-full" alt="Phoneimage"
+                <img src={Signup_Image} className="w-full" alt="Phoneimage"
                 />
                 </div>
                 <div className="md:w-8/12 lg:w-5/12 lg:ml-20">
-                <form>
+                <form onSubmit = {handleSubmit}>
                     <div className="relative z-0 mb-6 w-full group">
                         <h1 className='text-2xl sm:text-3xl md:text-5xl font-bold my-auto mb-4 text-primary text-right'>Sign Up</h1>
                     </div>
                     <div className="relative z-0 mb-6 w-full group">
-                        <input type="email" name="floating_email" id="floating_email" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                        <label htmlFor="floating_email" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email address</label>
+                        {error && 
+                        <Alert
+                            color="failure"
+                            icon={HiOutlineInformationCircle}
+                        >
+                            <span>
+                            {error}!
+                            </span>
+                      </Alert>
+                        }
                     </div>
                     <div className="relative z-0 mb-6 w-full group">
-                        <input type="password" name="floating_password" id="floating_password" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                        <label htmlFor="floating_password" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
+                        <FormInput
+                            name = "email"
+                            label = "Email address"
+                            type ="email"
+                            onChange = {handleChange}
+                            value = {email}
+                        />
                     </div>
                     <div className="relative z-0 mb-6 w-full group">
-                        <input type="password" name="repeat_password" id="floating_repeat_password" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                        <label htmlFor="floating_repeat_password" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confirm password</label>
+                        <FormInput
+                            name = "password"
+                            label = "Password"
+                            type ="password"
+                            onChange = {handleChange}
+                            value = {password}
+                        />
+                       
+                    </div>
+                    <div className="relative z-0 mb-6 w-full group">
+                        <FormInput
+                            name = "confirmPassword"
+                            label = "Confirm password"
+                            type ="password"
+                            onChange = {handleChange}
+                            value = {confirmPassword}
+                        />
                     </div>
                     <div className="grid md:grid-cols-2 md:gap-6">
                         <div className="relative z-0 mb-6 w-full group">
-                            <input type="text" name="floating_first_name" id="floating_first_name" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                            <label htmlFor="floating_first_name" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">First name</label>
+                            <FormInput
+                                name = "firstName"
+                                label = "First name"
+                                type ="text"
+                                onChange = {handleChange}
+                                value = {firstName}
+                            />
                         </div>
                         <div className="relative z-0 mb-6 w-full group">
-                            <input type="text" name="floating_last_name" id="floating_last_name" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                            <label htmlFor="floating_last_name" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Last name</label>
+                            <FormInput
+                                name = "lastName"
+                                label = "Last name"
+                                type ="text"
+                                onChange = {handleChange}
+                                value = {lastName}
+                            />
                         </div>
                     </div>
                     <div className="grid md:grid-cols-2 md:gap-6">
                         <div className="relative z-0 mb-6 w-full group">
-                            <input type="text" name="floating_displayName" id="floating_displayName" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                            <label htmlFor="floating_displayName" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Display name</label>
+                            <FormInput
+                                name = "displayName"
+                                label = "Display name"
+                                type ="text"
+                                onChange = {handleChange}
+                                value = {displayName}
+                            />
                         </div>
                         <div className="relative z-0 mb-6 w-full group">
-                        {/* <Countries name="floating_country" empty=" -- Select country --" id="floating_country" className="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" onChange={e => console.log(e.target.options[e.target.selectedIndex].text)}/> */}
 
-
-                        <select id="floating_country" className="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" onChange={changeHandler} >
+                        <select 
+                            id="floating_country" 
+                            className="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                            name="country"
+                            onChange={handleChange} >
                         <option defaultValue=" -- Select country --"> -- Select country --</option>
-                        {options.map((value, index) => (
-                            <option value={value.value} key={index}>{value.label}</option>
+                        {options.map((item, index) => (
+                            <option 
+                                value={item.label} 
+                                key={index}
+                            >
+                                {item.label}
+                            </option>
                         ))}
                         </select>
 

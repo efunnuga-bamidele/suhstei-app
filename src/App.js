@@ -1,5 +1,15 @@
-// import { Fragment } from 'react';
+import { useEffect } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
+//firebase import
+import {
+  onAuthStateChangedListener, 
+  createUserDocumentFromAuth
+} from './utils/firebase/firebase.utils';
+
+//redux import
+import { useDispatch } from 'react-redux';
+import { setCurrentUser } from './book/user/user.action'
 
 //pages
 import ErrorPage from './pages/error/error.page';
@@ -19,40 +29,53 @@ import './App.css';
 
 
 function App() {
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <HomePage />,
-    errorElement: <ErrorPage />
-  },
-  {
-    path: '/login',
-    element: <LoginPage />,
-    errorElement: <ErrorPage />
-  },
-  {
-    path: '/signup',
-    element: <SignupPage />,
-    errorElement: <ErrorPage />
-  }
-  ,
-  {
-    path: '/books',
-    element: <BooksPage />,
-    errorElement: <ErrorPage />
-  },
-  {
-    path: 'community',
-    element: <CommunityPage />,
-    errorElement: <ErrorPage />
-  }
-])
+  const dispatch = useDispatch();
 
-  return (
-    <div>
-      <RouterProvider router={router} />
-    </div>
-  );
-}
+  useEffect(() => {
+    const unsubscribe = onAuthStateChangedListener((user) => {
+      if (user){
+        createUserDocumentFromAuth(user);
+      }
+      dispatch(setCurrentUser(user))
+    });
 
-export default App;
+    return unsubscribe;
+  }, [])
+
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <HomePage />,
+      errorElement: <ErrorPage />
+    },
+    {
+      path: '/login',
+      element: <LoginPage />,
+      errorElement: <ErrorPage />
+    },
+    {
+      path: '/signup',
+      element: <SignupPage />,
+      errorElement: <ErrorPage />
+    }
+    ,
+    {
+      path: '/books',
+      element: <BooksPage />,
+      errorElement: <ErrorPage />
+    },
+    {
+      path: 'community',
+      element: <CommunityPage />,
+      errorElement: <ErrorPage />
+    }
+  ])
+
+    return (
+      <div>
+        <RouterProvider router={router} />
+      </div>
+    );
+  }
+
+  export default App;

@@ -1,11 +1,80 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Alert } from 'flowbite-react'
+import { HiOutlineInformationCircle } from "react-icons/hi"
+
+
 import { ReactComponent as GoogleIcon} from '../../assets/socials/icons8_google.svg'
 import { ReactComponent as FacebookIcon} from '../../assets/socials/facebook.svg'
+import Signin_Image from '../../assets/auth/signin.svg'
 import Navigation from '../../components/navigation/navigation.component'
 import Footer from '../../components/footer/footer.component'
 
+import FormInput from '../../components/form-input/form-input.component'
+
+//firebase import
+import {
+    sighAuthUserInWithEmailAndPassword,
+    signInWithGooglePopup,
+    signInWithFacebookPopup,
+} from '../../utils/firebase/firebase.utils';
+
+
+
+const defaultFormFields = {
+    email: '',
+    password: ''
+}
+
 export default function LoginPage() {
+    const [ formField, setFormField ] = useState(defaultFormFields);
+    const { email, password } = formField;
+    const [error, setError] = useState('');
+
+    const resetFields = () => {
+        setFormField(defaultFormFields);
+    };
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormField({ ...formField, [name]: value});
+    };
+
+    const logGooglePopUser = async () => {
+        const { user } = await signInWithGooglePopup();
+    }
+
+    const loggFacebookProvider = async () => {
+        const { user } = await signInWithFacebookPopup();
+    }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setError('');
+
+        try{
+            const { user } = await sighAuthUserInWithEmailAndPassword(formField.email, formField.password)
+            // console.log(user)
+            resetFields();
+
+        }catch(err){
+            switch (err.code){
+                case "auth/user-not-found":
+                    setError("User detail was not found");
+                    setTimeout(() => setError(''), 10000)
+                    break;
+                case "auth/wrong-password":
+                    setError("Incorrect password for email");
+                    setTimeout(() => setError(''), 10000)
+                    break;
+                default:
+                    // console.log(err.message);
+            }
+        }
+    }
+
+
+
   return (
     <div className='overscroll-none'>
         <Navigation />
@@ -13,21 +82,43 @@ export default function LoginPage() {
         <div className="container px-6 py-12 h-full">
             <div className="flex justify-center items-center flex-wrap h-full g-6 text-gray-800">
                 <div className="md:w-8/12 lg:w-6/12 mb-12 md:mb-0">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg" className="w-full" alt="Phoneimage"
+                <img src={Signin_Image} className="w-full" alt="Phoneimage"
                 />
                 </div>
                 <div className="md:w-8/12 lg:w-5/12 lg:ml-20">
-                <form>
+                <form onSubmit={handleSubmit}>
                 <div className="relative z-0 mb-6 w-full group">
-                        <h1 className='text-2xl sm:text-3xl md:text-5xl font-bold my-auto mb-4 text-primary text-right'>Sign In</h1>
-                    </div>
+                    <h1 className='text-2xl sm:text-3xl md:text-5xl font-bold my-auto mb-4 text-primary text-right'>Sign In</h1>
+                </div>
                 <div className="relative z-0 mb-6 w-full group">
-                        <input type="email" name="floating_email" id="floating_email" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                        <label htmlFor="floating_email" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email address</label>
+                    {error && 
+                    <Alert
+                        color="failure"
+                        icon={HiOutlineInformationCircle}
+                    >
+                        <span>
+                        {error}!
+                        </span>
+                    </Alert>
+                    }
+                </div>
+                <div className="relative z-0 mb-6 w-full group">
+                        <FormInput
+                            name = "email"
+                            label = "Email address"
+                            type ="email"
+                            onChange = {handleChange}
+                            value = {email}
+                        />
                     </div>
                     <div className="relative z-0 mb-6 w-full group">
-                        <input type="password" name="floating_password" id="floating_password" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                        <label htmlFor="floating_password" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
+                        <FormInput
+                            name = "password"
+                            label = "Password"
+                            type ="password"
+                            onChange = {handleChange}
+                            value = {password}
+                        />
                     </div>
         
                     <div className="flex justify-between items-center mb-6">
@@ -80,8 +171,9 @@ export default function LoginPage() {
                     role="button"
                     data-mdb-ripple="true"
                     data-mdb-ripple-color="light"
+                    onClick={loggFacebookProvider}
                     >
-                    <FacebookIcon /><span className='ml-2'>Sign up with Facebook</span>
+                    <FacebookIcon /><span className='ml-2'>Sign In with Facebook</span>
                     </Link>
                     <Link
                     className="px-7 py-3 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center bg-[#4285f4]"
@@ -89,8 +181,9 @@ export default function LoginPage() {
                     role="button"
                     data-mdb-ripple="true"
                     data-mdb-ripple-color="light"
+                    onClick={logGooglePopUser}
                     >
-                    <GoogleIcon /><span className='ml-2'>Sign up with Google</span>
+                    <GoogleIcon /><span className='ml-2'>Sign In with Google</span>
                     </Link>
                 </form>
                 </div>
