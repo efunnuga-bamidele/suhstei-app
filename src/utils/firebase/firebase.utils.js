@@ -41,8 +41,16 @@ googleProvider.setCustomParameters({
   prompt: "select_account"
 });
 
+const facebookProvider = new FacebookAuthProvider();
+
+facebookProvider.setCustomParameters({
+  'display': 'popup'
+});
+
 export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
+
+export const signInWithFacebookPopup = () => signInWithPopup(auth, facebookProvider)
 
 // Firestore initialization
 export const db = getFirestore();
@@ -82,6 +90,7 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
 
 //signin with email and password
 export const sighAuthUserInWithEmailAndPassword = async (email, password) => {
+
     if (!email || !password) return;
 
     return await signInWithEmailAndPassword(auth, email, password);

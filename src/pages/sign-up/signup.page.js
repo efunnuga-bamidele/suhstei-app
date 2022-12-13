@@ -61,7 +61,8 @@ export default function SignupPage() {
                 setError('Cannot create user, email already in use');
                 setTimeout(() => setError(''), 10000)
             }else{
-                setError('user creation encounted an error: ', err.message);
+                setError('user creation encounted an error: ');
+                // console.log(err.message)
                 setTimeout(() => setError(''), 10000)
             }
         }

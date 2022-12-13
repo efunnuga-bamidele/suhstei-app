@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Navbar, Dropdown, Avatar } from 'flowbite-react';
 import Logo from '../../assets/icons/new-logo.png'
+import ProfileImage from '../../assets/auth/icons8_male_user_500px.png';
 
 //redux imports
 import { useSelector } from 'react-redux';
@@ -44,7 +45,7 @@ export default function Navigation() {
      label={
       <Avatar 
         alt="User settings" 
-        img="https://flowbite.com/docs/images/people/profile-picture-3.jpg" 
+        img={ProfileImage} 
         rounded={true}
         status="online"
         statusPosition="top-right"
@@ -54,10 +55,10 @@ export default function Navigation() {
    >
      <Dropdown.Header>
        <span className="block text-sm mb-2">
-         John Doe
+         {currentUser.displayName}
        </span>
        <span className="block truncate text-sm font-medium">
-         johnDoe@mail.com
+         {currentUser.email}
        </span>
      </Dropdown.Header>
         <Dropdown.Item>
