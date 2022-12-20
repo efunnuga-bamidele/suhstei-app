@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Alert } from 'flowbite-react'
 import { HiOutlineInformationCircle } from "react-icons/hi"
+
 
 
 import { ReactComponent as GoogleIcon} from '../../assets/socials/icons8_google.svg'
@@ -19,6 +20,8 @@ import {
     signInWithFacebookPopup,
 } from '../../utils/firebase/firebase.utils';
 
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '../../book/user/user.selector'
 
 
 const defaultFormFields = {
@@ -27,6 +30,16 @@ const defaultFormFields = {
 }
 
 export default function LoginPage() {
+    const currentUser  = useSelector(selectCurrentUser) 
+    const redirect = useNavigate()
+    
+    // useEffect(() => {
+    //     if (currentUser){
+    //         redirect('/')
+    //         console.log('Logged In')
+    //     }
+    // },[currentUser])
+
     const [ formField, setFormField ] = useState(defaultFormFields);
     const { email, password } = formField;
     const [error, setError] = useState('');
