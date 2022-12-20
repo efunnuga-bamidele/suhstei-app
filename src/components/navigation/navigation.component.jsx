@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+
+import { NavLink } from 'react-router-dom';
 import { Navbar, Dropdown, Avatar } from 'flowbite-react';
 import Logo from '../../assets/icons/new-logo.png'
 import ProfileImage from '../../assets/auth/icons8_male_user_500px.png';
@@ -72,13 +72,13 @@ export default function Navigation() {
           </NavLink>
         </Dropdown.Item>
         <Dropdown.Item>
-          <NavLink to="dropdown_hover">
+          <NavLink to="/my-books">
             My Books
           </NavLink>
         </Dropdown.Item>
         <Dropdown.Divider />
         <Dropdown.Item>
-          <NavLink as='span' onClick={signOutUser} className="dropdown_hover">
+          <NavLink onClick={signOutUser} className="dropdown_hover">
             Sign out
           </NavLink>
         </Dropdown.Item>
@@ -107,7 +107,7 @@ export default function Navigation() {
     </NavLink>
     <NavLink to="/contact" className="nav_hover">
       Contact
-    </NavLink>  
+    </NavLink>
    
  </Navbar.Collapse>
 </Navbar>
