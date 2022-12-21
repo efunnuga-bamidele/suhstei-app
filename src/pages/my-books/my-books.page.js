@@ -1,11 +1,15 @@
+import Footer from "../../components/footer/footer.component";
+import Navigation from "../../components/navigation/navigation.component";
 
-const MyBooksPage = () => {
+export default function MyBooksPage(){
 
     return(
         <div>
-            <h1>My Books</h1>
+            <Navigation />
+                <h1 className='mt-20'>
+                    My Books
+                </h1>
+            <Footer />
         </div>
     )
 }
-
-export default MyBooksPage;

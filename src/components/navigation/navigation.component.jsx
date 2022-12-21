@@ -61,24 +61,24 @@ export default function Navigation() {
          {currentUser.email}
        </span>
      </Dropdown.Header>
-        <Dropdown.Item>
+        <Dropdown.Item className="cursor-default">
           <NavLink to="/dashboard" className="dropdown_hover">
             Dashboard
           </NavLink>
         </Dropdown.Item>
-        <Dropdown.Item>
+        <Dropdown.Item className="cursor-default">
           <NavLink to="/settings" className="dropdown_hover">
             Settings
           </NavLink>
         </Dropdown.Item>
-        <Dropdown.Item>
-          <NavLink to="/my-books">
+        <Dropdown.Item className="cursor-default">
+          <NavLink to="/my-books" className="dropdown_hover">
             My Books
           </NavLink>
         </Dropdown.Item>
         <Dropdown.Divider />
-        <Dropdown.Item>
-          <NavLink onClick={signOutUser} className="dropdown_hover">
+        <Dropdown.Item className="cursor-default">
+          <NavLink as="Link" onClick={signOutUser} className="dropdown_hover">
             Sign out
           </NavLink>
         </Dropdown.Item>

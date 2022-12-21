@@ -21,10 +21,14 @@ import CommunityPage from './pages/community/community.page';
 
 //Profile Pages
 import MyBooksPage from './pages/my-books/my-books.page';
+import DashboardPage from './pages/dashboard/dashboard.page';
+import SettingsPage from './pages/settings/settings.page';
 
+// Protection Routes
+import { ProtectedLayout } from './components/protected-layout/protected-layout.component';
+import { ProfileLayout }  from './components/profile-layout/profile-layout.component'; 
 //styles
 import './App.css';
-import { ProtectedLayout } from './components/protected-layout/protected-layout.component';
 
 
 function App() {
@@ -95,6 +99,38 @@ function App() {
               // element = {<CommunityPage />}
               errorElement = {<ErrorPage />}
             />
+
+            {/* Profile Routes */}
+
+            <Route
+              path='/dashboard'
+              element= {
+                <ProfileLayout>
+                    <DashboardPage />
+                </ProfileLayout>
+              }
+              errorElement= {<ErrorPage />}
+            />
+
+            <Route
+              path='/my-books'
+              element={
+                <ProfileLayout>
+                  <MyBooksPage />
+                </ProfileLayout>
+              }
+              errorElement={<ErrorPage />}
+              />
+
+              <Route
+                  path='/settings'
+                  element={
+                    <ProfileLayout>
+                      <SettingsPage />
+                    </ProfileLayout>
+                  }
+                  errorElement={<ErrorPage />}
+              />
         </>
     )) 
    
