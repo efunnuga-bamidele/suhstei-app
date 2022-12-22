@@ -10,7 +10,6 @@ import 'flowbite-react';
 import { Provider } from 'react-redux';
 import { store, persistor } from './book/book';
 import { PersistGate } from 'redux-persist/integration/react';
-import { BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

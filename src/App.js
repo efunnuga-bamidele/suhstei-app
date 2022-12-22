@@ -21,6 +21,7 @@ import CommunityPage from './pages/community/community.page';
 
 //Profile Pages
 import MyBooksPage from './pages/my-books/my-books.page';
+import CreateBookPage from './pages/my-books/create-book.page';
 import DashboardPage from './pages/dashboard/dashboard.page';
 import SettingsPage from './pages/settings/settings.page';
 
@@ -117,6 +118,16 @@ function App() {
               element={
                 <ProfileLayout>
                   <MyBooksPage />
+                </ProfileLayout>
+              }
+              errorElement={<ErrorPage />}
+              />
+
+            <Route
+              path='/create-book'
+              element={
+                <ProfileLayout>
+                  <CreateBookPage />
                 </ProfileLayout>
               }
               errorElement={<ErrorPage />}
