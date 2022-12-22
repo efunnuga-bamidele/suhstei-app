@@ -6,9 +6,10 @@ import {
     FcReading,
     FcSms,
     FcSettings,
-    FcPortraitMode,
+    FcReadingEbook,
     FcSimCardChip,
-    FcShop
+    FcAddDatabase,
+    FcCollaboration
      } from 'react-icons/fc';
 
 // import {
@@ -30,18 +31,43 @@ export default function SidebarNavigation() {
             <Sidebar aria-label="Sidebar with content separator example">
                 <Sidebar.Items>
                     <Sidebar.ItemGroup>
+
                         <span className='flex'>
                             <FcBarChart className='mr-2 ml-2 mb-4' size={25} />
                             <NavLink to="/dashboard" className="dropdown_hover" >Dashboard</NavLink>
                         </span>
-                        <span className='flex'>
-                            <FcReading className='mr-2 ml-2 mb-4' size={25} />
-                            <NavLink to="/my-books" className="dropdown_hover" >My Books</NavLink>
+
+                        <Sidebar.Collapse
+                            icon={FcReading}
+                            label="MyBooks"
+                            >
+                        <span className='flex ml-6 text-[0.9em]'>
+                            <NavLink to="/my-books" className="dropdown_hover ml-6" >View Books</NavLink>
+                            <FcReadingEbook className='mr-2 ml-2 mb-2' size={20} />
                         </span>
-                        <span className='flex'>
-                            <FcSms className='mr-2 ml-2 mb-4' size={25} />
-                            <NavLink to="/messages" className="dropdown_hover" >Messages</NavLink>
+
+                        <span className='flex ml-6 text-[0.9em]'>
+                            <NavLink to="/create-book" className="dropdown_hover ml-6" >Create Book</NavLink>
+                            <FcAddDatabase className='mr-2 ml-2 mb-2' size={20} />
                         </span>
+
+                        </Sidebar.Collapse>
+
+                        <Sidebar.Collapse
+                            icon={FcSms}
+                            label="Messages"
+                            >
+                        <span className='flex ml-6 text-[0.9em]'>
+                            <NavLink to="/messages" className="dropdown_hover ml-6" >Active Messages</NavLink>
+                            <FcCollaboration className='mr-2 ml-2 mb-2' size={22} />
+                        </span>
+
+                        <span className='flex ml-6 text-[0.9em]'>
+                            <NavLink to="/messages" className="dropdown_hover ml-6" >New Messages</NavLink>
+                            <FcSms className='mr-2 ml-2 mb-2' size={22} />
+                        </span>
+
+                        </Sidebar.Collapse>
                         <span className='flex'>
                             <FcSimCardChip className='mr-2 ml-2 mb-4' size={25} />
                             <NavLink to="/transactions" className="dropdown_hover" >Trasactions</NavLink>
