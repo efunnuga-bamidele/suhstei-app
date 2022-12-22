@@ -1,18 +1,26 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Sidebar } from 'flowbite-react';
-import { FcBarChart } from 'react-icons/fc';
+import { 
+    FcBarChart,
+    FcReading,
+    FcSms,
+    FcSettings,
+    FcPortraitMode,
+    FcSimCardChip,
+    FcShop
+     } from 'react-icons/fc';
 
-import {
-    HiChartPie,
-    HiViewBoards,
-    HiInbox,
-    HiUser,
-    HiShoppingBag,
-    HiArrowSmRight,
-    HiTable,
-    HiScissors
-} from 'react-icons/hi';
+// import {
+//     HiChartPie,
+//     HiViewBoards,
+//     HiInbox,
+//     HiUser,
+//     HiShoppingBag,
+//     HiArrowSmRight,
+//     HiTable,
+//     HiScissors
+// } from 'react-icons/hi';
 
 
 export default function SidebarNavigation() {
@@ -24,30 +32,25 @@ export default function SidebarNavigation() {
                     <Sidebar.ItemGroup>
                         <span className='flex'>
                             <FcBarChart className='mr-2 ml-2 mb-4' size={25} />
-                            <NavLink to="/dashboard" className="nav_hover" >Dashboard</NavLink>
+                            <NavLink to="/dashboard" className="dropdown_hover" >Dashboard</NavLink>
                         </span>
                         <span className='flex'>
-                            <HiViewBoards className='mr-2 ml-2 mb-4' size={25} />
-                            <NavLink to="/contact" className="nav_hover" >Kanban</NavLink>
+                            <FcReading className='mr-2 ml-2 mb-4' size={25} />
+                            <NavLink to="/my-books" className="dropdown_hover" >My Books</NavLink>
                         </span>
                         <span className='flex'>
-                            <HiInbox className='mr-2 ml-2 mb-4' size={25} />
-                            <NavLink to="/contact" className="nav_hover" >Inbox</NavLink>
+                            <FcSms className='mr-2 ml-2 mb-4' size={25} />
+                            <NavLink to="/messages" className="dropdown_hover" >Messages</NavLink>
                         </span>
                         <span className='flex'>
-                            <HiUser className='mr-2 ml-2 mb-4' size={25} />
-                            <NavLink to="/contact" className="nav_hover" >Users</NavLink>
-                        </span>
-                        <span className='flex'>
-                            <HiShoppingBag className='mr-2 ml-2 mb-4' size={25} />
-                            <NavLink to="/contact" className="nav_hover" >Books</NavLink>
+                            <FcSimCardChip className='mr-2 ml-2 mb-4' size={25} />
+                            <NavLink to="/transactions" className="dropdown_hover" >Trasactions</NavLink>
                         </span>
                     </Sidebar.ItemGroup>
                     <Sidebar.ItemGroup>
-
                         <span className='flex'>
-                            <HiChartPie className='mr-2 ml-2 mb-4' size={25} />
-                            <NavLink to="/contact" className="nav_hover" >Upgrade to Pro</NavLink>
+                            <FcSettings className='mr-2 ml-2 mb-4' size={25} />
+                            <NavLink to="/profile" className="dropdown_hover" >Profile</NavLink>
                         </span>
                     </Sidebar.ItemGroup>
                 </Sidebar.Items>

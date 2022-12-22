@@ -9,7 +9,8 @@ import { rootReducer } from './root-reducer';
 const persistConfig = {
     key: 'root',
     storage: storage,
-    blacklist: ['user'],
+    // blacklist: ['user'], // navigation will not be persisted
+    // whitelist: ['navigation'], // only navigation will be persisted
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
