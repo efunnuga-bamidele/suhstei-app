@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import { useState } from 'react'
 import Navigation from '../../components/navigation/navigation.component'
 import Footer from '../../components/footer/footer.component'
 import SidebarNavigation from '../../components/sidebar/sidebar.component'
@@ -6,7 +6,9 @@ import { HiOutlineInformationCircle } from "react-icons/hi"
 import { Alert } from 'flowbite-react'
 
 import FormInput from '../../components/form-input/form-input.component'
-import { map } from '@firebase/util'
+import { createNewBook } from '../../utils/firebase/firebase.utils'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '../../book/user/user.selector'
 
 const bookCategory = [
     'Science',
@@ -27,8 +29,109 @@ const bookStatus = [
     'Requested',
     'Not Available'
 ]
+
+const defaultFormField = {
+    book_owner: '',
+    book_title: '',
+    book_category: '',
+    book_description: '',
+    book_status: ''
+}
+
 export default function CreateBookPage() {
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [formFields, setFormFields] = useState(defaultFormField);
+    const {book_owner, book_title, book_category, book_description, book_status} = formFields;
+    const [thumbnail, setThumbnail] = useState(null)
+    const user = useSelector(selectCurrentUser);
+    
+
+    
+
+    const resetFields = () => {
+        setFormFields(defaultFormField);
+        const categoryOption = document.querySelector('#book_category')
+        const statusOption = document.querySelector('#book_status')
+        categoryOption.selectedIndex  = 0
+        statusOption.selectedIndex  = 0
+    }
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormFields({ ...formFields, [name]: value });
+    };
+
+    const handleFileChange = (event) => {
+        setThumbnail(null);
+        let selected = event.target.files[0];
+        // console.log(selected.name);
+        if(!selected){
+            setError("Please select a file");
+            setTimeout(() => setError(''), 10000);
+            return;
+        }
+        if (!selected.type.includes('image')){
+            setError("Selected file must be an image");
+            setTimeout(() => setError(''), 10000);
+            return;
+        }
+        if (selected.size > 400000){
+            setError("Image file size must be less than 400kb");
+            setTimeout(() => setError(''), 10000);
+            return;
+        }
+        setError('');
+        setThumbnail(selected);
+        // console.log(thumbnail["name"])
+        // console.log("Thumbnail updated");
+    }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        formFields.book_owner = user['displayName'];
+
+        if (!formFields.book_category || formFields.book_category === " -- Select Category --"){
+            setError('Please select a book category');
+            setTimeout(() => setError(''), 10000);
+            return;
+        }
+
+        if (!formFields.book_status || formFields.book_status === " -- Select Book Status --"){
+            setError('Please select a book status');
+            setTimeout(() => setError(''), 10000);
+            return;
+        }
+
+        setError('');
+        const createdAt = new Date();
+        // const fieldName = user["uid"]+formFields.book_title.replace(" ", "").toLowerCase();
+        
+        const bookData = {
+            createdAt,
+            ...formFields
+            // [fieldName]: {
+            //     createdAt,
+            //     ...formFields
+            // }
+        }
+        // console.log(bookData);
+        // 
+       const data = await createNewBook(user.uid, thumbnail, bookData);
+    //    console.log(data);
+        if(data === "success"){
+            setSuccess("Book creation successful!");
+            setTimeout(() => setSuccess(''), 10000);
+        }else if(data === "added"){
+            setSuccess("Book added successfully!");
+            setTimeout(() => setSuccess(''), 10000);
+        }else{
+            setError("Failed to create book");
+            setTimeout(() => setError(''), 10000);
+        }
+        // resetFields();
+    }
+
+
 
     return (
         <div className='bg-gray-100 mx-1 font-body scroll-smooth'>
@@ -37,7 +140,7 @@ export default function CreateBookPage() {
                 <SidebarNavigation />
                 <section className="bg-slate-100 mt-12 mb-2 p-2 w-full mr-1">
                     <div className='container px-6 py-12 h-full'>
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             <div className='relative z-0 mb-6 w-full group'>
                                 <h1 className='text-1xl sm:text-2xl md:text-3xl font-bold my-auto mb-4 text-primary'>Create New Book</h1>
                             </div>
@@ -52,95 +155,118 @@ export default function CreateBookPage() {
                                         </span>
                                     </Alert>
                                 }
+                                {success &&
+                                    <Alert
+                                        color="success"
+                                        icon={HiOutlineInformationCircle}
+                                    >
+                                        <span>
+                                            {success}!
+                                        </span>
+                                    </Alert>
+                                }
                             </div>
-                        <div className="grid md:grid-cols-2 md:gap-6">
-                            <div className='relative z-0 mb-6 w-full group'>
-                                <FormInput
-                                    name= "owner"
-                                    label= "Book Owner"
-                                    type= "text"
-                                    // value= {''}
-                                />
+                            <div className="grid md:grid-cols-2 md:gap-6">
+                                <div className='relative z-0 mb-6 w-full group'>
+                                    <FormInput
+                                        name="book_owner"
+                                        label="Book Owner"
+                                        type="text"
+                                        onChange= {handleChange}
+                                        value= {user['displayName']}
+                                        disabled
+                                    />
+                                </div>
+                                <div className='relative z-0 mb-6 w-full group'>
+                                    <FormInput
+                                        name="book_title"
+                                        label="Book Title"
+                                        type="text"
+                                        onChange= {handleChange}
+                                        value= {book_title}
+                                    />
+                                </div>
                             </div>
-                            <div className='relative z-0 mb-6 w-full group'>
-                                <FormInput
-                                    name= "title"
-                                    label= "Book Title"
-                                    type= "text"
-                                    // onChange= {''}
-                                    // value= {''}
-                                />
+                            <div className="grid md:grid-cols-2 md:gap-6">
+                                <div className='relative z-0 mb-6 w-full group'>
+                                    <FormInput
+                                        name="thumbnail"
+                                        label="Book Image"
+                                        type="file"
+                                        onChange= {handleFileChange}
+                                    />
+                                </div>
+                                <div className='relative z-0 mb-6 mt-5 w-full group'>
+                                    <select
+                                        id="book_category"
+                                        className="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        name="book_category"
+                                        onChange= {handleChange}
+                                        required
+                                    >
+                                        <option defaultValue=" -- Select Category --"> -- Select Category --</option>
+                                        {bookCategory.map((item, index) => (
+                                            <option key={index} value={item}>{item}</option>
+                                        ))}
+                                    </select>
+                                    <label
+                                        htmlFor="book_category"
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        Book Categories
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div className="grid md:grid-cols-2 md:gap-6">
-                            <div className='relative z-0 mb-6 w-full group'>
-                                <FormInput
-                                    name= "book_image"
-                                    label= "Book Image"
-                                    type= "file"
-                                    // onChange= {''}
-                                    // value= {''}
-                                />
-                            </div>
-                            <div className='relative z-0 mb-6 mt-5 w-full group'>
-                            <select 
-                                id="book_category" 
-                                className="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
-                                name="book_category"
-                                // onChange={''} 
-                            >
-                                <option defaultValue=" -- Select Category --"> -- Select Category --</option>
-                                {bookCategory.map((item, index) => (
-                                    <option key={index} value={item}>{item}</option>
-                                ))}
-                                </select>
-                            <label 
-                                htmlFor="book_category"
-                                className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                            >
-                                Book Categories
-                            </label>
-                            </div>
-                        </div>
-                        <div className="grid md:grid-cols-2 md:gap-6">
-                        <div className='relative z-0 mb-6 w-full group'>
-                            <textarea 
-                                name='description'
-                                id='description'
-                                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
-                                rows="2"
-                                // value={''}
-                                placeholder="" 
-                                // onChange={''}
-                            />
-                            <label 
-                                htmlFor='description'
-                                className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                            >
-                                Book Description
-                            </label>
-                            </div>
+                            <div className="grid md:grid-cols-2 md:gap-6">
+                                <div className='relative z-0 mb-6 w-full group'>
+                                    <textarea
+                                        name='book_description'
+                                        id='book_description'
+                                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        rows="2"
+                                        placeholder=""
+                                        onChange= {handleChange}
+                                        value= {book_description}
+                                        required
+                                    />
+                                    <label
+                                        htmlFor='book_description'
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        Book Description
+                                    </label>
+                                </div>
 
-                            <div className='relative z-0 mb-6 mt-5 w-full group'>
-                            <select 
-                                id="book_status" 
-                                className="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
-                                name="book_status"
-                                // onChange={''} 
-                            >
-                                <option defaultValue=" -- Select Book Status --"> -- Select Book Status --</option>
-                                {bookStatus.map((item, index) => (
-                                    <option key={index} value={item}>{item}</option>
-                                ))}
-                                </select>
-                            <label 
-                                htmlFor="book_status"
-                                className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                            >
-                                Book Statux
-                            </label>
+                                <div className='relative z-0 mb-6 mt-5 w-full group'>
+                                    <select
+                                        id="book_status"
+                                        className="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        name="book_status"
+                                        onChange= {handleChange}
+                                    >
+                                        <option defaultValue=" -- Select Book Status --"> -- Select Book Status --</option>
+                                        {bookStatus.map((item, index) => (
+                                            <option key={index} value={item}>{item}</option>
+                                        ))}
+                                    </select>
+                                    <label
+                                        htmlFor="book_status"
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        Book Status
+                                    </label>
+                                </div>
                             </div>
-                        </div>
+                            <div className='grid md:grid-cols-2 md:gap-6'>
+                                <button
+                                    type="submit"
+                                    className="inline-block px-7 py-3 mt-5 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
+                                    data-mdb-ripple="true"
+                                    data-mdb-ripple-color="light"
+                                >
+                                    Create Book
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </section>

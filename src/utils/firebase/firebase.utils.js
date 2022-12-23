@@ -18,8 +18,17 @@ import  {
   collection,
   writeBatch,
   query,
-  getDocs
+  getDocs,
+  updateDoc
 } from 'firebase/firestore'
+
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+
+} from 'firebase/storage'
 
 const firebaseConfig = {
     apiKey: "AIzaSyCQn8z4Z8OnN3xXCHRafwvgqhI_MIeWbag",
@@ -101,3 +110,43 @@ export const signOutUser = () => signOut(auth);
 
 //Observer to monitor state change in authentication
 export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
+
+// upload book Image
+
+export const uploadBookImage = async (userID, thumbnail) => {
+  const storage = getStorage();
+  const storageRef = ref(storage, `thumbnails/books/${userID}/${thumbnail.name}`);
+
+  const img = await uploadBytes(storageRef, thumbnail);
+
+  return await getDownloadURL(img.ref);
+
+}
+
+export const createNewBook = async (userID, thumbnail, bookDetails) => {
+  
+  if(!userID) return;
+
+  // store book image in storage
+  const imageUrl = await uploadBookImage(userID, thumbnail);
+
+  const docRef = doc(db, 'books', userID);
+  const docSnapshot = await getDoc(docRef);
+  // create ID for book input field
+  const fieldName = userID+bookDetails.book_title.replace(/\s/g, '').toLowerCase();
+
+  if (docSnapshot.data() === undefined){
+    try{
+        await setDoc(docRef,{[fieldName]:{...bookDetails, imageUrl}});
+        return "success";
+    }catch(err){
+        console.log("error creating new book: ", err.message);
+        return "error";
+    }
+  }
+  else{
+      await updateDoc(docRef, {[fieldName]:{...bookDetails, imageUrl}});
+      return "added";
+  }
+};
+
