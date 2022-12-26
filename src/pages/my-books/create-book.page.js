@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import React, { useState, useRef, createRef,forwardRef } from 'react'
 import Navigation from '../../components/navigation/navigation.component'
 import Footer from '../../components/footer/footer.component'
 import SidebarNavigation from '../../components/sidebar/sidebar.component'
 import { HiOutlineInformationCircle } from "react-icons/hi"
 import { Alert } from 'flowbite-react'
+import { v4 as uuid } from 'uuid'
 
 import FormInput from '../../components/form-input/form-input.component'
 import { createNewBook } from '../../utils/firebase/firebase.utils'
@@ -35,16 +36,18 @@ const defaultFormField = {
     book_title: '',
     book_category: '',
     book_description: '',
-    book_status: ''
+    book_status: '',
+    book_author: ''
 }
-
 export default function CreateBookPage() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const unique_id = uuid();
     const [formFields, setFormFields] = useState(defaultFormField);
-    const {book_owner, book_title, book_category, book_description, book_status} = formFields;
-    const [thumbnail, setThumbnail] = useState(null)
+    const {book_owner, book_author, book_title, book_category, book_description, book_status} = formFields;
+    let [thumbnail, setThumbnail] = useState(null)
     const user = useSelector(selectCurrentUser);
+    
     
 
     
@@ -53,8 +56,13 @@ export default function CreateBookPage() {
         setFormFields(defaultFormField);
         const categoryOption = document.querySelector('#book_category')
         const statusOption = document.querySelector('#book_status')
+        document.getElementById('thumbnail').value = ''
         categoryOption.selectedIndex  = 0
         statusOption.selectedIndex  = 0
+        setThumbnail = null
+        // imageInput.value = []
+        // inputRef.current.value = null
+
     }
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -75,15 +83,13 @@ export default function CreateBookPage() {
             setTimeout(() => setError(''), 10000);
             return;
         }
-        if (selected.size > 400000){
-            setError("Image file size must be less than 400kb");
+        if (selected.size > 1000000){
+            setError("Image file size must be less than 1mb");
             setTimeout(() => setError(''), 10000);
             return;
         }
         setError('');
         setThumbnail(selected);
-        // console.log(thumbnail["name"])
-        // console.log("Thumbnail updated");
     }
 
     const handleSubmit = async (event) => {
@@ -104,20 +110,14 @@ export default function CreateBookPage() {
 
         setError('');
         const createdAt = new Date();
-        // const fieldName = user["uid"]+formFields.book_title.replace(" ", "").toLowerCase();
         
         const bookData = {
+            id: unique_id,
             createdAt,
             ...formFields
-            // [fieldName]: {
-            //     createdAt,
-            //     ...formFields
-            // }
         }
-        // console.log(bookData);
-        // 
        const data = await createNewBook(user.uid, thumbnail, bookData);
-    //    console.log(data);
+
         if(data === "success"){
             setSuccess("Book creation successful!");
             setTimeout(() => setSuccess(''), 10000);
@@ -128,7 +128,7 @@ export default function CreateBookPage() {
             setError("Failed to create book");
             setTimeout(() => setError(''), 10000);
         }
-        // resetFields();
+        resetFields();
     }
 
 
@@ -191,7 +191,9 @@ export default function CreateBookPage() {
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <FormInput
                                         name="thumbnail"
+                                        id="thumbnail"
                                         label="Book Image"
+                                        // ref={inputRef}
                                         type="file"
                                         onChange= {handleFileChange}
                                     />
@@ -257,15 +259,26 @@ export default function CreateBookPage() {
                                     </label>
                                 </div>
                             </div>
-                            <div className='grid md:grid-cols-2 md:gap-6'>
+                            <div className="grid md:grid-cols-2 md:gap-6">
+                            <div className='relative z-0 mb-6 w-full group'>
+                                    <FormInput
+                                        name="book_author"
+                                        label="Book Author"
+                                        type="text"
+                                        onChange= {handleChange}
+                                        value= {book_author}
+                                    />
+                                </div>
+                            <div className='relative z-0 mb-6 w-full group'>
                                 <button
                                     type="submit"
-                                    className="inline-block px-7 py-3 mt-5 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
+                                    className="inline-block px-7 py-3 mt-0 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
                                     data-mdb-ripple="true"
                                     data-mdb-ripple-color="light"
                                 >
                                     Create Book
                                 </button>
+                            </div>
                             </div>
                         </form>
                     </div>
