@@ -1,8 +1,28 @@
+import { useEffect } from "react";
 import Footer from "../../components/footer/footer.component";
 import Navigation from "../../components/navigation/navigation.component";
 import SidebarNavigation from "../../components/sidebar/sidebar.component";
+import { getUserBooks } from "../../utils/firebase/firebase.utils";
+
+import { useDispatch } from "react-redux";
 
 export default function MyBooksPage(){
+    
+
+    useEffect(() => {
+      
+        const getBooks = async () => {
+            // const bookArray = await getUserBooks("dTARGAWUzGb1cym3h0mA61EcdGy1")
+            // console.log(bookArray)
+            const mybooks = await getUserBooks("dTARGAWUzGb1cym3h0mA61EcdGy1")
+            console.log(mybooks)
+            // bookArray.map((doc) => {
+            //     console.log(doc)
+            // })
+        }
+        getBooks()
+       
+    },[])
 
     return(
         <div className='bg-gray-100 mx-1 font-body scroll-smooth'>

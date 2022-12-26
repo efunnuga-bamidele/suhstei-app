@@ -19,7 +19,9 @@ import  {
   writeBatch,
   query,
   getDocs,
-  updateDoc
+  updateDoc,
+  where,
+  addDoc,
 } from 'firebase/firestore'
 
 import {
@@ -115,7 +117,7 @@ export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth,
 
 export const uploadBookImage = async (userID, thumbnail) => {
   const storage = getStorage();
-  const storageRef = ref(storage, `thumbnails/books/${userID}/${thumbnail.name}`);
+  const storageRef = ref(storage, `thumbnails/${userID}/books/${thumbnail.name}`);
 
   const img = await uploadBytes(storageRef, thumbnail);
 
@@ -123,6 +125,7 @@ export const uploadBookImage = async (userID, thumbnail) => {
 
 }
 
+// Book creation
 export const createNewBook = async (userID, thumbnail, bookDetails) => {
   
   if(!userID) return;
@@ -132,12 +135,11 @@ export const createNewBook = async (userID, thumbnail, bookDetails) => {
 
   const docRef = doc(db, 'books', userID);
   const docSnapshot = await getDoc(docRef);
-  // create ID for book input field
-  const fieldName = userID+bookDetails.book_title.replace(/\s/g, '').toLowerCase();
+  const fieldName = 'mybooks';
 
   if (docSnapshot.data() === undefined){
     try{
-        await setDoc(docRef,{[fieldName]:{...bookDetails, imageUrl}});
+        await setDoc(docRef,{[fieldName]:[{...bookDetails, imageUrl}]});
         return "success";
     }catch(err){
         console.log("error creating new book: ", err.message);
@@ -145,8 +147,22 @@ export const createNewBook = async (userID, thumbnail, bookDetails) => {
     }
   }
   else{
-      await updateDoc(docRef, {[fieldName]:{...bookDetails, imageUrl}});
-      return "added";
+    await updateDoc(docRef, {[fieldName]: [ ...docSnapshot.data()['mybooks'], {...bookDetails, imageUrl}]})
+    return "added";
   }
 };
+
+// get books by user
+
+export const getUserBooks = async (userId) => {
+
+    if (!userId) return;
+    const collectionRef = collection(db, "books")
+    const q = query(collectionRef);
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.docs.filter(docSnapshot => { if(docSnapshot.id === userId) {return docSnapshot.data()} });
+}
+
+
 
