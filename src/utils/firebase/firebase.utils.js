@@ -153,7 +153,6 @@ export const createNewBook = async (userID, thumbnail, bookDetails) => {
 };
 
 // get books by user
-
 export const getUserBooks = async (userId) => {
 
     if (!userId) return;
@@ -161,7 +160,12 @@ export const getUserBooks = async (userId) => {
     const q = query(collectionRef);
 
     const querySnapshot = await getDocs(q);
-    querySnapshot.docs.filter(docSnapshot => { if(docSnapshot.id === userId) {return docSnapshot.data()} });
+    const filteredList = querySnapshot.docs.filter((e) => {
+      return e.id === userId
+    })
+    // console.log(filteredList)
+    return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
+    // querySnapshot.docs.filter(docSnapshot => { if(docSnapshot.id === userId) {return docSnapshot.data()} });
 }
 
 
