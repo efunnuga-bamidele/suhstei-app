@@ -160,9 +160,10 @@ export const getUserBooks = async (userId) => {
     const q = query(collectionRef);
 
     const querySnapshot = await getDocs(q);
-    const filteredList = querySnapshot.docs.filter((e) => {
-      return e.id === userId
-    })
+    // const filteredList = querySnapshot.docs.filter((e) => {
+    //   // if(e.id === userId){return e.data() }
+    //   console.log("Files pushed:",e.data().get("id"))
+    // })
     // console.log(filteredList)
     return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
     // querySnapshot.docs.filter(docSnapshot => { if(docSnapshot.id === userId) {return docSnapshot.data()} });
