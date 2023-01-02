@@ -66,16 +66,6 @@ export default function Navigation() {
             Dashboard
           </NavLink>
         </Dropdown.Item>
-        <Dropdown.Item className="cursor-default">
-          <NavLink to="/settings" className="dropdown_hover">
-            Settings
-          </NavLink>
-        </Dropdown.Item>
-        <Dropdown.Item className="cursor-default">
-          <NavLink to="/my-books" className="dropdown_hover">
-            My Books
-          </NavLink>
-        </Dropdown.Item>
         <Dropdown.Divider />
         <Dropdown.Item className="cursor-default">
           <NavLink as="Link" onClick={signOutUser} className="dropdown_hover">
