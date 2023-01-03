@@ -5,6 +5,7 @@ import SidebarNavigation from '../../components/sidebar/sidebar.component'
 import { HiOutlineInformationCircle } from "react-icons/hi"
 import { Alert } from 'flowbite-react'
 import { v4 as uuid } from 'uuid'
+import FileResizer from 'react-image-file-resizer'
 
 import FormInput from '../../components/form-input/form-input.component'
 import { createNewBook } from '../../utils/firebase/firebase.utils'
@@ -47,7 +48,24 @@ export default function CreateBookPage() {
     const {book_owner, book_author, book_title, book_category, book_description, book_status} = formFields;
     let [thumbnail, setThumbnail] = useState(null)
     const user = useSelector(selectCurrentUser);
-    
+
+    // Image File Resizing function
+
+    const resizeFile = (file) =>
+    new Promise((resolve) => {
+      FileResizer.imageFileResizer(
+        file,
+        300,
+        300,
+        "JPEG",
+        100,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        "file"
+      );
+    });
     
 
     
@@ -69,27 +87,28 @@ export default function CreateBookPage() {
         setFormFields({ ...formFields, [name]: value });
     };
 
-    const handleFileChange = (event) => {
+    const handleFileChange = async (event) => {
         setThumbnail(null);
         let selected = event.target.files[0];
-        // console.log(selected.name);
-        if(!selected){
+        const resizedImage = await resizeFile(selected);
+        // console.log(resizedImage.size);
+        if(!resizedImage){
             setError("Please select a file");
             setTimeout(() => setError(''), 10000);
             return;
         }
-        if (!selected.type.includes('image')){
+        if (!resizedImage.type.includes('image')){
             setError("Selected file must be an image");
             setTimeout(() => setError(''), 10000);
             return;
         }
-        if (selected.size > 1000000){
+        if (resizedImage.size > 1000000){ //1000000 == 1 mb
             setError("Image file size must be less than 1mb");
             setTimeout(() => setError(''), 10000);
             return;
         }
         setError('');
-        setThumbnail(selected);
+        setThumbnail(resizedImage);
     }
 
     const handleSubmit = async (event) => {
