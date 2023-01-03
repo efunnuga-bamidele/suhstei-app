@@ -3,7 +3,7 @@ import React from 'react'
 
 import './bookitem.css'
 
-export default function BookItem({ bookImage, title, author}) {
+export default function BookItem({ bookImage, title, author, owner}) {
   return (
 
           <div className="group flex flex-col justify-center m-2 place-self-center border-2 p-2 rounded-md border-slate-200">
@@ -25,7 +25,7 @@ export default function BookItem({ bookImage, title, author}) {
                     {title}
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">by <span className='text-primary'>{author}</span></p>
-                <p className="mt-1 text-sm text-gray-500">uploaded by <span className='text-primary'>{author}</span></p>
+                <p className="mt-1 text-sm text-gray-500">uploaded by <span className='text-primary'>{owner}</span></p>
               </div>
             </div>
            

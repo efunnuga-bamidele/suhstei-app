@@ -1,18 +1,29 @@
 
-import React from 'react'
-
-import Book1 from '../../assets/books-image/book1.png'
-import Book2 from '../../assets/books-image/book2.png'
-import Book3 from '../../assets/books-image/book3.png'
-import Book4 from '../../assets/books-image/book4.png'
-import Book5 from '../../assets/books-image/book5.png'
-import Book6 from '../../assets/books-image/book6.png'
+import React, { useEffect, useState } from 'react'
 
 import BookItem from '../../components/book-item/book-item-component'
 import Footer from '../../components/footer/footer.component'
 import Navigation from '../../components/navigation/navigation.component'
+import { getAllBooks } from '../../utils/firebase/firebase.utils'
 
 export default function BooksPage() {
+    const [booksArray, setBooksArray] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const getBooks = async () => {
+        const booksData = await getAllBooks();
+        setBooksArray(booksData);
+        setIsLoading(false)
+    }
+    getBooks();
+
+  }, [])  
+
+  const order = (a, b) => {
+    return a < b ? -1 : (a > b ? 1 : 0);
+    }
+
   return (
     <main>
         <Navigation />
@@ -39,28 +50,17 @@ export default function BooksPage() {
                     <li><a href="#" className="text-blue-600 hover:text-blue-700">Science fiction</a></li>
                 </ol>
             </nav>
-            <div className='m-6 overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-10'>{/* */}
-                            
-                <BookItem bookImage={Book1} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book2} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book3} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book4} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book5} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book6} title="Photographer’s trouble shooter" author="Michael Freeman" />
+            <div className='m-6 px-8 overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-10'>{/* */}
+            {isLoading && <p>Loading.........</p>}
+                {booksArray && booksArray.map((booksMap) => (
+                    
+                    booksMap['mybooks'].sort(order).map((item, index) => (
+                        
+                        <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} />
 
-                <BookItem bookImage={Book3} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book2} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book4} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book6} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book5} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book1} title="Photographer’s trouble shooter" author="Michael Freeman" />
+                    ))
 
-                <BookItem bookImage={Book2} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book4} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book6} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book1} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book3} title="Photographer’s trouble shooter" author="Michael Freeman" />
-                <BookItem bookImage={Book5} title="Photographer’s trouble shooter" author="Michael Freeman" />
+                )).sort(order)}
                         
                     
             </div>{/*end of top review books */}
