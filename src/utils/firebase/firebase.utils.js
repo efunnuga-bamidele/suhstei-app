@@ -156,17 +156,19 @@ export const createNewBook = async (userID, thumbnail, bookDetails) => {
 export const getUserBooks = async (userId) => {
 
     if (!userId) return;
-    const collectionRef = collection(db, "books")
-    const q = query(collectionRef);
 
-    const querySnapshot = await getDocs(q);
-    // const filteredList = querySnapshot.docs.filter((e) => {
-    //   // if(e.id === userId){return e.data() }
-    //   console.log("Files pushed:",e.data().get("id"))
-    // })
-    // console.log(filteredList)
-    return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
-    // querySnapshot.docs.filter(docSnapshot => { if(docSnapshot.id === userId) {return docSnapshot.data()} });
+    const docRef = doc(db, "books", userId);
+    const docSnap = await getDoc(docRef);
+    return docSnap.data();
+}
+
+export const getAllBooks = async () => {
+  
+  const collectionRef = collection(db, "books")
+  const q = query(collectionRef);
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
+
 }
 
 

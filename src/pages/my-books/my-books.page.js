@@ -7,6 +7,7 @@ import { getUserBooks } from "../../utils/firebase/firebase.utils";
 import { useDispatch, useSelector } from "react-redux";
 import { setMyBooks } from "../../book/myBooks/myBooks.action";
 import { selectMyBooksMap } from "../../book/myBooks/myBooks.selector";
+import { selectCurrentUser } from "../../book/user/user.selector";
 
 import BookItem from "../../components/book-item/book-item-component";
 
@@ -16,15 +17,19 @@ export default function MyBooksPage(){
     // const myBooksMap = useSelector(selectMyBooksMap);
     const [myBooks, setMyBooks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const currentUser = useSelector(selectCurrentUser);
+    
+
     
 
     useEffect(() => {
       
         const getBooks = async () => {
 
-            const books = await getUserBooks("dTARGAWUzGb1cym3h0mA61EcdGy1");
+            const books = await getUserBooks(currentUser.uid);
             // console.log(books[0].mybooks)
-            setMyBooks(books[0].mybooks)
+            // setMyBooks(books[0].mybooks)
+            setMyBooks(books.mybooks)
             setIsLoading(false)
             // dispatch(setMyBooks(mybooks))
 
@@ -47,7 +52,7 @@ export default function MyBooksPage(){
                             {isLoading && <p>Loading.........</p>}
                             {myBooks && myBooks.map((item, index) => (
                                 // <p key={index}> {item.book_author} </p>
-                                <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} />
+                                <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} />
                             ))}
                         </div>
 
