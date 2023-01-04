@@ -26,9 +26,9 @@ import {
 
 export default function SidebarNavigation() {
     return (
-        <div className='w-fit mt-10 p-2'>
-
-            <Sidebar aria-label="Sidebar with content separator example">
+        <div className='w-full md:w-fit mt-0 md:mt-10 pl-2 pt-0 md:pt-2 pb-2 pr-2 md:pr-0 '>
+            {/* <div className='h-full grid grid-cols-1'> */}
+            <Sidebar className='h-auto md:h-full w-full md:w-60'>
                 <Sidebar.Items>
                     <Sidebar.ItemGroup>
 
@@ -81,7 +81,7 @@ export default function SidebarNavigation() {
                     </Sidebar.ItemGroup>
                 </Sidebar.Items>
             </Sidebar>
-
+            {/* </div> */}
         </div>
     )
 }

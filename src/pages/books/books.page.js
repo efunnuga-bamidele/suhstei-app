@@ -25,9 +25,9 @@ export default function BooksPage() {
     }
 
   return (
-    <main>
+    <main className='h-0'>
         <Navigation />
-        <section className='bg-gray-100 mt-20'>
+        <section className='bg-gray-100 mt-20 '>
             <nav className="bg-gray-100 px-10 py-3 rounded-md w-full">
                 <h1 className='text-lg text-slate-500 font-semibold'>Categories</h1>
                 <ol className="list-reset flex flex-wrap">
@@ -50,14 +50,11 @@ export default function BooksPage() {
                     <li><a href="#" className="text-blue-600 hover:text-blue-700">Science fiction</a></li>
                 </ol>
             </nav>
-            <div className='m-6 px-8 overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-10'>{/* */}
+            <div className='m-6 px-8 overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-10'>
             {isLoading && <p>Loading.........</p>}
                 {booksArray && booksArray.map((booksMap) => (
-                    
                     booksMap['mybooks'].sort(order).map((item, index) => (
-                        
                         <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} />
-
                     ))
 
                 )).sort(order)}

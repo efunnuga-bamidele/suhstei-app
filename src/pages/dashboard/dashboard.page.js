@@ -5,7 +5,7 @@ import SidebarNavigation from "../../components/sidebar/sidebar.component";
 
 export default function DashboardPage(){
     return (
-        <div className='bg-gray-100 mx-1 font-body scroll-smooth'>
+        <div className='bg-gray-100 mx-1 font-body scroll-smooth h-0'>
             <Navigation />
                 <main className="bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap">
                   

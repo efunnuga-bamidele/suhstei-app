@@ -22,6 +22,8 @@ import  {
   updateDoc,
   where,
   addDoc,
+  orderBy,
+  limit,
 } from 'firebase/firestore'
 
 import {
@@ -163,13 +165,11 @@ export const getUserBooks = async (userId) => {
 }
 
 export const getAllBooks = async () => {
-  
-  const collectionRef = collection(db, "books")
+  const collectionRef = collection(db, "books");
   const q = query(collectionRef);
   const querySnapshot = await getDocs(q);
+  console.log(querySnapshot.docs.reduce((doc) => doc))
   return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
-
 }
-
 
 
