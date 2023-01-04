@@ -41,7 +41,7 @@ export default function MyBooksPage(){
     // console.log(myBooksMap)
 
     return(
-        <div className='bg-gray-100 mx-1 font-body scroll-smooth'>
+        <div className='bg-gray-100 mx-1 font-body scroll-smooth h-0'>
         <Navigation />
             <main className="bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap">
                     <SidebarNavigation />

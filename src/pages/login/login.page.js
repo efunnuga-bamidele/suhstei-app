@@ -89,7 +89,7 @@ export default function LoginPage() {
 
 
   return (
-    <div className='overscroll-none'>
+    <div className='overscroll-none h-0'>
         <Navigation />
         <section className="bg-slate-100 mt-20">
         <div className="container px-6 py-12 h-full">
