@@ -3,7 +3,7 @@ import React from 'react'
 
 import './bookitem.css'
 
-export default function BookItem({ bookImage, title, author, owner}) {
+export default function BookItem({ bookImage, title, author, owner, buttonAction}) {
 
   // const imgHover = {
     
@@ -30,7 +30,7 @@ export default function BookItem({ bookImage, title, author, owner}) {
               />
               
               <button type="button" className="btn bottom-3 rounded-lg ">
-                  Review Book
+                  {buttonAction}
                 </button>
               
             </div>
