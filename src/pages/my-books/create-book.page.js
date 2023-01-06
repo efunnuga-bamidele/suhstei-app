@@ -157,7 +157,7 @@ export default function CreateBookPage() {
             <Navigation />
             <main className="bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap">
                 <SidebarNavigation />
-                <section className="bg-slate-100 mt-12 m-2 p-2 w-full">
+                <section className="bg-slate-100 mt-12 m-2 p-2 w-full rounded-md">
                     <div className='container px-6 py-12 h-full'>
                         <form onSubmit={handleSubmit}>
                             <div className='relative z-0 mb-6 w-full group'>

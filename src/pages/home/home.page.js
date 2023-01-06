@@ -95,7 +95,10 @@ export default function HomePage (){
                         {isLoading && <p>Loading.........</p>}
                         {selectedBooks && selectedBooks.map((booksMap) => (
                             booksMap['mybooks'].sort(order).slice(0, 4).map((item, index) => (
-                                <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} />
+                               
+                                    
+                                    <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="Request Book"/>
+                               
                             ))
 
                         )).sort(order)}
