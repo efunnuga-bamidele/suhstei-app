@@ -26,7 +26,7 @@ import {
 
 export default function SidebarNavigation() {
     return (
-        <div className='w-full md:w-fit mt-0 md:mt-10 pl-2 pt-0 md:pt-2 pb-2 pr-2 md:pr-0 '>
+        <div className='w-full md:w-fit mt-0 max-md:hidden md:mt-10 pl-2 pt-0 md:pt-2 pb-2 pr-2 md:pr-0'>
             {/* <div className='h-full grid grid-cols-1'> */}
             <Sidebar className='h-auto md:h-full w-full md:w-60'>
                 <Sidebar.Items>
@@ -73,12 +73,12 @@ export default function SidebarNavigation() {
                             <NavLink to="/transactions" className="dropdown_hover" >Trasactions</NavLink>
                         </span>
                     </Sidebar.ItemGroup>
-                    <Sidebar.ItemGroup>
+                    {/* <Sidebar.ItemGroup>
                         <span className='flex'>
                             <FcSettings className='mr-2 ml-2 mb-4' size={25} />
                             <NavLink to="/profile" className="dropdown_hover" >Profile</NavLink>
                         </span>
-                    </Sidebar.ItemGroup>
+                    </Sidebar.ItemGroup> */}
                 </Sidebar.Items>
             </Sidebar>
             {/* </div> */}
