@@ -62,10 +62,50 @@ export default function Navigation() {
        </span>
      </Dropdown.Header>
         <Dropdown.Item className="cursor-default">
+            <NavLink to="/profile" className="dropdown_hover">
+              Profile
+            </NavLink>
+          </Dropdown.Item>
+        <Dropdown.Item className="cursor-default">
           <NavLink to="/dashboard" className="dropdown_hover">
             Dashboard
           </NavLink>
         </Dropdown.Item>
+        
+        <Dropdown
+            className='grid md:hidden'
+            label="My Books"
+            dismissOnClick={false}
+          >
+        <Dropdown.Item className="cursor-default grid md:hidden">
+          <NavLink to="/my-books" className="dropdown_hover">
+            View Books
+          </NavLink>
+        </Dropdown.Item>
+          <Dropdown.Item className="cursor-default grid md:hidden">
+            <NavLink to="/create-book" className="dropdown_hover">
+              Create Book
+            </NavLink>
+          </Dropdown.Item>
+        </Dropdown>
+        
+        <Dropdown.Item className="cursor-default grid md:hidden">
+          <NavLink to="/my-books" className="dropdown_hover">
+            Messages
+          </NavLink>
+        </Dropdown.Item>
+
+        <Dropdown.Item className="cursor-default grid md:hidden">
+          <NavLink to="/my-books" className="dropdown_hover">
+            Transactions
+          </NavLink>
+        </Dropdown.Item>
+        <Dropdown.Item className="cursor-default">
+          <NavLink to="/settings" className="dropdown_hover">
+            Settings
+          </NavLink>
+        </Dropdown.Item>
+
         <Dropdown.Divider />
         <Dropdown.Item className="cursor-default">
           <NavLink as="Link" onClick={signOutUser} className="dropdown_hover">
@@ -98,6 +138,11 @@ export default function Navigation() {
     <NavLink to="/contact" className="nav_hover">
       Contact
     </NavLink>
+    {/* {currentUser &&
+    <NavLink to="/profile" className="nav_hover">
+      Profile
+    </NavLink>
+    } */}
    
  </Navbar.Collapse>
 </Navbar>
