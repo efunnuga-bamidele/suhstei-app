@@ -3,7 +3,7 @@ import React from 'react'
 
 import './bookitem.css'
 
-export default function BookItem({ bookImage, title, author, owner, buttonAction, status}) {
+export default function BookItem({ bookImage, title, author, owner, buttonAction, status, id}) {
 
   // const imgHover = {
     
@@ -13,6 +13,10 @@ export default function BookItem({ bookImage, title, author, owner, buttonAction
   //     padding: 16px 32px;
     
   // }
+  const handleClick = (event) => {
+    console.log(event);
+  }
+
   return (
 
           <div className="container group flex flex-col justify-center m-2 place-self-center border-2 p-2 rounded-md border-slate-200 "
@@ -29,11 +33,11 @@ export default function BookItem({ bookImage, title, author, owner, buttonAction
                 // className="object-center md:object-cover object-scale-down w-full"
               />
               {status ==='Available' ? (
-              <button type="button" className="btn bottom-3 rounded-lg ">
+              <button type="button" className="btn bottom-3 rounded-lg " onClick={(ev) => handleClick(id)}>
                   {buttonAction}
                 </button>
               ): (
-                <button type="button" className="btn bottom-3 rounded-lg">
+                <button type="button" className="btn bottom-3 rounded-lg" onClick={(ev) => handleClick(id)}>
                   View Book
                 </button>
               )}

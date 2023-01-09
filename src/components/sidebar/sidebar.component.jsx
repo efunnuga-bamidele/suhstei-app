@@ -68,10 +68,19 @@ export default function SidebarNavigation() {
                         </span>
 
                         </Sidebar.Collapse>
-                        <span className='flex'>
-                            <FcSimCardChip className='mr-2 ml-2 mb-4' size={25} />
-                            <NavLink to="/transactions" className="dropdown_hover" >Trasactions</NavLink>
+                        <Sidebar.Collapse
+                            icon={FcSimCardChip}
+                            label="Trasactions"
+                            >
+                        <span className='flex ml-6 text-[0.9em]'>
+                            <NavLink to="/transactions" className="dropdown_hover ml-6" >Active Trasactions</NavLink>
+                            <FcSimCardChip className='mr-2 ml-2 mb-2' size={22} />
                         </span>
+                        <span className='flex ml-6 text-[0.9em]'>
+                            <NavLink to="/transactions" className="dropdown_hover ml-6" >View Trasactions</NavLink>
+                            <FcSimCardChip className='mr-2 ml-2 mb-2' size={22} />
+                        </span>
+                        </Sidebar.Collapse>
                     </Sidebar.ItemGroup>
                     {/* <Sidebar.ItemGroup>
                         <span className='flex'>
