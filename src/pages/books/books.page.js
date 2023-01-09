@@ -54,7 +54,8 @@ export default function BooksPage() {
             {isLoading && <p>Loading.........</p>}
                 {booksArray && booksArray.map((booksMap) => (
                     booksMap['mybooks'].sort(order).map((item, index) => (
-                        <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="Request Book" status={item.book_status}/>
+                        
+                        <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="Request Book" status={item.book_status} id ={item.id}/>
                     ))
 
                 )).sort(order)}

@@ -49,7 +49,7 @@ export default function MyBooksPage(){
                     <section className="bg-white mt-12 m-2 p-2 w-full rounded-md">
                     {/* <section className='bg-gray-100 mt-20'> */}
                         <h1 className="font-bold text-lg text-center underline">My Books</h1>
-                        <div className='overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-10 px-2'>{/* */}
+                        <div className='overflow-x-hidden grid justify-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-10 px-2'>{/* */}
                             {isLoading && <p>Loading.........</p>}
                             {myBooks && myBooks.map((item, index) => (
                                 <div key={index} className="relative group/div">
@@ -58,7 +58,7 @@ export default function MyBooksPage(){
                                 </button>
                                 <button className="group absolute ml-7 mt-16 z-50 text-white font-extrabold bg-gray-100 py-1 px-2 rounded-md border-2 border-slate-300 hover:scale-x-125 hover:scale-y-95 hover:translate-x-1 transition duration-700 ease-in-out opacity-0 group-hover/div:opacity-100"><RiDeleteBin6Line color="red"/></button>
                                 
-                                <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="View Book" status={item.book_status}/>
+                                <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="View Book" status={item.book_status} id ={item.id}/>
                                 </div>
                             ))}
                         </div>

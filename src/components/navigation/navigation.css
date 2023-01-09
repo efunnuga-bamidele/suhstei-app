@@ -2,3 +2,9 @@
     color: #007bff;
     font-weight: bold;
   }
+
+  @media screen and (min-width: 767px)  {
+    #collapsable-dropdown{
+      display: none;
+    }
+  }

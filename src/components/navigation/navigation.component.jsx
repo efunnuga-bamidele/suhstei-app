@@ -1,6 +1,8 @@
 
 import { NavLink } from 'react-router-dom';
-import { Navbar, Dropdown, Avatar } from 'flowbite-react';
+import { Navbar, Avatar } from 'flowbite-react';
+import { Dropdown } from 'flowbite-react';
+
 import Logo from '../../assets/icons/new-logo.png'
 import ProfileImage from '../../assets/auth/icons8_male_user_500px.png';
 
@@ -71,35 +73,66 @@ export default function Navigation() {
             Dashboard
           </NavLink>
         </Dropdown.Item>
-        
+        {/* collapsable Menu */}
         <Dropdown
-            className='grid md:hidden'
+            id= "collapsable-dropdown"
+            color="white"
             label="My Books"
+            placement="bottom-start"
             dismissOnClick={false}
           >
-        <Dropdown.Item className="cursor-default grid md:hidden">
-          <NavLink to="/my-books" className="dropdown_hover">
-            View Books
-          </NavLink>
-        </Dropdown.Item>
-          <Dropdown.Item className="cursor-default grid md:hidden">
-            <NavLink to="/create-book" className="dropdown_hover">
-              Create Book
-            </NavLink>
-          </Dropdown.Item>
+              <Dropdown.Item className="cursor-default grid md:hidden">
+                  <NavLink to="/my-books" className="dropdown_hover">
+                    View Books
+                  </NavLink>
+              </Dropdown.Item>
+              <Dropdown.Item className="cursor-default grid md:hidden">
+                <NavLink to="/create-book" className="dropdown_hover">
+                  Create Book
+                </NavLink>
+              </Dropdown.Item>
         </Dropdown>
-        
-        <Dropdown.Item className="cursor-default grid md:hidden">
-          <NavLink to="/my-books" className="dropdown_hover">
-            Messages
-          </NavLink>
-        </Dropdown.Item>
+        {/* End */}
+        {/* collapsable Menu */}
+        <Dropdown
+            id= "collapsable-dropdown"
+            color="white"
+            label="Messages"
+            placement="bottom-start"
+            dismissOnClick={false}
+          >
+              <Dropdown.Item className="cursor-default grid md:hidden">
+                <NavLink to="/messages" className="dropdown_hover">
+                  Active Messages
+                </NavLink>
+              </Dropdown.Item>
+              <Dropdown.Item className="cursor-default grid md:hidden">
+                <NavLink to="/messages" className="dropdown_hover">
+                  New Messages
+                </NavLink>
+              </Dropdown.Item>
+        </Dropdown>
+        {/* End */}
+        {/* collapsable Menu */}
+        <Dropdown
+            id= "collapsable-dropdown"
+            color="white"
+            label="Transactions"
+            placement="bottom-start"
+            dismissOnClick={false}
+          >
+              <Dropdown.Item className="cursor-default grid md:hidden">
+                <NavLink to="/transactions" className="dropdown_hover">
+                  Active Transactions
+                </NavLink>
+              </Dropdown.Item>
+              <Dropdown.Item className="cursor-default grid md:hidden">
+                <NavLink to="/transactions" className="dropdown_hover">
+                  View Transactions
+                </NavLink>
+              </Dropdown.Item>
 
-        <Dropdown.Item className="cursor-default grid md:hidden">
-          <NavLink to="/my-books" className="dropdown_hover">
-            Transactions
-          </NavLink>
-        </Dropdown.Item>
+          </Dropdown>
         <Dropdown.Item className="cursor-default">
           <NavLink to="/settings" className="dropdown_hover">
             Settings
