@@ -24,6 +24,8 @@ import  {
   addDoc,
   orderBy,
   limit,
+  deleteDoc,
+  deleteField
 } from 'firebase/firestore'
 
 import {
@@ -31,6 +33,8 @@ import {
   ref,
   uploadBytes,
   getDownloadURL,
+  refFromURL,
+  deleteObject,
 
 } from 'firebase/storage'
 
@@ -149,7 +153,7 @@ export const createNewBook = async (userID, thumbnail, bookDetails) => {
     }
   }
   else{
-    await updateDoc(docRef, {[fieldName]: [ ...docSnapshot.data()['mybooks'], {...bookDetails, imageUrl}]})
+    await updateDoc(docRef, {[fieldName]: [ ...docSnapshot.data()[fieldName], {...bookDetails, imageUrl}]})
     return "added";
   }
 };
@@ -170,6 +174,24 @@ export const getAllBooks = async () => {
   const querySnapshot = await getDocs(q);
   console.log(querySnapshot.docs.reduce((doc) => doc))
   return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
+}
+
+export const deleteBook = async (userId, booksDetails, imageUrl) => {
+    const fieldName = 'mybooks';
+    const bookRef = doc(db, 'books', userId)
+    await imageDelete(imageUrl)
+    return await updateDoc(bookRef, {[fieldName]: [...booksDetails]})
+}
+
+const imageDelete = async (imageUrl) => {
+    const storage = getStorage()
+    const fileRef = ref(storage, imageUrl);
+    try{
+      await deleteObject(fileRef)
+    }catch (err){
+
+    }
+
 }
 
 
