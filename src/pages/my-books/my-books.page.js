@@ -13,7 +13,7 @@ import { selectCurrentUser } from "../../book/user/user.selector";
 
 import BookItem from "../../components/book-item/book-item-component";
 
-import { Button, Modal} from "flowbite-react";
+import { Button, Modal, Tooltip} from "flowbite-react";
 
 export default function MyBooksPage(){
 
@@ -67,13 +67,13 @@ export default function MyBooksPage(){
         <div className='bg-gray-100 font-body scroll-smooth h-0'>
         <Navigation />
             <main className="bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap">
-
+                            <Fragment>
                             <Modal
                                 show={showModal}
                                 size="md"
                                 popup={true}
                                 onClose={handleModal}
-                                className="max-md:pt-32"
+                                className="max-md:pt-32 mt-10"
                             >
                                 <Modal.Header />
                                 <Modal.Body>
@@ -99,7 +99,7 @@ export default function MyBooksPage(){
                                 </div>
                                 </Modal.Body>
                             </Modal>
-
+                            </Fragment>
                     <SidebarNavigation/>
                     <section className="bg-white mt-12 m-2 p-2 w-full rounded-md">
                     {/* <section className='bg-gray-100 mt-20'> */}
@@ -118,11 +118,22 @@ export default function MyBooksPage(){
                             ) : (
                                 myBooks && myBooks.map((item, index) => (
                                     <div key={index} className="relative group/div">
-
+                                    <Tooltip
+                                        content="Edit Book"
+                                        placement="right"
+                                        className="absolute ml-20 mt-6"
+                                    >
                                     <button className="group absolute ml-7 mt-7 z-50 text-white font-extrabold bg-gray-100 py-1 px-2 rounded-md border-2 border-slate-300 hover:scale-x-125 hover:scale-y-95 hover:translate-x-1 transition duration-700 ease-in-out shadow-md opacity-0 group-hover/div:opacity-100">
                                         <FiEdit color="blue" onClick={() => handleBookEdit(item.id)}/>
                                     </button>
+                                    </Tooltip>
+                                    <Tooltip
+                                        content="Delete Book"
+                                        placement="right"
+                                        className="absolute ml-20 mt-14"
+                                    >
                                     <button className="group absolute ml-7 mt-16 z-50 text-white font-extrabold bg-gray-100 py-1 px-2 rounded-md border-2 border-slate-300 hover:scale-x-125 hover:scale-y-95 hover:translate-x-1 transition duration-700 ease-in-out opacity-0 group-hover/div:opacity-100"><RiDeleteBin6Line color="red" onClick={() => handleModal(item.id, item.imageUrl)}/></button>
+                                    </Tooltip>
                                     
                                     <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="View Book" status={item.book_status} id ={item.id}/>
                                     </div>
