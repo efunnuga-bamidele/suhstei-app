@@ -22,6 +22,7 @@ export default function MyBooksPage(){
     const [myBooks, setMyBooks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [modalResponse, setModalResponse] = useState(null);
     const [itemData, setItemData] = useState([]);
     const currentUser = useSelector(selectCurrentUser);
@@ -43,6 +44,7 @@ export default function MyBooksPage(){
 
     const handleBookEdit = (el) => {
         console.log(el)
+        setShowEditModal(true)
     }
 
     const handleModal = (el, imageUrl) => {
@@ -67,7 +69,7 @@ export default function MyBooksPage(){
         <div className='bg-gray-100 font-body scroll-smooth h-0'>
         <Navigation />
             <main className="bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap">
-                            <Fragment>
+                        <Fragment>
                             <Modal
                                 show={showModal}
                                 size="md"
@@ -99,7 +101,28 @@ export default function MyBooksPage(){
                                 </div>
                                 </Modal.Body>
                             </Modal>
-                            </Fragment>
+                        </Fragment>
+                        <Fragment>
+                            <Modal
+                                show={showEditModal}
+                                size="md"
+                                popup={true}
+                                onClose={showEditModal}
+                                className="max-md:pt-32 mt-10 bg-opacity-60"
+                            >
+                        
+                                <Modal.Body>
+                                    <div className="grid col-span-full place-items-center h-56"> 
+                                        <FallingLines
+                                            color="#1e94cc"
+                                            width="120"
+                                            visible={true}
+                                            ariaLabel='falling-lines-loading'
+                                        />               
+                                    </div>
+                                </Modal.Body>
+                            </Modal>
+                        </Fragment>
                     <SidebarNavigation/>
                     <section className="bg-white mt-12 m-2 p-2 w-full rounded-md">
                     {/* <section className='bg-gray-100 mt-20'> */}

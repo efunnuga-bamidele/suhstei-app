@@ -1,11 +1,12 @@
-import React, { useState, useRef, createRef,forwardRef } from 'react'
+import React, { useState, useRef, createRef,forwardRef, Fragment } from 'react'
 import Navigation from '../../components/navigation/navigation.component'
 import Footer from '../../components/footer/footer.component'
 import SidebarNavigation from '../../components/sidebar/sidebar.component'
 import { HiOutlineInformationCircle } from "react-icons/hi"
-import { Alert } from 'flowbite-react'
+import { Alert, Modal, Button } from 'flowbite-react'
 import { v4 as uuid } from 'uuid'
 import FileResizer from 'react-image-file-resizer'
+import { FallingLines } from 'react-loader-spinner'
 
 import FormInput from '../../components/form-input/form-input.component'
 import { createNewBook } from '../../utils/firebase/firebase.utils'
@@ -43,6 +44,7 @@ const defaultFormField = {
 export default function CreateBookPage() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [showModal, setShowModal] = useState(false)
     const unique_id = uuid();
     const [formFields, setFormFields] = useState(defaultFormField);
     const {book_owner, book_author, book_title, book_category, book_description, book_status} = formFields;
@@ -113,6 +115,7 @@ export default function CreateBookPage() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setShowModal(true);
         formFields.book_owner = user['displayName'];
 
         if (!formFields.book_category || formFields.book_category === " -- Select Category --"){
@@ -148,6 +151,7 @@ export default function CreateBookPage() {
             setTimeout(() => setError(''), 10000);
         }
         resetFields();
+        setShowModal(false);
     }
 
 
@@ -156,6 +160,28 @@ export default function CreateBookPage() {
         <div className='bg-gray-100 mx-1 font-body scroll-smooth h-0'>
             <Navigation />
             <main className="bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap">
+                <Fragment>
+                    <Modal
+                        show={showModal}
+                        size="md"
+                        popup={true}
+                        onClose={showModal}
+                        className="max-md:pt-32 mt-10 bg-opacity-60"
+                    >
+                   
+                        <Modal.Body>
+                            <div className="grid col-span-full place-items-center h-56"> 
+                                <FallingLines
+                                    color="#1e94cc"
+                                    width="120"
+                                    visible={true}
+                                    ariaLabel='falling-lines-loading'
+                                />               
+                            </div>
+                        </Modal.Body>
+                    </Modal>
+                </Fragment>
+
                 <SidebarNavigation />
                 <section className="bg-slate-100 mt-12 m-2 p-2 w-full rounded-md">
                     <div className='container px-6 py-12 h-full'>
