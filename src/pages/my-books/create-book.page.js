@@ -142,15 +142,18 @@ export default function CreateBookPage() {
 
         if(data === "success"){
             setSuccess("Book creation successful!");
+            resetFields();
             setTimeout(() => setSuccess(''), 10000);
+            
         }else if(data === "added"){
             setSuccess("Book added successfully!");
+            resetFields();
             setTimeout(() => setSuccess(''), 10000);
         }else{
             setError("Failed to create book");
             setTimeout(() => setError(''), 10000);
         }
-        resetFields();
+        
         setShowModal(false);
     }
 
@@ -219,6 +222,7 @@ export default function CreateBookPage() {
                                         type="text"
                                         onChange= {handleChange}
                                         value= {user['displayName']}
+                                        request={"required"}
                                         disabled
                                     />
                                 </div>
@@ -229,6 +233,7 @@ export default function CreateBookPage() {
                                         type="text"
                                         onChange= {handleChange}
                                         value= {book_title}
+                                        request={"required"}
                                     />
                                 </div>
                             </div>
@@ -238,7 +243,6 @@ export default function CreateBookPage() {
                                         name="thumbnail"
                                         id="thumbnail"
                                         label="Book Image"
-                                        // ref={inputRef}
                                         type="file"
                                         onChange= {handleFileChange}
                                     />
@@ -290,6 +294,7 @@ export default function CreateBookPage() {
                                         className="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                         name="book_status"
                                         onChange= {handleChange}
+                                        required
                                     >
                                         <option defaultValue=" -- Select Book Status --"> -- Select Book Status --</option>
                                         {bookStatus.map((item, index) => (
@@ -312,6 +317,7 @@ export default function CreateBookPage() {
                                         type="text"
                                         onChange= {handleChange}
                                         value= {book_author}
+                                        request={"required"}
                                     />
                                 </div>
                             <div className='relative z-0 mb-6 w-full group'>
