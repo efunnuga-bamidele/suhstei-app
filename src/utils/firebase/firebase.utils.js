@@ -21,11 +21,7 @@ import  {
   getDocs,
   updateDoc,
   where,
-  addDoc,
-  orderBy,
-  limit,
-  deleteDoc,
-  deleteField
+  documentId
 } from 'firebase/firestore'
 
 import {
@@ -192,6 +188,65 @@ const imageDelete = async (imageUrl) => {
 
     }
 
+}
+
+export const updateBook = async (userID, thumbnail, bookDetails, imageState) => {
+    // console.log(userID, thumbnail, bookDetails, imageState)
+    // if(!userID) return;
+    // if(imageState)
+    // {
+    //   const docRef = doc(db, 'books', userID);
+    //   // const docRef = doc(db, `books/${userID}`, userID);
+    //   const docSnapshot = await getDoc(docRef);
+    //   const fieldName = 'mybooks';
+
+    //   const q = query(collection(db, "books"), where("id", "==", bookDetails.id));
+
+
+    //   const querySnapshot = await getDocs(q);
+    //   // console.log(querySnapshotdoc.data())
+    //   querySnapshot.forEach((doc) => {
+    //     // doc.data() is never undefined for query doc snapshots
+    //     console.log(doc.id, " => ", doc.data());
+    //   });
+      // const q = query(collection(db, "books"), where(`${fieldName}.id`, "==", bookDetails.id));
+      // const querySnapshot = await getDocs(q);
+      // const modifiedData = docSnapshot.data()[fieldName].filter((doc) => doc.id === bookDetails.id)
+      
+      // console.log(modifiedData("book_owner"))
+      
+      // return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
+
+
+      // console.log(...docSnapshot.data()[fieldName])
+      // console.log(bookDetails)
+    //   try{
+    //     await updateDoc(docRef, {[fieldName]: [ ...docSnapshot.data()[fieldName], {...bookDetails}]})
+    //     // await updateDoc(docRef, {[fieldName]: [ ...docSnapshot.data()[fieldName], {...bookDetails, imageUrl}]})
+    //     return "success";
+    //   }catch(err){
+    //     console.log("error creating new book: ", err.message);
+    //     return "error";
+    // }
+    // }
+    // else
+    // {
+    //   // store book image in storage
+    //   const uploadedImageUrl = await uploadBookImage(userID, thumbnail);
+          
+    //   const docRef = doc(db, 'books', userID);
+    //   const docSnapshot = await getDoc(docRef);
+    //   const fieldName = 'mybooks';
+
+
+    //     try{
+    //       await updateDoc(docRef, {[fieldName]: [ ...docSnapshot.data()[fieldName], {...bookDetails}]})
+    //         return "success";
+    //     }catch(err){
+    //         console.log("error creating new book: ", err.message);
+    //         return "error";
+    //     }
+    // }
 }
 
 
