@@ -139,7 +139,7 @@ export default function CreateBookPage() {
             ...formFields
         }
        const data = await createNewBook(user.uid, thumbnail, bookData);
-
+       console.log('Create Request Fired')
         if(data === "success"){
             setSuccess("Book creation successful!");
             resetFields();
