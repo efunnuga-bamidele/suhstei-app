@@ -84,7 +84,7 @@ export default function MyBooksPage(){
       );
     });
     
-
+// Get Books to Populate the page
     useEffect(() => {
       
         const getBooks = async () => {
@@ -105,11 +105,10 @@ export default function MyBooksPage(){
         categoryOption.selectedIndex  = 0
         statusOption.selectedIndex  = 0
         setThumbnail = null
-        // imageInput.value = []
-        // inputRef.current.value = null
 
     }
-     const handleModal = (el, imageUrl) => {
+    
+     const handleDeleteModal = (el, imageUrl) => {
         setShowModal(showModal ? false : true)
         setItemData({el, imageUrl})
     }
@@ -210,7 +209,7 @@ export default function MyBooksPage(){
                                 show={showModal}
                                 size="md"
                                 popup={true}
-                                onClose={handleModal}
+                                onClose={handleDeleteModal}
                                 className="max-md:pt-32 mt-10"
                             >
                                 <Modal.Header />
@@ -467,7 +466,7 @@ export default function MyBooksPage(){
                                         placement="right"
                                         className="absolute ml-20 mt-14"
                                     >
-                                        <button className="group absolute ml-7 mt-16 z-50 text-white font-extrabold bg-gray-100 py-1 px-2 rounded-md border-2 border-slate-300 hover:scale-x-125 hover:scale-y-95 hover:translate-x-1 transition duration-700 ease-in-out opacity-0 group-hover/div:opacity-100"><RiDeleteBin6Line color="red" onClick={() => handleModal(item.id, item.imageUrl)} /></button>
+                                        <button className="group absolute ml-7 mt-16 z-50 text-white font-extrabold bg-gray-100 py-1 px-2 rounded-md border-2 border-slate-300 hover:scale-x-125 hover:scale-y-95 hover:translate-x-1 transition duration-700 ease-in-out opacity-0 group-hover/div:opacity-100"><RiDeleteBin6Line color="red" onClick={() => handleDeleteModal(item.id, item.imageUrl)} /></button>
                                     </Tooltip>
 
                                     <BookItem key={index} bookImage={item.imageUrl} title={item.book_title} author={item.book_author} owner={item.book_owner} buttonAction="View Book" status={item.book_status} id={item.id} />

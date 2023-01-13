@@ -1,6 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { Fragment } from 'react';
-import { Modal } from 'flowbite-react';
 import { FallingLines } from 'react-loader-spinner';
 
 import Navigation from '../../components/navigation/navigation.component';
@@ -32,6 +30,7 @@ export default function HomePage (){
             setIsLoading(false)
         }
         getBooks();
+
     }, [])
 
     const order = (a, b) => {

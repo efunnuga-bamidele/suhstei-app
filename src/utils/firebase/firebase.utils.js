@@ -15,13 +15,10 @@ import  {
   doc,
   getDoc,
   setDoc,
-  collection,
-  writeBatch,
-  query,
-  getDocs,
   updateDoc,
-  where,
-  documentId
+  collection,
+  getDocs,
+  onSnapshot,
 } from 'firebase/firestore'
 
 import {
@@ -29,7 +26,6 @@ import {
   ref,
   uploadBytes,
   getDownloadURL,
-  refFromURL,
   deleteObject,
 
 } from 'firebase/storage'
@@ -62,13 +58,11 @@ facebookProvider.setCustomParameters({
 
 export const auth = getAuth();
 export const signInWithGooglePopup = () => {
-  connectionCount += 1;
   console.log('signInWithGooglePopup Fired')
   signInWithPopup(auth, googleProvider);
 }
 
 export const signInWithFacebookPopup = () => {
-  connectionCount += 1;
   console.log('signInWithFacebookPopup Fired')
   signInWithPopup(auth, facebookProvider)
 }
@@ -76,13 +70,16 @@ export const signInWithFacebookPopup = () => {
 // Firestore initialization
 export const db = getFirestore();
 
+// Firebase Collections
+// const colBookRef = collection(db, 'books');
+// const colUserRef = collection(db, 'users');
+
 // Function to create new user on authentication
 export const createUserDocumentFromAuth = async (userAuth, additionalinformation) => {
 
   console.log('createUserDocumentFromAuth Fired')
 
   if (!userAuth) return;
-  connectionCount += 1;
       const userDocRef = doc(db, 'users', userAuth.uid);
       const userSnapshot = await getDoc(userDocRef);
 
@@ -108,7 +105,6 @@ export const createUserDocumentFromAuth = async (userAuth, additionalinformation
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
   console.log('createAuthUserWithEmailAndPassword Fired')
     if (!email || !password) return;
-    connectionCount += 1;
     return await createUserWithEmailAndPassword(auth, email, password);
 };
 
@@ -116,20 +112,17 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
 export const sighAuthUserInWithEmailAndPassword = async (email, password) => {
   console.log('sighAuthUserInWithEmailAndPassword Fired')
     if (!email || !password) return;
-    connectionCount += 1;
     return await signInWithEmailAndPassword(auth, email, password);
 };
 
 //Signout user
 export const signOutUser = () => {
   console.log('signOutUser Fired')
-  connectionCount += 1;
   signOut(auth);
 }
 //Observer to monitor state change in authentication
 export const onAuthStateChangedListener = (callback) => {
   console.log('onAuthStateChangedListener Fired')
-  connectionCount += 1;
   onAuthStateChanged(auth, callback);
 }
 // upload book Image
@@ -137,7 +130,6 @@ export const onAuthStateChangedListener = (callback) => {
 export const uploadBookImage = async (userID, thumbnail) => {
   console.log('uploadBookImage Fired')
   const storage = getStorage();
-  connectionCount += 1;
   const storageRef = ref(storage, `thumbnails/${userID}/books/${thumbnail.name}`);
 
   const img = await uploadBytes(storageRef, thumbnail);
@@ -150,7 +142,6 @@ export const uploadBookImage = async (userID, thumbnail) => {
 export const createNewBook = async (userID, thumbnail, bookDetails) => {
   console.log('createNewBook Fired')
   if(!userID) return;
-  connectionCount += 1;
   // store book image in storage
   const imageUrl = await uploadBookImage(userID, thumbnail);
 
@@ -176,26 +167,28 @@ export const createNewBook = async (userID, thumbnail, bookDetails) => {
 // get books by user
 export const getUserBooks = async (userId) => {
   console.log('getUserBooks Fired')
-    if (!userId) return;
-    connectionCount += 1;
-    const docRef = doc(db, "books", userId);
-    const docSnap = await getDoc(docRef);
-    return docSnap.data();
+    // if (!userId) return;
+    // connectionCount += 1;
+    // const docRef = doc(db, "books", userId);
+    // const docSnap = await getDoc(docRef);
+    // return docSnap.data();
 }
 
 export const getAllBooks = async () => {
   console.log('getAllBooks Fired')
-  connectionCount += 1;
-  const collectionRef = collection(db, "books");
-  const q = query(collectionRef);
-  const querySnapshot = await getDocs(q);
-  console.log(querySnapshot.docs.reduce((doc) => doc))
-  return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
+  // unsub()
+  // connectionCount += 1;
+  // const collectionRef = collection(db, "books");
+  // const q = query(collectionRef);
+  // const querySnapshot = await getDocs(q);
+  // console.log(querySnapshot.docs.reduce((doc) => doc))
+  // return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
+  // const querySnapshot = await getDocs(colBookRef);
+  // return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
 }
 
 export const deleteBook = async (userId, booksDetails, imageUrl) => {
   console.log('deleteBook Fired')
-  connectionCount += 1;
     const fieldName = 'mybooks';
     const bookRef = doc(db, 'books', userId)
     await imageDelete(imageUrl)
@@ -217,7 +210,6 @@ const imageDelete = async (imageUrl) => {
 
 export const updateBook = async (userID, thumbnail, bookDetails, imageState) => {
   console.log('updateBook Fired')
-  connectionCount += 1;
     // console.log(userID, thumbnail, bookDetails, imageState)
     // if(!userID) return;
     // if(imageState)
@@ -275,7 +267,5 @@ export const updateBook = async (userID, thumbnail, bookDetails, imageState) => 
     //     }
     // }
 }
-
-
 
 

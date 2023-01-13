@@ -36,9 +36,10 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log("createUserDocumentFromAuth Fired from APP!!!!")
     const unsubscribe = onAuthStateChangedListener((user) => {
       if (user){
-        createUserDocumentFromAuth(user);
+        // createUserDocumentFromAuth(user);
       }
       dispatch(setCurrentUser(user))
     });
