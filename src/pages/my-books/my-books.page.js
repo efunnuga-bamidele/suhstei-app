@@ -8,13 +8,15 @@ import{ RiDeleteBin6Line } from "react-icons/ri"
 import {HiOutlineExclamationCircle, HiOutlineInformationCircle} from "react-icons/hi"
 import { FallingLines } from 'react-loader-spinner'
 
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../book/user/user.selector";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentUser } from "../../store/user/user.selector";
 import FileResizer from 'react-image-file-resizer'
 import BookItem from "../../components/book-item/book-item-component";
 
 import { Button, Modal, Tooltip, Alert} from "flowbite-react";
 import FormInput from '../../components/form-input/form-input.component'
+import { setUserBookMap } from "../../store/userBook/userBook.action";
+import { selectUserBooksMap } from "../../store/userBook/userBook.selector";
 // import { createNewBook } from '../../utils/firebase/firebase.utils'
 
 const bookCategory = [
@@ -50,7 +52,7 @@ export default function MyBooksPage(){
 
     // const dispatch = useDispatch();
     // const myBooksMap = useSelector(selectMyBooksMap);
-    const [myBooks, setMyBooks] = useState([]);
+    // const [myBooks, setMyBooks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -64,7 +66,8 @@ export default function MyBooksPage(){
     const {book_owner, book_author, book_title, book_category, book_description, book_status} = formFields;
     let [thumbnail, setThumbnail] = useState(null)
     let [fileUrl, setFileUrl] = useState(null)
-    
+    const dispatch = useDispatch()
+    const myBooks = useSelector(selectUserBooksMap)
 
     // Image File Resizing function
 
@@ -90,12 +93,13 @@ export default function MyBooksPage(){
         const getBooks = async () => {
 
             const books = await getUserBooks(currentUser.uid);
-            setMyBooks(books.mybooks)
+            // setMyBooks(books.mybooks)
+            dispatch(setUserBookMap(books.mybooks))
             setIsLoading(false)
         }
         getBooks()
-       console.log('Request Books Fired')
-    },[myBooks])
+        
+    },[])
 
     const resetFields = () => {
         setFormFields(defaultFormField);
@@ -115,8 +119,15 @@ export default function MyBooksPage(){
     const handleDeleteResponse = async (event) => {
             if (event === "Yes"){
                 const modifyedBooks = myBooks.filter((item) => item.id !== itemData['el'])
-                await deleteBook(currentUser.uid, modifyedBooks, itemData['imageUrl'])
-                setItemData(null)
+                const res = await deleteBook(currentUser.uid, modifyedBooks, itemData['imageUrl'])
+                // console.log("Modified Books: ",modifyedBooks)
+                if (res === "success")
+                {
+                    dispatch(selectUserBooksMap(modifyedBooks))
+                    setItemData(null)
+                }
+
+                
             }
             setShowModal(showModal ? false : true)
     }

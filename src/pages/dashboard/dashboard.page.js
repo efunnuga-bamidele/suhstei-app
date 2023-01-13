@@ -4,7 +4,7 @@ import SidebarNavigation from "../../components/sidebar/sidebar.component";
 import { Table } from "flowbite-react";
 
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../book/user/user.selector";
+import { selectCurrentUser } from "../../store/user/user.selector";
 import { useState, useEffect } from "react";
 import { getUserBooks } from "../../utils/firebase/firebase.utils";
 

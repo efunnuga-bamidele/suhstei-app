@@ -8,7 +8,7 @@ import ProfileImage from '../../assets/auth/icons8_male_user_500px.png';
 
 //redux imports
 import { useSelector } from 'react-redux';
-import { selectCurrentUser } from '../../book/user/user.selector'
+import { selectCurrentUser } from '../../store/user/user.selector'
 
 //firebase import 
 import { signOutUser } from '../../utils/firebase/firebase.utils';

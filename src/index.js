@@ -6,18 +6,18 @@ import 'tw-elements';
 import 'flowbite';
 import 'flowbite-react';
 
-//reduc import 
+//redux import 
 import { Provider } from 'react-redux';
-import { store, persistor } from './book/book';
+import { store, persistor } from './store/store';
 import { PersistGate } from 'redux-persist/integration/react';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
           <App />
       </PersistGate>
     </Provider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

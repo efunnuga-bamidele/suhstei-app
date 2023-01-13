@@ -1,18 +1,7 @@
-import React from 'react'
-// import { Link } from 'react-router-dom'
-
 import './bookitem.css'
 
 export default function BookItem({ bookImage, title, author, owner, buttonAction, status, id}) {
 
-  // const imgHover = {
-    
-  //     background-color: #4CAF50;
-  //     color: white;
-  //     font-size: 16px;
-  //     padding: 16px 32px;
-    
-  // }
   const handleClick = (event) => {
     console.log(event);
   }

@@ -21,7 +21,7 @@ import {
 } from '../../utils/firebase/firebase.utils';
 
 import { useSelector } from 'react-redux'
-import { selectCurrentUser } from '../../book/user/user.selector'
+import { selectCurrentUser } from '../../store/user/user.selector'
 
 
 const defaultFormFields = {

@@ -1,28 +1,15 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Sidebar } from 'flowbite-react';
 import { 
     FcBarChart,
     FcReading,
     FcSms,
-    FcSettings,
     FcReadingEbook,
     FcSimCardChip,
     FcAddDatabase,
     FcCollaboration
      } from 'react-icons/fc';
-
-// import {
-//     HiChartPie,
-//     HiViewBoards,
-//     HiInbox,
-//     HiUser,
-//     HiShoppingBag,
-//     HiArrowSmRight,
-//     HiTable,
-//     HiScissors
-// } from 'react-icons/hi';
-
 
 export default function SidebarNavigation() {
     return (
