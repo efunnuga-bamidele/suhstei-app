@@ -1,4 +1,7 @@
 import { useNavigate } from 'react-router-dom';
+import { Fragment } from 'react';
+import { Modal } from 'flowbite-react';
+import { FallingLines } from 'react-loader-spinner';
 
 import Navigation from '../../components/navigation/navigation.component';
 import Footer from '../../components/footer/footer.component';
@@ -92,7 +95,16 @@ export default function HomePage (){
                         </p>
                     </div>
                     <div className='m-6 overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-10 '>{/* */}
-                        {isLoading && <p>Loading.........</p>}
+                        {isLoading && (
+                        <div className="grid col-span-full place-items-center h-56"> 
+                             <FallingLines
+                                color="#1e94cc"
+                                width="120"
+                                visible={true}
+                                ariaLabel='falling-lines-loading'
+                            /> 
+                            </div>
+                        )}
                         {selectedBooks && selectedBooks.map((booksMap) => (
                             booksMap['mybooks'].sort(order).slice(0, 4).map((item, index) => (
                                

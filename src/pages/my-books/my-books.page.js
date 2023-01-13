@@ -94,7 +94,7 @@ export default function MyBooksPage(){
             setIsLoading(false)
         }
         getBooks()
-       
+       console.log('Request Books Fired')
     },[myBooks])
 
     const resetFields = () => {

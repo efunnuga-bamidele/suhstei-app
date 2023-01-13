@@ -46,7 +46,7 @@ const firebaseConfig = {
   //https://suhstei-d0d28.firebaseapp.com/__/auth/handler
 
 initializeApp(firebaseConfig);
-
+let connectionCount = 0;
 // Google authentication
 const googleProvider = new GoogleAuthProvider();
 
@@ -61,9 +61,17 @@ facebookProvider.setCustomParameters({
 });
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
+export const signInWithGooglePopup = () => {
+  connectionCount += 1;
+  console.log('signInWithGooglePopup Fired')
+  signInWithPopup(auth, googleProvider);
+}
 
-export const signInWithFacebookPopup = () => signInWithPopup(auth, facebookProvider)
+export const signInWithFacebookPopup = () => {
+  connectionCount += 1;
+  console.log('signInWithFacebookPopup Fired')
+  signInWithPopup(auth, facebookProvider)
+}
 
 // Firestore initialization
 export const db = getFirestore();
@@ -71,8 +79,10 @@ export const db = getFirestore();
 // Function to create new user on authentication
 export const createUserDocumentFromAuth = async (userAuth, additionalinformation) => {
 
-  if (!userAuth) return;
+  console.log('createUserDocumentFromAuth Fired')
 
+  if (!userAuth) return;
+  connectionCount += 1;
       const userDocRef = doc(db, 'users', userAuth.uid);
       const userSnapshot = await getDoc(userDocRef);
 
@@ -96,29 +106,38 @@ export const createUserDocumentFromAuth = async (userAuth, additionalinformation
 
 //create new user with email and password
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
+  console.log('createAuthUserWithEmailAndPassword Fired')
     if (!email || !password) return;
-
+    connectionCount += 1;
     return await createUserWithEmailAndPassword(auth, email, password);
 };
 
 //signin with email and password
 export const sighAuthUserInWithEmailAndPassword = async (email, password) => {
-
+  console.log('sighAuthUserInWithEmailAndPassword Fired')
     if (!email || !password) return;
-
+    connectionCount += 1;
     return await signInWithEmailAndPassword(auth, email, password);
 };
 
 //Signout user
-export const signOutUser = () => signOut(auth);
-
+export const signOutUser = () => {
+  console.log('signOutUser Fired')
+  connectionCount += 1;
+  signOut(auth);
+}
 //Observer to monitor state change in authentication
-export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
-
+export const onAuthStateChangedListener = (callback) => {
+  console.log('onAuthStateChangedListener Fired')
+  connectionCount += 1;
+  onAuthStateChanged(auth, callback);
+}
 // upload book Image
 
 export const uploadBookImage = async (userID, thumbnail) => {
+  console.log('uploadBookImage Fired')
   const storage = getStorage();
+  connectionCount += 1;
   const storageRef = ref(storage, `thumbnails/${userID}/books/${thumbnail.name}`);
 
   const img = await uploadBytes(storageRef, thumbnail);
@@ -129,9 +148,9 @@ export const uploadBookImage = async (userID, thumbnail) => {
 
 // Book creation
 export const createNewBook = async (userID, thumbnail, bookDetails) => {
-  
+  console.log('createNewBook Fired')
   if(!userID) return;
-
+  connectionCount += 1;
   // store book image in storage
   const imageUrl = await uploadBookImage(userID, thumbnail);
 
@@ -156,15 +175,17 @@ export const createNewBook = async (userID, thumbnail, bookDetails) => {
 
 // get books by user
 export const getUserBooks = async (userId) => {
-
+  console.log('getUserBooks Fired')
     if (!userId) return;
-
+    connectionCount += 1;
     const docRef = doc(db, "books", userId);
     const docSnap = await getDoc(docRef);
     return docSnap.data();
 }
 
 export const getAllBooks = async () => {
+  console.log('getAllBooks Fired')
+  connectionCount += 1;
   const collectionRef = collection(db, "books");
   const q = query(collectionRef);
   const querySnapshot = await getDocs(q);
@@ -173,6 +194,8 @@ export const getAllBooks = async () => {
 }
 
 export const deleteBook = async (userId, booksDetails, imageUrl) => {
+  console.log('deleteBook Fired')
+  connectionCount += 1;
     const fieldName = 'mybooks';
     const bookRef = doc(db, 'books', userId)
     await imageDelete(imageUrl)
@@ -180,6 +203,8 @@ export const deleteBook = async (userId, booksDetails, imageUrl) => {
 }
 
 const imageDelete = async (imageUrl) => {
+  console.log('imageDelete Fired')
+  connectionCount += 1;
     const storage = getStorage()
     const fileRef = ref(storage, imageUrl);
     try{
@@ -191,6 +216,8 @@ const imageDelete = async (imageUrl) => {
 }
 
 export const updateBook = async (userID, thumbnail, bookDetails, imageState) => {
+  console.log('updateBook Fired')
+  connectionCount += 1;
     // console.log(userID, thumbnail, bookDetails, imageState)
     // if(!userID) return;
     // if(imageState)
@@ -248,5 +275,7 @@ export const updateBook = async (userID, thumbnail, bookDetails, imageState) => 
     //     }
     // }
 }
+
+
 
 
