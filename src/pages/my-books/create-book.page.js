@@ -11,7 +11,7 @@ import { FallingLines } from 'react-loader-spinner'
 import FormInput from '../../components/form-input/form-input.component'
 import { createNewBook } from '../../utils/firebase/firebase.utils'
 import { useSelector } from 'react-redux'
-import { selectCurrentUser } from '../../book/user/user.selector'
+import { selectCurrentUser } from '../../store/user/user.selector'
 
 const bookCategory = [
     'Science',

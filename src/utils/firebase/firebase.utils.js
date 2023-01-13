@@ -19,6 +19,8 @@ import  {
   collection,
   getDocs,
   onSnapshot,
+  where,
+  query
 } from 'firebase/firestore'
 
 import {
@@ -71,8 +73,8 @@ export const signInWithFacebookPopup = () => {
 export const db = getFirestore();
 
 // Firebase Collections
-// const colBookRef = collection(db, 'books');
-// const colUserRef = collection(db, 'users');
+const colBookRef = collection(db, 'books');
+const colUserRef = collection(db, 'users');
 
 // Function to create new user on authentication
 export const createUserDocumentFromAuth = async (userAuth, additionalinformation) => {
@@ -167,24 +169,16 @@ export const createNewBook = async (userID, thumbnail, bookDetails) => {
 // get books by user
 export const getUserBooks = async (userId) => {
   console.log('getUserBooks Fired')
-    // if (!userId) return;
-    // connectionCount += 1;
-    // const docRef = doc(db, "books", userId);
-    // const docSnap = await getDoc(docRef);
-    // return docSnap.data();
+    if (!userId) return;
+    const docRef = doc(db, "books", userId);
+    const docSnap = await getDoc(docRef);
+    return docSnap.data();
 }
 
 export const getAllBooks = async () => {
   console.log('getAllBooks Fired')
-  // unsub()
-  // connectionCount += 1;
-  // const collectionRef = collection(db, "books");
-  // const q = query(collectionRef);
-  // const querySnapshot = await getDocs(q);
-  // console.log(querySnapshot.docs.reduce((doc) => doc))
-  // return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
-  // const querySnapshot = await getDocs(colBookRef);
-  // return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
+  const querySnapshot = await getDocs(colBookRef);
+  return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
 }
 
 export const deleteBook = async (userId, booksDetails, imageUrl) => {
@@ -192,12 +186,17 @@ export const deleteBook = async (userId, booksDetails, imageUrl) => {
     const fieldName = 'mybooks';
     const bookRef = doc(db, 'books', userId)
     await imageDelete(imageUrl)
-    return await updateDoc(bookRef, {[fieldName]: [...booksDetails]})
+    try{
+      await updateDoc(bookRef, {[fieldName]: [...booksDetails]})
+      return "success"
+    }
+    catch (err){
+      return "failed"
+    }
 }
 
 const imageDelete = async (imageUrl) => {
   console.log('imageDelete Fired')
-  connectionCount += 1;
     const storage = getStorage()
     const fileRef = ref(storage, imageUrl);
     try{
@@ -208,64 +207,9 @@ const imageDelete = async (imageUrl) => {
 
 }
 
-export const updateBook = async (userID, thumbnail, bookDetails, imageState) => {
-  console.log('updateBook Fired')
-    // console.log(userID, thumbnail, bookDetails, imageState)
-    // if(!userID) return;
-    // if(imageState)
-    // {
-    //   const docRef = doc(db, 'books', userID);
-    //   // const docRef = doc(db, `books/${userID}`, userID);
-    //   const docSnapshot = await getDoc(docRef);
-    //   const fieldName = 'mybooks';
-
-    //   const q = query(collection(db, "books"), where("id", "==", bookDetails.id));
-
-
-    //   const querySnapshot = await getDocs(q);
-    //   // console.log(querySnapshotdoc.data())
-    //   querySnapshot.forEach((doc) => {
-    //     // doc.data() is never undefined for query doc snapshots
-    //     console.log(doc.id, " => ", doc.data());
-    //   });
-      // const q = query(collection(db, "books"), where(`${fieldName}.id`, "==", bookDetails.id));
-      // const querySnapshot = await getDocs(q);
-      // const modifiedData = docSnapshot.data()[fieldName].filter((doc) => doc.id === bookDetails.id)
-      
-      // console.log(modifiedData("book_owner"))
-      
-      // return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
-
-
-      // console.log(...docSnapshot.data()[fieldName])
-      // console.log(bookDetails)
-    //   try{
-    //     await updateDoc(docRef, {[fieldName]: [ ...docSnapshot.data()[fieldName], {...bookDetails}]})
-    //     // await updateDoc(docRef, {[fieldName]: [ ...docSnapshot.data()[fieldName], {...bookDetails, imageUrl}]})
-    //     return "success";
-    //   }catch(err){
-    //     console.log("error creating new book: ", err.message);
-    //     return "error";
-    // }
-    // }
-    // else
-    // {
-    //   // store book image in storage
-    //   const uploadedImageUrl = await uploadBookImage(userID, thumbnail);
-          
-    //   const docRef = doc(db, 'books', userID);
-    //   const docSnapshot = await getDoc(docRef);
-    //   const fieldName = 'mybooks';
-
-
-    //     try{
-    //       await updateDoc(docRef, {[fieldName]: [ ...docSnapshot.data()[fieldName], {...bookDetails}]})
-    //         return "success";
-    //     }catch(err){
-    //         console.log("error creating new book: ", err.message);
-    //         return "error";
-    //     }
-    // }
-}
+// export const updateBook = async (userID, thumbnail, bookDetails, imageState) => {
+  export const updateBook = async (userId, thumbnail, bookDetails, imageState) => {
+    
+  }
 
 

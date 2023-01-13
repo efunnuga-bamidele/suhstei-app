@@ -9,7 +9,7 @@ import {
 
 //redux import
 import { useDispatch } from 'react-redux';
-import { setCurrentUser } from './book/user/user.action'
+import { setCurrentUser } from './store/user/user.action'
 
 //pages
 import ErrorPage from './pages/error/error.page';
@@ -36,16 +36,15 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("createUserDocumentFromAuth Fired from APP!!!!")
     const unsubscribe = onAuthStateChangedListener((user) => {
       if (user){
-        // createUserDocumentFromAuth(user);
+        createUserDocumentFromAuth(user);
       }
       dispatch(setCurrentUser(user))
     });
 
     return unsubscribe;
-  }, [])
+  }, [dispatch])
   
 
 

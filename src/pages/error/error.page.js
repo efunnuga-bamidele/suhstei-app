@@ -5,7 +5,7 @@ export default function ErrorPage (){
 
     return (
         <main class="h-screen w-full flex flex-col justify-center items-center bg-[#1A2238]" id="error-page">
-        <h1 class="text-9xl sm:text-3xl md:text-5xl font-extrabold text-white tracking-widest">{error.statusText}</h1>
+        <h1 class="text-xl sm:text-3xl md:text-5xl font-extrabold text-white tracking-widest">{error.statusText}</h1>
         <div class="bg-[#FF6A3D] px-2 text-sm rounded rotate-12 absolute">
             {error.message}
         </div>

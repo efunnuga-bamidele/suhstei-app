@@ -1,5 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { FallingLines } from 'react-loader-spinner';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectMyBooksMap } from '../../store/myBooks/myBooks.selector';
+import { setMyBooksMap } from '../../store/myBooks/myBooks.action';
+
+//firebase import
+import { getAllBooks } from '../../utils/firebase/firebase.utils';
+  //redux import
 
 import Navigation from '../../components/navigation/navigation.component';
 import Footer from '../../components/footer/footer.component';
@@ -14,23 +22,25 @@ import GiveIcon from '../../assets/icons/icons8_give.svg';
 
 import BookItem from '../../components/book-item/book-item-component';
 import StepItem from '../../components/step-item/step-item-component';
-import { useEffect, useState } from 'react';
-import { getAllBooks } from '../../utils/firebase/firebase.utils';
+
 
 export default function HomePage (){
     const redirect = useNavigate()
 
-    const [selectedBooks, setSelectedBooks] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    const dispatch = useDispatch()
+    const allBooksMap = useSelector(selectMyBooksMap)
+
 
     useEffect(()=> {
         const getBooks = async () => {
-            const booksData = await getAllBooks();
-            setSelectedBooks(booksData);
+            const booksArray = await getAllBooks();
+            dispatch(setMyBooksMap(booksArray));
             setIsLoading(false)
         }
         getBooks();
-
+    
     }, [])
 
     const order = (a, b) => {
@@ -94,7 +104,7 @@ export default function HomePage (){
                         </p>
                     </div>
                     <div className='m-6 overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-10 '>{/* */}
-                        {isLoading && (
+                        {isLoading ? (
                         <div className="grid col-span-full place-items-center h-56"> 
                              <FallingLines
                                 color="#1e94cc"
@@ -103,17 +113,17 @@ export default function HomePage (){
                                 ariaLabel='falling-lines-loading'
                             /> 
                             </div>
-                        )}
-                        {selectedBooks && selectedBooks.map((booksMap) => (
+                        ):(
+                         allBooksMap && allBooksMap.map((booksMap) => (
+                           
                             booksMap['mybooks'].sort(order).slice(0, 4).map((item, index) => (
-                               
-                                    
-                                    
+                                
                                     <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="Request Book" status={item.book_status} id ={item.id}/>
-                               
-                            ))
+                            )) 
 
-                        )).sort(order)}
+                        )).sort(order)
+                        
+                        )}
                         
                     </div>{/*end of top review books */}
                 </section>

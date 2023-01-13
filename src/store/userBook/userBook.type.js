@@ -1,0 +1,3 @@
+export const USERBOOK_ACTION_TYPE = {
+    SET_USERBOOK_MAP: 'userbook/SET_USERBOOK_MAP',
+}
