@@ -18,9 +18,8 @@ import  {
   updateDoc,
   collection,
   getDocs,
-  onSnapshot,
-  where,
-  query
+  arrayUnion,
+  arrayRemove
 } from 'firebase/firestore'
 
 import {
@@ -44,7 +43,6 @@ const firebaseConfig = {
   //https://suhstei-d0d28.firebaseapp.com/__/auth/handler
 
 initializeApp(firebaseConfig);
-let connectionCount = 0;
 // Google authentication
 const googleProvider = new GoogleAuthProvider();
 
@@ -60,12 +58,12 @@ facebookProvider.setCustomParameters({
 
 export const auth = getAuth();
 export const signInWithGooglePopup = () => {
-  console.log('signInWithGooglePopup Fired')
+  // console.log('signInWithGooglePopup Fired')
   signInWithPopup(auth, googleProvider);
 }
 
 export const signInWithFacebookPopup = () => {
-  console.log('signInWithFacebookPopup Fired')
+  // console.log('signInWithFacebookPopup Fired')
   signInWithPopup(auth, facebookProvider)
 }
 
@@ -79,7 +77,7 @@ const colUserRef = collection(db, 'users');
 // Function to create new user on authentication
 export const createUserDocumentFromAuth = async (userAuth, additionalinformation) => {
 
-  console.log('createUserDocumentFromAuth Fired')
+  // console.log('createUserDocumentFromAuth Fired')
 
   if (!userAuth) return;
       const userDocRef = doc(db, 'users', userAuth.uid);
@@ -97,7 +95,7 @@ export const createUserDocumentFromAuth = async (userAuth, additionalinformation
               ...additionalinformation
           });
         }catch (error){
-          console.log('error creating the user : ', error.message)
+          // console.log('error creating the user : ', error.message)
         }
       }
       return userDocRef;
@@ -105,32 +103,27 @@ export const createUserDocumentFromAuth = async (userAuth, additionalinformation
 
 //create new user with email and password
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
-  console.log('createAuthUserWithEmailAndPassword Fired')
     if (!email || !password) return;
     return await createUserWithEmailAndPassword(auth, email, password);
 };
 
 //signin with email and password
 export const sighAuthUserInWithEmailAndPassword = async (email, password) => {
-  console.log('sighAuthUserInWithEmailAndPassword Fired')
     if (!email || !password) return;
     return await signInWithEmailAndPassword(auth, email, password);
 };
 
 //Signout user
 export const signOutUser = () => {
-  console.log('signOutUser Fired')
   signOut(auth);
 }
 //Observer to monitor state change in authentication
 export const onAuthStateChangedListener = (callback) => {
-  console.log('onAuthStateChangedListener Fired')
   onAuthStateChanged(auth, callback);
 }
 // upload book Image
 
 export const uploadBookImage = async (userID, thumbnail) => {
-  console.log('uploadBookImage Fired')
   const storage = getStorage();
   const storageRef = ref(storage, `thumbnails/${userID}/books/${thumbnail.name}`);
 
@@ -142,7 +135,6 @@ export const uploadBookImage = async (userID, thumbnail) => {
 
 // Book creation
 export const createNewBook = async (userID, thumbnail, bookDetails) => {
-  console.log('createNewBook Fired')
   if(!userID) return;
   // store book image in storage
   const imageUrl = await uploadBookImage(userID, thumbnail);
@@ -168,7 +160,6 @@ export const createNewBook = async (userID, thumbnail, bookDetails) => {
 
 // get books by user
 export const getUserBooks = async (userId) => {
-  console.log('getUserBooks Fired')
     if (!userId) return;
     const docRef = doc(db, "books", userId);
     const docSnap = await getDoc(docRef);
@@ -176,34 +167,29 @@ export const getUserBooks = async (userId) => {
 }
 
 export const getAllBooks = async () => {
-  console.log('getAllBooks Fired')
   const querySnapshot = await getDocs(colBookRef);
   return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
 }
 
 export const deleteBook = async (userId, booksDetails, imageUrl) => {
-  console.log('deleteBook Fired')
     const fieldName = 'mybooks';
     const bookRef = doc(db, 'books', userId)
     await imageDelete(imageUrl)
-    // try{
-      console.log("updateDoc")
+    try{
+      // console.log("updateDoc")
       await updateDoc(bookRef, {[fieldName]: [...booksDetails]})
-      console.log("updateDoc Moved")
       return "success"
-    // }
-    // catch (err){
-    //   return "failed"
-    // }
+    }
+    catch (err){
+      return "failed"
+    }
 }
 
 const imageDelete = async (imageUrl) => {
-  console.log('imageDelete Fired')
     const storage = getStorage()
     const fileRef = ref(storage, imageUrl);
     try{
       await deleteObject(fileRef)
-      console.log("Moved")
     }catch (err){
 
     }
@@ -211,8 +197,56 @@ const imageDelete = async (imageUrl) => {
 }
 
 // export const updateBook = async (userID, thumbnail, bookDetails, imageState) => {
-  export const updateBook = async (userId, thumbnail, bookDetails, imageState) => {
-    
+  export const updateBook = async (userId, thumbnail, bookDetails, imageState, initialDetails) => {
+    const bookRef = doc(db, 'books', userId);
+
+    if (!imageState){
+      imageDelete(initialDetails.imageUrl)
+
+      const imageUrl = await uploadBookImage(userId, thumbnail)
+
+      const bookData = {
+        ...bookDetails, ["imageUrl"]: imageUrl
+      }
+      // Atomically remove a region from the "regions" array field.
+      try{
+      await updateDoc(bookRef, {
+        mybooks: arrayUnion(bookData)
+      });
+      }catch (err){
+          return "failed"
+        }
+      // Atomically add a new region to the "regions" array field.
+      try{
+      await updateDoc(bookRef, {
+        mybooks: arrayRemove(initialDetails)
+      });
+      }catch (err){
+        return "failed"
+      }
+      return "success"
+    }else{
+      
+         // Atomically remove a region from the "regions" array field.
+      try{
+        await updateDoc(bookRef, {
+          mybooks: arrayUnion(bookDetails)
+        });
+        
+        }catch (err){
+            return "failed"
+          }
+        // Atomically add a new region to the "regions" array field.
+        try{
+        await updateDoc(bookRef, {
+          mybooks: arrayRemove(initialDetails)
+        });
+        }catch (err){
+          return "failed"
+        }
+        return "success"
+    }
+        
   }
 
 
