@@ -186,13 +186,15 @@ export const deleteBook = async (userId, booksDetails, imageUrl) => {
     const fieldName = 'mybooks';
     const bookRef = doc(db, 'books', userId)
     await imageDelete(imageUrl)
-    try{
+    // try{
+      console.log("updateDoc")
       await updateDoc(bookRef, {[fieldName]: [...booksDetails]})
+      console.log("updateDoc Moved")
       return "success"
-    }
-    catch (err){
-      return "failed"
-    }
+    // }
+    // catch (err){
+    //   return "failed"
+    // }
 }
 
 const imageDelete = async (imageUrl) => {
@@ -201,6 +203,7 @@ const imageDelete = async (imageUrl) => {
     const fileRef = ref(storage, imageUrl);
     try{
       await deleteObject(fileRef)
+      console.log("Moved")
     }catch (err){
 
     }

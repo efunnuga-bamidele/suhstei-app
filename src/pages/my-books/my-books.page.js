@@ -97,7 +97,7 @@ export default function MyBooksPage(){
             dispatch(setUserBookMap(books.mybooks))
             setIsLoading(false)
         }
-        getBooks()
+        getBooks(dispatch)
         
     },[])
 
@@ -116,20 +116,25 @@ export default function MyBooksPage(){
         setShowModal(showModal ? false : true)
         setItemData({el, imageUrl})
     }
+
+   
     const handleDeleteResponse = async (event) => {
+        
             if (event === "Yes"){
-                const modifyedBooks = myBooks.filter((item) => item.id !== itemData['el'])
-                const res = await deleteBook(currentUser.uid, modifyedBooks, itemData['imageUrl'])
-                // console.log("Modified Books: ",modifyedBooks)
+                setShowLoadingModal(true);
+                const newBooks = myBooks.filter((item) => item.id !== itemData['el'])
+                const res = await deleteBook(currentUser.uid, newBooks, itemData['imageUrl'])
+
                 if (res === "success")
                 {
-                    dispatch(selectUserBooksMap(modifyedBooks))
+                    dispatch(setUserBookMap(newBooks))
+                    setShowLoadingModal(false);
+                    setShowModal(showModal ? false : true)
                     setItemData(null)
-                }
 
-                
+                }
             }
-            setShowModal(showModal ? false : true)
+            
     }
 
     const handleChange = (event) => {
@@ -216,6 +221,7 @@ export default function MyBooksPage(){
         <Navigation />
             <main className="bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap">
                         <Fragment>
+                            {/* Delete Book Modal */}
                             <Modal
                                 show={showModal}
                                 size="md"
@@ -261,6 +267,7 @@ export default function MyBooksPage(){
                             >
                                 <Modal.Header />
                                 <Modal.Body>
+                                    {/* Loading Modal */}
                                 <Fragment>
                                     <Modal
                                         show={showLoadingModal}
@@ -282,6 +289,7 @@ export default function MyBooksPage(){
                                         </Modal.Body>
                                     </Modal>
                                 </Fragment>
+
                                 <div className='container px-6 py-2 h-full'>
                                 <form onSubmit={handleBookEdit}>
                                     <div className='relative z-0 mb-8 w-full group'>
@@ -468,6 +476,7 @@ export default function MyBooksPage(){
                                         placement="right"
                                         className="absolute ml-20 mt-6"
                                     >
+                                        {/* Edit Button */}
                                         <button className="group absolute ml-7 mt-7 z-50 text-white font-extrabold bg-gray-100 py-1 px-2 rounded-md border-2 border-slate-300 hover:scale-x-125 hover:scale-y-95 hover:translate-x-1 transition duration-700 ease-in-out shadow-md opacity-0 group-hover/div:opacity-100">
                                             <FiEdit color="blue" onClick={() => handleEditModal(item, item.imageUrl)} />
                                         </button>
@@ -477,6 +486,7 @@ export default function MyBooksPage(){
                                         placement="right"
                                         className="absolute ml-20 mt-14"
                                     >
+                                        {/* Delete Button */}
                                         <button className="group absolute ml-7 mt-16 z-50 text-white font-extrabold bg-gray-100 py-1 px-2 rounded-md border-2 border-slate-300 hover:scale-x-125 hover:scale-y-95 hover:translate-x-1 transition duration-700 ease-in-out opacity-0 group-hover/div:opacity-100"><RiDeleteBin6Line color="red" onClick={() => handleDeleteModal(item.id, item.imageUrl)} /></button>
                                     </Tooltip>
 
