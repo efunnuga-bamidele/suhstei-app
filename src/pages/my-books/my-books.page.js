@@ -63,6 +63,7 @@ export default function MyBooksPage(){
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [formFields, setFormFields] = useState(defaultFormField);
+    const [initialFormData, setInitialFormData] = useState(defaultFormField);
     const {book_owner, book_author, book_title, book_category, book_description, book_status} = formFields;
     let [thumbnail, setThumbnail] = useState(null)
     let [fileUrl, setFileUrl] = useState(null)
@@ -93,7 +94,6 @@ export default function MyBooksPage(){
         const getBooks = async () => {
 
             const books = await getUserBooks(currentUser.uid);
-            // setMyBooks(books.mybooks)
             dispatch(setUserBookMap(books.mybooks))
             setIsLoading(false)
         }
@@ -169,6 +169,7 @@ export default function MyBooksPage(){
 
     const handleEditModal = (el, imageUrl) => {
         setShowEditModal(showEditModal ? false : true)
+        setInitialFormData(el);
         if (el && imageUrl){
             setFormFields(el)
             setFileUrl(imageUrl.split('%2Fbooks%2')[1].split('?')[0])
@@ -183,32 +184,27 @@ export default function MyBooksPage(){
         const imageState = fileUrl ? true : false;
 
         setError('');
-        const createdAt = new Date();
-        
-        const bookData = {
-            createdAt,
-            ...formFields
-        }
 
-
-        // console.log(bookData.createdAt)
-        
         setShowLoadingModal(true);
-       const data = await updateBook(currentUser.uid, thumbnail, formFields, imageState);
+       const res = await updateBook(currentUser.uid, thumbnail, formFields, imageState, initialFormData);
 
-        if(data === "success"){
+        if(res === "success"){
             setSuccess("Book updated successfully!");
             setShowLoadingModal(false);
             resetFields();
-            setTimeout(() => setSuccess(''), 2000);
+            setTimeout(() => setSuccess(''), 500);
+            const books = await getUserBooks(currentUser.uid);
+            dispatch(setUserBookMap(books.mybooks))
             setShowEditModal(false)
+
         }else{
-            setError("Failed to create book");
+            setError("Failed to updated book");
+            setTimeout(() => setError(''), 500);
             setShowLoadingModal(false);
-            setTimeout(() => setError(''), 10000);
+            setShowEditModal(true)
         }
         
-        setShowEditModal(false)
+        
         
         
     }
