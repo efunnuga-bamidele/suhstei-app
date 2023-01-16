@@ -19,7 +19,10 @@ import  {
   collection,
   getDocs,
   arrayUnion,
-  arrayRemove
+  arrayRemove,
+  query,
+  where,
+  collectionGroup
 } from 'firebase/firestore'
 
 import {
@@ -247,6 +250,27 @@ const imageDelete = async (imageUrl) => {
         return "success"
     }
         
+  }
+
+  export const getBookById = async (bookId) => {
+    console.log("Request Fired: ",bookId)
+    // const querySnapshot = await getDocs(colBookRef);
+
+    // let resData = querySnapshot.docs.map(docSnapshot => docSnapshot.data())
+    // console.log("Resource Data: ", resData)
+
+    // let filterData = []
+    // resData.map((itemData) => filterData(itemData['mybooks'].filter((item) => item.id === bookId)))
+    // console.log("Filtered Data: ",filterData)
+    // if (filterData.length === 1)
+    // {
+    //   return filterData;
+
+    // }
+    // else{
+    //   return "error"
+    // }
+
   }
 
 

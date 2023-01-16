@@ -1,9 +1,12 @@
+import { useNavigate } from 'react-router-dom';
 import './bookitem.css'
 
 export default function BookItem({ bookImage, title, author, owner, buttonAction, status, id}) {
 
+  const redirect = useNavigate();
   const handleClick = (event) => {
-    console.log(event);
+    // console.log(event);
+    redirect(`/view-book/${event}`)
   }
 
   return (
@@ -12,12 +15,15 @@ export default function BookItem({ bookImage, title, author, owner, buttonAction
             style={{"height": '400px', "width": "260px"}}
           >
          
-            <div className="flex flex-col relative min-h-60 w-70 sm:min-h-60 sm:w-60 aspect-w-1 aspect-h-1 overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80 items-center">
+            <div 
+              className="flex flex-col relative min-h-60 w-70 sm:min-h-60 sm:w-60 aspect-w-1 aspect-h-1 overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80 items-center"
+              style={{"height": '100%', "width": "100%"}}
+            >
 
               <img
                 src={bookImage}
                 alt={title}
-                className="bookImg h-full w-full object-cover object-center"
+                className="bookImg h-full w-full object-cover object-center "
                 style={{"height": '100%', "width": "100%"}}
                 // className="object-center md:object-cover object-scale-down w-full"
               />
