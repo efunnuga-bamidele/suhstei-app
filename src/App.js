@@ -18,6 +18,7 @@ import LoginPage from './pages/login/login.page';
 import SignupPage from './pages/sign-up/signup.page';
 import BooksPage from './pages/books/books.page';
 import CommunityPage from './pages/community/community.page';
+import bookViewPage from './pages/books/book-view.page';
 
 //Profile Pages
 import MyBooksPage from './pages/my-books/my-books.page';
@@ -30,6 +31,7 @@ import { ProtectedLayout } from './components/protected-layout/protected-layout.
 import { ProfileLayout }  from './components/profile-layout/profile-layout.component'; 
 //styles
 import './App.css';
+import BookViewPage from './pages/books/book-view.page';
 
 
 function App() {
@@ -81,6 +83,11 @@ function App() {
               path = '/books'
               element = {<BooksPage />}
               errorElement = {<ErrorPage />}
+            />
+            <Route 
+              path = '/view-book/:book_id'
+              element = {<BookViewPage />}
+              errorElement ={<ErrorPage />}
             />
 
             <Route 
