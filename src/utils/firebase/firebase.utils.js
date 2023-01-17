@@ -252,24 +252,19 @@ const imageDelete = async (imageUrl) => {
         
   }
 
-  export const getBookById = async (bookId) => {
-    console.log("Request Fired: ",bookId)
-    // const querySnapshot = await getDocs(colBookRef);
+  export const getBookById = async (bookId, ownerId) => {
+    // console.log("Request Book id: ",bookId)
+    // console.log("Request Owner Id:",ownerId.trim())
 
-    // let resData = querySnapshot.docs.map(docSnapshot => docSnapshot.data())
-    // console.log("Resource Data: ", resData)
-
-    // let filterData = []
-    // resData.map((itemData) => filterData(itemData['mybooks'].filter((item) => item.id === bookId)))
-    // console.log("Filtered Data: ",filterData)
-    // if (filterData.length === 1)
-    // {
-    //   return filterData;
-
-    // }
-    // else{
-    //   return "error"
-    // }
+    const docRef = doc(db, "books", ownerId.trim());
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      // console.log("Document data:", docSnap.data());
+      console.log("document found!");
+      return docSnap.data()['mybooks'].filter(item => item.id === bookId.trim())
+      } else {
+      console.log("No such document!");
+    }
 
   }
 

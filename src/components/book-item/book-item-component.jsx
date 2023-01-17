@@ -1,12 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import './bookitem.css'
 
-export default function BookItem({ bookImage, title, author, owner, buttonAction, status, id}) {
+export default function BookItem({ bookImage, title, author, owner, buttonAction, status, id, owner_id}) {
 
   const redirect = useNavigate();
-  const handleClick = (event) => {
+  const handleClick = (book_id, owner_id) => {
     // console.log(event);
-    redirect(`/view-book/${event}`)
+    // redirect(`/view-book/${book_id}/${owner_id}`, {state: owner_id})
+    redirect(`/view-book`, {state: {book_Id: book_id, owner_Id: owner_id}})
   }
 
   return (
@@ -28,11 +29,11 @@ export default function BookItem({ bookImage, title, author, owner, buttonAction
                 // className="object-center md:object-cover object-scale-down w-full"
               />
               {status ==='Available' ? (
-              <button type="button" className="btn bottom-3 rounded-lg " onClick={(ev) => handleClick(id)}>
+              <button type="button" className="btn bottom-3 rounded-lg " onClick={(ev) => handleClick(id, owner_id)}>
                   {buttonAction}
                 </button>
               ): (
-                <button type="button" className="btn bottom-3 rounded-lg" onClick={(ev) => handleClick(id)}>
+                <button type="button" className="btn bottom-3 rounded-lg" onClick={(ev) => handleClick(id, owner_id)}>
                   View Book
                 </button>
               )}

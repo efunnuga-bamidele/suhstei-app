@@ -85,7 +85,7 @@ function App() {
               errorElement = {<ErrorPage />}
             />
             <Route 
-              path = '/view-book/:book_id'
+              path = '/view-book'
               element = {<BookViewPage />}
               errorElement ={<ErrorPage />}
             />

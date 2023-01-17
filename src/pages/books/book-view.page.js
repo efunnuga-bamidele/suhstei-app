@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { FallingLines } from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { selectMyBooksMap } from "../../store/myBooks/myBooks.selector";
@@ -14,9 +14,11 @@ import { setMyBooksMap } from "../../store/myBooks/myBooks.action";
 export default function BookViewPage(){
     const [isLoading, setIsLoading] = useState(true);
     const [bookRequested, setBookRequested] = useState();
-    const { book_id } = useParams();
+    const { book_id, owner_id } = useParams();
     const booksItem = useSelector(selectMyBooksMap);
     const dispatch = useDispatch();
+
+    const location = useLocation();
 
     useEffect(() => {
         {setTimeout(() => { setIsLoading(false)},3000)}
@@ -24,7 +26,7 @@ export default function BookViewPage(){
 
     useEffect(() => {
         const getRequestedBook = async () => {
-            const res = await getBookById(book_id)
+            const res = await getBookById(location.state.book_Id, location.state.owner_Id)
             setBookRequested(res)
             // dispatch(setMyBooksMap(res))
         }
@@ -45,11 +47,9 @@ export default function BookViewPage(){
                         />
                         </div>
                     ) : (
-
-                    //    console.log(bookRequested[0].book_title)
-                        <div>
-                         <BookComponent bookDetails={bookRequested[0]} />
-                        </div>
+                            
+                            <BookComponent bookDetails={bookRequested[0]} />
+                          
                     )
                     }
                 </div>
