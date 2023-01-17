@@ -135,6 +135,7 @@ export default function CreateBookPage() {
         
         const bookData = {
             id: unique_id,
+            owner_id: user.uid,
             createdAt,
             ...formFields
         }
