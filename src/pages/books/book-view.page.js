@@ -47,9 +47,9 @@ export default function BookViewPage(){
                         />
                         </div>
                     ) : (
-                            <div>
+                            
                             <BookComponent bookDetails={bookRequested[0]} />
-                            </div>
+                          
                     )
                     }
                 </div>
