@@ -1,9 +1,13 @@
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../store/user/user.selector';
+
 import './bookitem.css'
 
 export default function BookItem({ bookImage, title, author, owner, buttonAction, status, id, owner_id}) {
 
   const redirect = useNavigate();
+  const currentUser = useSelector(selectCurrentUser);
   const handleClick = (book_id, owner_id) => {
     // console.log(event);
     // redirect(`/view-book/${book_id}/${owner_id}`, {state: owner_id})
@@ -28,16 +32,18 @@ export default function BookItem({ bookImage, title, author, owner, buttonAction
                 style={{"height": '100%', "width": "100%"}}
                 // className="object-center md:object-cover object-scale-down w-full"
               />
-              {status ==='Available' ? (
-              <button type="button" className="btn bottom-3 rounded-lg " onClick={(ev) => handleClick(id, owner_id)}>
-                  {buttonAction}
-                </button>
-              ): (
-                <button type="button" className="btn bottom-3 rounded-lg" onClick={(ev) => handleClick(id, owner_id)}>
-                  View Book
-                </button>
-              )}
+              {owner_id !== currentUser.uid  && (
 
+                status ==='Available' ? (
+                <button type="button" className="btn bottom-3 rounded-lg " onClick={(ev) => handleClick(id, owner_id)}>
+                    {buttonAction}
+                  </button>
+                ): (
+                  <button type="button" className="btn bottom-3 rounded-lg" onClick={(ev) => handleClick(id, owner_id)}>
+                    View Book
+                  </button>
+                )
+              ) }
             </div>
             <div className="mt-4 flex justify-between">
               <div>
