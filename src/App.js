@@ -19,6 +19,8 @@ import SignupPage from './pages/sign-up/signup.page';
 import BooksPage from './pages/books/books.page';
 import CommunityPage from './pages/community/community.page';
 import bookViewPage from './pages/books/book-view.page';
+import AboutUsPage from './pages/about-us/about-us.page';
+import ContactPage from './pages/contact/contact.page';
 
 //Profile Pages
 import MyBooksPage from './pages/my-books/my-books.page';
@@ -98,13 +100,13 @@ function App() {
 
             <Route 
               path = '/about-us'
-              // element = {<CommunityPage />}
+              element = {<AboutUsPage />}
               errorElement = {<ErrorPage />}
             />
 
             <Route 
               path = '/contact'
-              // element = {<CommunityPage />}
+              element = {<ContactPage />}
               errorElement = {<ErrorPage />}
             />
 

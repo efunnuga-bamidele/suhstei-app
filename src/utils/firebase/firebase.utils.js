@@ -263,7 +263,7 @@ const imageDelete = async (imageUrl) => {
       console.log("document found!");
       return docSnap.data()['mybooks'].filter(item => item.id === bookId.trim())
       } else {
-      console.log("No such document!");
+      // console.log("No such document!");
     }
 
   }

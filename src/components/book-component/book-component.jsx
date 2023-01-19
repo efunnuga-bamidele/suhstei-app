@@ -7,14 +7,11 @@ export default function BookComponent({ bookDetails}){
     const currentUser = useSelector(selectCurrentUser);
 
     const handleClick = (event) => {
-
+      console.log(event)
     }
 
     return(
-        // <div className="flex flex-row max-md:flex-col justify-start place-self-center bg-slate-300 m-4 pl-20 max-md:pl-4">
-        <div className="group flex flex-row max-sm:flex-col justify-start m-2 place-self-center border-2 p-2 rounded-md border-slate-100 "
-            // style={{"height": '400px', "width": "260px"}}
-          >
+        <div className="group flex flex-row max-sm:flex-col justify-start m-2 place-self-center border-2 p-2 rounded-md border-slate-100 ">
             <div className="">
                 <img
                     src= {imageUrl}
@@ -32,37 +29,24 @@ export default function BookComponent({ bookDetails}){
                 
                 {book_status && (<p className="mt-1 text-md text-gray-500"><strong>Book Status:</strong> <span className='text-blue-600 hover:text-blue-400 hover:border-b-2 hover:border-red-400 cursor-pointer ml-2 font-semibold'>{book_status}</span></p>)}
                 
-                {owner_id !== currentUser.uid ? (
-                    book_status === 'Available' ? (
+                {book_status === 'Available' ? (
                     <button 
                       type="button" 
                       className="inline-block px-7 py-3 mt-2 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
                       data-mdb-ripple="true"
                       data-mdb-ripple-color="light"
-                      onClick={(ev) => handleClick(id)}>
-                          Place Reqest
+                      onClick={(ev) => handleClick(bookDetails)}>
+                          Borrow This Book
                     </button>
                     ) : (
                     <button 
                       type="button" 
                       className="inline-block px-7 py-3 mt-2 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
                       data-mdb-ripple="true"
-                      data-mdb-ripple-color="light"
-                      onClick={(ev) => handleClick(id)}>
+                      data-mdb-ripple-color="light">
                           Not Available
                     </button>
-                    )
-                    
-                  ): (
-                    <button 
-                      type="button" 
-                      className="inline-block px-7 py-3 mt-2 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
-                      data-mdb-ripple="true"
-                      data-mdb-ripple-color="light"
-                      disabled>
-                        Edit Your Book
-                    </button>
-                  )}
+                    )}
             </div>
         </div>
     )
