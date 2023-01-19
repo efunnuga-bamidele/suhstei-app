@@ -22,7 +22,7 @@ export default function Navigation() {
 
   return (
     
- <header >
+ <header  className='mb-6 z-50'>
  <Navbar
  fluid={true}
  rounded={true}
@@ -31,12 +31,12 @@ export default function Navigation() {
  <Navbar.Brand href="/">
    <img
      src={Logo}
-     className="mr-3 h-6 sm:h-9"
+     className="ml-4 h-12 sm:h-12"
      alt="Suhstei Logo"
    />
-   <span className="self-center whitespace-nowrap text-xl font-bold dark:text-white">
+   {/* <span className="self-center whitespace-nowrap text-xl font-bold dark:text-white">
      Suhstei
-   </span>
+   </span> */}
  </Navbar.Brand>
  <div className="flex md:order-2">
     {

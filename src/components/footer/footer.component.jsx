@@ -14,8 +14,8 @@ export default function Footer() {
 <div className="md:flex md:justify-between">
     <div className="mb-6 md:mb-0">
         <a href="/" className="flex items-center">
-            <img src={Logo} className="mr-3 h-8" alt="Suhstei Logo" />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Suhstei</span>
+            {/* <img src={Logo} className="mr-3 h-12 sm:h-12" alt="Suhstei Logo" /> */}
+            <h1><span className="self-center text-2xl whitespace-nowrap dark:text-white text-primary font-semibold">Suhstei</span><span className='text-accent font-extrabold'>.</span></h1>
         </a>
     </div>
     <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
