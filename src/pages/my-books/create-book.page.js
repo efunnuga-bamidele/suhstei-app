@@ -12,6 +12,7 @@ import FormInput from '../../components/form-input/form-input.component'
 import { createNewBook } from '../../utils/firebase/firebase.utils'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '../../store/user/user.selector'
+import AlertComponent from '../../components/alert-component/alert-component'
 
 const bookCategory = [
     'Science',
@@ -215,6 +216,9 @@ export default function CreateBookPage() {
                                     </Alert>
                                 }
                             </div>
+
+                            {/* <AlertComponent message ={success} error= {error} success = {success}/> */}
+
                             <div className="grid md:grid-cols-2 md:gap-6">
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <FormInput

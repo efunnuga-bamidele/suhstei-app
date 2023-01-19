@@ -20,9 +20,6 @@ import  {
   getDocs,
   arrayUnion,
   arrayRemove,
-  query,
-  where,
-  collectionGroup
 } from 'firebase/firestore'
 
 import {
@@ -75,7 +72,6 @@ export const db = getFirestore();
 
 // Firebase Collections
 const colBookRef = collection(db, 'books');
-const colUserRef = collection(db, 'users');
 
 // Function to create new user on authentication
 export const createUserDocumentFromAuth = async (userAuth, additionalinformation) => {
@@ -253,18 +249,85 @@ const imageDelete = async (imageUrl) => {
   }
 
   export const getBookById = async (bookId, ownerId) => {
-    // console.log("Request Book id: ",bookId)
-    // console.log("Request Owner Id:",ownerId.trim())
-
     const docRef = doc(db, "books", ownerId.trim());
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      // console.log("Document data:", docSnap.data());
       console.log("document found!");
       return docSnap.data()['mybooks'].filter(item => item.id === bookId.trim())
       } else {
-      // console.log("No such document!");
     }
+
+  }
+
+  export const BorrowBook = async (unique_id, requestedBook, currentUser, requestedAt) => {
+    if (!currentUser.uid) return;
+
+    const docRef = doc(db, 'requests', currentUser.uid);
+    const docSnapshot = await getDoc(docRef);
+    const fieldName = 'book_requests';
+
+    const requestDetail = {
+        id: unique_id,
+        book_title: requestedBook.book_title,
+        book_author: requestedBook.book_author,
+        book_id: requestedBook.id,
+        book_owner: requestedBook.book_owner,
+        book_owner_id: requestedBook.owner_id,
+        borrowers_name: currentUser.displayName,
+        request_status: "Pending Approval",
+        request_date: requestedAt,
+        received_date:null,
+        due_date:null,
+        return_date:null
+    }
+
+    if (docSnapshot.data() === undefined){ 
+      try{
+        await setDoc(doc(db, "requests", currentUser.uid), { [fieldName]:[{...requestDetail}]});
+        updateRequestedBook(requestedBook, "Requested")
+          return "success";
+      }catch (err){
+        return "Failed";
+      }
+
+    } else {
+      try{
+        await updateDoc(docRef, {[fieldName]: [ ...docSnapshot.data()[fieldName], {...requestDetail}]});
+        updateRequestedBook(requestedBook, "Requested")
+        return "added";
+      }catch (err){
+        return "Failed";
+      }
+    }
+  }
+
+  const updateRequestedBook = async (bookDetails, status) => {
+      // console.log("Book Details: ",bookDetails)
+      const bookRef = doc(db, 'books', bookDetails.owner_id.trim());
+
+        const bookData = {
+          ...bookDetails, ["book_status"]:status
+        }
+
+        // console.log("Book Details Modified: ",bookData)
+        // Atomically remove a region from the "regions" array field.
+        try{
+        await updateDoc(bookRef, {
+          mybooks: arrayUnion(bookData)
+        });
+          // 
+        }catch (err){
+            return "failed"
+          }
+        // Atomically add a new region to the "regions" array field.
+        try{
+        await updateDoc(bookRef, {
+          mybooks: arrayRemove(bookDetails)
+        });
+        }catch (err){
+          return "failed"
+        }
+        return "success"
 
   }
 
