@@ -33,9 +33,10 @@ export default function BookViewPage(){
         getRequestedBook();
     },[])
     return(
-        <main className="h-0">
+        <div className="bg-gray-100 font-body scroll-smooth h-0">
             <Navigation />
-            <section className='bg-gray-100 mt-20 '>
+            <main className="bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap">
+            <section className='bg-white mt-12 m-2 p-4 w-full rounded-md'>
                 <div classname="m-6 px-8 overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 gap-10">
                     {isLoading ? (
                         <div className="grid col-span-full place-items-center h-50">
@@ -54,7 +55,8 @@ export default function BookViewPage(){
                     }
                 </div>
                 </section>
+                </main>
             <Footer />
-        </main>
+        </div>
     )
 }
