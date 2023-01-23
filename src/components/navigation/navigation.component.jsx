@@ -117,18 +117,18 @@ export default function Navigation() {
         <Dropdown
             id= "collapsable-dropdown"
             color="white"
-            label="Transactions"
+            label="Book Requests"
             placement="bottom-start"
             dismissOnClick={false}
           >
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/transactions" className="dropdown_hover">
-                  Active Transactions
+                <NavLink to="/active-request" className="dropdown_hover">
+                  Active Request
                 </NavLink>
               </Dropdown.Item>
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/transactions" className="dropdown_hover">
-                  View Transactions
+                <NavLink to="/view-request" className="dropdown_hover">
+                  View Request
                 </NavLink>
               </Dropdown.Item>
 

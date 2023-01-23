@@ -57,14 +57,14 @@ export default function SidebarNavigation() {
                         </Sidebar.Collapse>
                         <Sidebar.Collapse
                             icon={FcSimCardChip}
-                            label="Trasactions"
+                            label="Book Requests"
                             >
                         <span className='flex ml-6 text-[0.9em]'>
-                            <NavLink to="/transactions" className="dropdown_hover ml-6" >Active Trasactions</NavLink>
+                            <NavLink to="/active-request" className="dropdown_hover ml-6" >Active Request</NavLink>
                             <FcSimCardChip className='mr-2 ml-2 mb-2' size={22} />
                         </span>
                         <span className='flex ml-6 text-[0.9em]'>
-                            <NavLink to="/transactions" className="dropdown_hover ml-6" >View Trasactions</NavLink>
+                            <NavLink to="/view-request" className="dropdown_hover ml-6" >View Request</NavLink>
                             <FcSimCardChip className='mr-2 ml-2 mb-2' size={22} />
                         </span>
                         </Sidebar.Collapse>

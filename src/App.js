@@ -27,6 +27,8 @@ import MyBooksPage from './pages/my-books/my-books.page';
 import CreateBookPage from './pages/my-books/create-book.page';
 import DashboardPage from './pages/dashboard/dashboard.page';
 import SettingsPage from './pages/settings/settings.page';
+import ActiveRequestPage from './pages/book-requests/active-request.page';
+import ViewRequstPage from './pages/book-requests/view-request.page';
 
 // Protection Routes
 import { ProtectedLayout } from './components/protected-layout/protected-layout.component';
@@ -89,7 +91,7 @@ function App() {
             <Route 
               path = '/view-book'
               element = {<BookViewPage />}
-              errorElement ={<ErrorPage />}
+              errorElement ={<BooksPage />}
             />
 
             <Route 
@@ -142,15 +144,37 @@ function App() {
               errorElement={<ErrorPage />}
               />
 
-              <Route
-                  path='/settings'
-                  element={
-                    <ProfileLayout>
-                      <SettingsPage />
-                    </ProfileLayout>
-                  }
-                  errorElement={<ErrorPage />}
-              />
+            <Route
+              path='/active-request'
+              element={
+                <ProfileLayout>
+                  <ActiveRequestPage/>
+                </ProfileLayout>
+              }
+              errorElement={<ErrorPage />}
+            />
+
+          <Route
+            path='/view-request'
+            element={
+              <ProfileLayout>
+                <ViewRequstPage />
+              </ProfileLayout>
+            }
+            errorElement={<ErrorPage />}
+          />
+
+          <Route
+              path='/settings'
+              element={
+                <ProfileLayout>
+                  <SettingsPage />
+                </ProfileLayout>
+              }
+              errorElement={<ErrorPage />}
+          />
+
+
         </>
     )) 
    
