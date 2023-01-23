@@ -43,7 +43,7 @@ export default function BookComponent({ bookDetails}){
                     className="h-[400px] w-[400px] object-contain max-md:object-contain object-center p-4"
                 />
             </div>
-            <div className="mt-4 max-md:mt-2">
+            <div className="mt-4 max-md:mt-2 max-md:w-[100%] w-[40%]">
 
                 <h2 className="mt-1 text-md text-gray-500"><strong>Title:</strong> <span className='text-blue-600 hover:text-blue-400 hover:border-b-2 hover:border-red-400 cursor-pointer ml-2 font-semibold'>{book_title}</span></h2>
                 <h3 className="mt-1 text-md text-gray-500"><strong>Category:</strong> <span className='text-blue-600 hover:text-blue-400 hover:border-b-2 hover:border-red-400 cursor-pointer ml-2 font-semibold'>{book_category}</span></h3>

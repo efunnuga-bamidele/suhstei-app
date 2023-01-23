@@ -20,6 +20,8 @@ import  {
   getDocs,
   arrayUnion,
   arrayRemove,
+  where,
+  query
 } from 'firebase/firestore'
 
 import {
@@ -72,6 +74,7 @@ export const db = getFirestore();
 
 // Firebase Collections
 const colBookRef = collection(db, 'books');
+const colRequestRef = collection(db, 'requests');
 
 // Function to create new user on authentication
 export const createUserDocumentFromAuth = async (userAuth, additionalinformation) => {
@@ -261,9 +264,11 @@ const imageDelete = async (imageUrl) => {
 
   export const BorrowBook = async (unique_id, requestedBook, currentUser, requestedAt) => {
     if (!currentUser.uid) return;
-
-    const docRef = doc(db, 'requests', currentUser.uid);
-    const docSnapshot = await getDoc(docRef);
+    //write request to both owner and borrowers document
+    const userRef = doc(db, 'requests', currentUser.uid);
+    const ownerRef = doc(db, 'requests', requestedBook.owner_id);
+    const userDocSnapshot = await getDoc(userRef);
+    const ownerDocSnapshot = await getDoc(ownerRef);
     const fieldName = 'book_requests';
 
     const requestDetail = {
@@ -281,9 +286,10 @@ const imageDelete = async (imageUrl) => {
         return_date:null
     }
 
-    if (docSnapshot.data() === undefined){ 
+    if (userDocSnapshot.data() === undefined && ownerDocSnapshot.data() === undefined){ 
       try{
-        await setDoc(doc(db, "requests", currentUser.uid), { [fieldName]:[{...requestDetail}]});
+        await setDoc(userRef, { [fieldName]:[{...requestDetail}]});
+        await setDoc(ownerRef, { [fieldName]:[{...requestDetail}]});
         updateRequestedBook(requestedBook, "Requested")
           return "success";
       }catch (err){
@@ -292,7 +298,8 @@ const imageDelete = async (imageUrl) => {
 
     } else {
       try{
-        await updateDoc(docRef, {[fieldName]: [ ...docSnapshot.data()[fieldName], {...requestDetail}]});
+        await updateDoc(userRef, {[fieldName]: [ ...userDocSnapshot.data()[fieldName], {...requestDetail}]});
+        await updateDoc(ownerRef, {[fieldName]: [ ...ownerDocSnapshot.data()[fieldName], {...requestDetail}]});
         updateRequestedBook(requestedBook, "Requested")
         return "added";
       }catch (err){
@@ -331,4 +338,21 @@ const imageDelete = async (imageUrl) => {
 
   }
 
+  // collections
+  // where owner is me?
+  // where borowwer is me?
 
+
+  export const getBookRequests = async (userID) => {
+
+    console.log("Request Fired")
+    const bookRequests = doc(db, "requests", "dTARGAWUzGb1cym3h0mA61EcdGy1");
+    const docSnap = await getDoc(bookRequests);
+    
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  }
