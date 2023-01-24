@@ -9,7 +9,7 @@ import { rootReducer } from './root-reducer';
 const persistConfig = {
     key: 'root',
     storage: storage,
-    blacklist: ['mybooks', 'userbook'], // navigation will not be persisted
+    blacklist: ['mybooks', 'userbook', 'bookrequest'], // navigation will not be persisted
     // whitelist: ['navigation'], // only navigation will be persisted
 }
 

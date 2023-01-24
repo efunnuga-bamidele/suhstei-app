@@ -346,13 +346,14 @@ const imageDelete = async (imageUrl) => {
   export const getBookRequests = async (userID) => {
 
     console.log("Request Fired")
-    const bookRequests = doc(db, "requests", "dTARGAWUzGb1cym3h0mA61EcdGy1");
-    const docSnap = await getDoc(bookRequests);
+    const bookRequests = doc(db, "requests", userID);
+    const bookRequestsSnap = await getDoc(bookRequests);
     
-    if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
-    } else {
-      // doc.data() will be undefined in this case
-      console.log("No such document!");
-    }
+    return bookRequestsSnap.data();
+    // if (docSnap.exists()) {
+    //   console.log("Document data:", docSnap.data());
+    // } else {
+    //   // doc.data() will be undefined in this case
+    //   console.log("No such document!");
+    // }
   }
