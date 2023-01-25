@@ -114,16 +114,18 @@ export default function HomePage (){
                             /> 
                             </div>
                         ):(
-                         allBooksMap && allBooksMap.map((booksMap) => (
+                          
                            
-                            booksMap['mybooks'].sort(order).slice(0, 3).map((item, index) => (
+                            allBooksMap && allBooksMap.sort(order).slice(0, 4).map((item, index) => (
                                 
                                     <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="Request Book" status={item.book_status} id ={item.id} owner_id = {item.owner_id}/>
                             )) 
+                            
+                            )
 
-                        )).sort(order)
+  
                         
-                        )}
+                        }
                         
                     </div>{/*end of top review books */}
                 </section>
