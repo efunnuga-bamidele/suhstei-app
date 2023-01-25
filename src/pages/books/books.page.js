@@ -1,5 +1,6 @@
 
 import React, { Fragment, useEffect, useState } from 'react'
+import { Pagination } from 'flowbite-react'
 import { FallingLines } from 'react-loader-spinner'
 import BookItem from '../../components/book-item/book-item-component'
 import Footer from '../../components/footer/footer.component'
@@ -24,20 +25,12 @@ const bookCategory = [
 ]
 
 export default function BooksPage() {
-    // const [booksArray, setBooksArray] = useState(null);
+    
     const [isLoading, setIsLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(8)
     const booksArray = useSelector(selectMyBooksMap)
     const dispatch = useDispatch()
-//   useEffect(() => {
-//     const getBooks = async () => {
-//         const booksData = await getAllBooks();
-//         setBooksArray(booksData);
-//         setIsLoading(false)
-//     }
-//     getBooks();
-
-//   }, [])  
-
 
 
 useEffect(()=> {
@@ -47,14 +40,25 @@ useEffect(()=> {
         setIsLoading(false)
     }
     getBooks();
+  
 
 }, [])
+
+
 
   const order = (a, b) => {
     return a < b ? -1 : (a > b ? 1 : 0);
     }
 
+    const indexOfLastItem = currentPage * itemsPerPage
+    const indexOfFirstPost = indexOfLastItem - itemsPerPage
+    const currentItems = booksArray.slice(indexOfFirstPost, indexOfLastItem)
+    const  pageNumbers = booksArray.length / itemsPerPage
+    const onPageChange = (event) => {
+        setCurrentPage(event)
+    }
 
+  
 
   return (
     <main className='h-0'>
@@ -83,18 +87,21 @@ useEffect(()=> {
                             /> 
                             </div>
                         ):(
-                booksArray && booksArray.map((booksMap) => (
                     
-                    booksMap['mybooks'].sort(order).map((item, index) => (
+                        currentItems && currentItems.map((item, index) => (
                         
                         <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="Request Book" status={item.book_status} id ={item.id} owner_id = {item.owner_id}/>
-                    ))
-
-                )).sort(order)
+                    )).sort(order)
             )}    
                     
             </div>{/*end of top review books */}
-
+            <div className='m-6 px-8 overflow-x-hidden grid grid-cols-1 justify-items-center pb-2'>
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={pageNumbers}
+                    onPageChange={onPageChange}
+                />
+            </div>
         </section>
         <Footer />
     </main>
