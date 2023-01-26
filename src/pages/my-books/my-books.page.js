@@ -22,6 +22,14 @@ import { selectUserBooksMap } from "../../store/userBook/userBook.selector";
 const bookCategory = [
     'Science',
     'Philosophy',
+    'Art',
+    'Business',
+    'Self-Help',
+    'Development',
+    'Motivational',
+    'Health',
+    'Families & Relationships',
+    'Guide / How-to',
     'Maths',
     'History',
     'Encyclopedia',
@@ -30,7 +38,8 @@ const bookCategory = [
     'Fantasy',
     'Science Fiction',
     'Economics',
-    'Non-fiction'
+    'Non-fiction',
+    'Others'
 ]
 
 const bookStatus = [

@@ -9,10 +9,21 @@ import { getAllBooks } from '../../utils/firebase/firebase.utils'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectMyBooksMap } from '../../store/myBooks/myBooks.selector';
 import { setMyBooksMap } from '../../store/myBooks/myBooks.action';
+import { Link } from 'react-router-dom'
+import PaginationComponent from '../../components/pagination/pagination-component'
 
 const bookCategory = [
+    'All',
     'Science',
     'Philosophy',
+    'Art',
+    'Business',
+    'Self-Help',
+    'Development',
+    'Motivational',
+    'Health',
+    'Families & Relationships',
+    'Guide / How-to',
     'Maths',
     'History',
     'Encyclopedia',
@@ -21,16 +32,24 @@ const bookCategory = [
     'Fantasy',
     'Science Fiction',
     'Economics',
-    'Non-fiction'
+    'Non-fiction',
+    'Others'
 ]
+
+
+let indexOfLastItem = null
+let indexOfFirstPost = null
+let currentItems = []
+let pageNumbers = []
 
 export default function BooksPage() {
     
     const [isLoading, setIsLoading] = useState(true);
+    const [selectCategory, setSelectCategory] = useState('All');
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(8)
-    const booksArray = useSelector(selectMyBooksMap)
-    const dispatch = useDispatch()
+    const [itemsPerPage, setItemsPerPage] = useState(8);
+    const booksArray = useSelector(selectMyBooksMap);
+    const dispatch = useDispatch();
 
 
 useEffect(()=> {
@@ -45,17 +64,35 @@ useEffect(()=> {
 }, [])
 
 
-
   const order = (a, b) => {
     return a < b ? -1 : (a > b ? 1 : 0);
     }
 
-    const indexOfLastItem = currentPage * itemsPerPage
-    const indexOfFirstPost = indexOfLastItem - itemsPerPage
-    const currentItems = booksArray.slice(indexOfFirstPost, indexOfLastItem)
-    const  pageNumbers = booksArray.length / itemsPerPage
+    // const indexOfLastItem = currentPage * itemsPerPage
+    // const indexOfFirstPost = indexOfLastItem - itemsPerPage
+    // const currentItems = booksArray.slice(indexOfFirstPost, indexOfLastItem)
+    // const pageNumbers = booksArray.length / itemsPerPage
+    indexOfLastItem = currentPage * itemsPerPage
+    indexOfFirstPost = indexOfLastItem - itemsPerPage
+    currentItems = booksArray.slice(indexOfFirstPost, indexOfLastItem)
+    pageNumbers = Math.ceil(booksArray.length / itemsPerPage)
+
     const onPageChange = (event) => {
         setCurrentPage(event)
+    }
+
+    const handleSelectedCategory = (event) => {
+        // event.preventDefault()
+        // console.log("fired")
+        setSelectCategory(event.target.text)
+        setCurrentPage(1)
+        setItemsPerPage(8)
+        indexOfLastItem = currentPage * itemsPerPage
+        indexOfFirstPost = indexOfLastItem - itemsPerPage
+        currentItems = booksArray.filter((filteredData) => filteredData.book_category === selectCategory).slice(indexOfFirstPost, indexOfLastItem)
+        pageNumbers = Math.ceil(booksArray.filter((filteredData) => filteredData.book_category === selectCategory).length / itemsPerPage)
+        // console.log(currentItems, pageNumbers)
+        // console.log("fire End")
     }
 
   
@@ -67,9 +104,13 @@ useEffect(()=> {
             <nav className="bg-gray-100 px-10 py-3 rounded-md w-full">
                 <h1 className='text-lg text-slate-500 font-semibold'>Categories</h1>
                 <ol className="list-reset flex flex-wrap">
-                {bookCategory .map((item, index) => (
+                {bookCategory.map((item, index) => (
                         <Fragment>
-                            <li key={index}><a href="#" className="text-blue-600 hover:text-blue-700">{item}</a></li>
+                            <li key={index} className="text-blue-600 hover:text-blue-700 cursor-pointer">
+                                <Link onClick={handleSelectedCategory}>
+                                    {item}
+                                </Link>
+                            </li>
                             <li><span className="text-gray-500 mx-2">|</span></li>
                         </Fragment>
                     ))}
@@ -87,21 +128,33 @@ useEffect(()=> {
                             /> 
                             </div>
                         ):(
-                    
-                        currentItems && currentItems.map((item, index) => (
+                            // Book Filter Section
+                            selectCategory === 'All' ? (
+                                currentItems && currentItems.map((item, index) => (
+                            
+                                    <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="Request Book" status={item.book_status} id ={item.id} owner_id = {item.owner_id}/>
+                                )).sort(order)
+                            ) : (
+                               (
+                                    currentItems && currentItems.filter((filteredData) => filteredData.book_category === selectCategory).length === 0 ? (
+                                        <div className="grid col-span-full place-items-center h-56"> 
+                                        <p className='text-gray-500 text-center'>...No Book In {selectCategory} Category</p>
+                                        </div>
+                                    ) : (
+                                        currentItems && currentItems.filter((filteredData) => filteredData.book_category === selectCategory).map((item, index) => (
+                            
+                                            <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="Request Book" status={item.book_status} id ={item.id} owner_id = {item.owner_id}/>
+                                        )).sort(order)
+                                    )
+                               )
+                                
+                            )
                         
-                        <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="Request Book" status={item.book_status} id ={item.id} owner_id = {item.owner_id}/>
-                    )).sort(order)
-            )}    
+                         )
+                         }    
                     
             </div>{/*end of top review books */}
-            <div className='m-6 px-8 overflow-x-hidden grid grid-cols-1 justify-items-center pb-2'>
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={pageNumbers}
-                    onPageChange={onPageChange}
-                />
-            </div>
+            <PaginationComponent currentPage={currentPage} pageNumbers={pageNumbers} onPageChange={onPageChange} />
         </section>
         <Footer />
     </main>
