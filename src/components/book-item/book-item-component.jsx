@@ -9,8 +9,6 @@ export default function BookItem({ bookImage, title, author, owner, buttonAction
   const redirect = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
   const handleClick = (book_id, owner_id) => {
-    // console.log(event);
-    // redirect(`/view-book/${book_id}/${owner_id}`, {state: owner_id})
     redirect(`/view-book`, {state: {book_Id: book_id, owner_Id: owner_id}})
   }
 

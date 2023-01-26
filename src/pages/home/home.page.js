@@ -116,7 +116,7 @@ export default function HomePage (){
                         ):(
                           
                            
-                            allBooksMap && allBooksMap.sort(order).slice(0, 4).map((item, index) => (
+                            allBooksMap && allBooksMap.sort(order).slice(0, 5).map((item, index) => (
                                 
                                     <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="Request Book" status={item.book_status} id ={item.id} owner_id = {item.owner_id}/>
                             )) 
