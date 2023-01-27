@@ -7,6 +7,7 @@ import{ FiEdit } from "react-icons/fi"
 import{ RiDeleteBin6Line } from "react-icons/ri"
 import {HiOutlineExclamationCircle, HiOutlineInformationCircle} from "react-icons/hi"
 import { FallingLines } from 'react-loader-spinner'
+import PaginationComponent from '../../components/pagination/pagination-component'
 
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
@@ -57,16 +58,21 @@ const defaultFormField = {
     book_author: ''
 }
 
-export default function MyBooksPage(){
+// let indexOfLastItem = null
+// let indexOfFirstPost = null
+// let currentItems = []
+// let currentItemsFiltered = []
+// let pageNumber = []
 
-    // const dispatch = useDispatch();
-    // const myBooksMap = useSelector(selectMyBooksMap);
-    // const [myBooks, setMyBooks] = useState([]);
+export default function MyBooksPage(){
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(8);
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showLoadingModal, setShowLoadingModal] = useState(false);
-    const [modalResponse, setModalResponse] = useState(null);
+    // const [modalResponse, setModalResponse] = useState(null);
     const [itemData, setItemData] = useState([]);
     const currentUser = useSelector(selectCurrentUser);
     const [error, setError] = useState('');
@@ -78,6 +84,11 @@ export default function MyBooksPage(){
     let [fileUrl, setFileUrl] = useState(null)
     const dispatch = useDispatch()
     const myBooks = useSelector(selectUserBooksMap)
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstPost = indexOfLastItem - itemsPerPage;
+    const currentItems = myBooks.slice(indexOfFirstPost, indexOfLastItem);
+    const pageNumbers = Math.ceil(myBooks.length / itemsPerPage);
 
     // Image File Resizing function
 
@@ -119,6 +130,10 @@ export default function MyBooksPage(){
         statusOption.selectedIndex  = 0
         setThumbnail = null
 
+    }
+
+    const onPageChange = (event) => {
+        setCurrentPage(event);
     }
     
      const handleDeleteModal = (el, imageUrl) => {
@@ -474,7 +489,7 @@ export default function MyBooksPage(){
                                 />
                             </div>
                         ) : (
-                            myBooks && myBooks.map((item, index) => (
+                            currentItems && currentItems.map((item, index) => (
                                 <div key={index} className="relative group/div">
                                     <Tooltip
                                         content="Edit Book"
@@ -500,6 +515,7 @@ export default function MyBooksPage(){
                             ))
                         )}
                     </div>
+                    <PaginationComponent currentPage={currentPage} pageNumbers={pageNumbers} onPageChange={onPageChange} />
                 </section>
 
             </main>
