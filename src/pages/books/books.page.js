@@ -40,13 +40,15 @@ const bookCategory = [
 let indexOfLastItem = null
 let indexOfFirstPost = null
 let currentItems = []
-let pageNumbers = []
+let currentItemsFiltered = []
+let pageNumber = []
 
 export default function BooksPage() {
     
     const [isLoading, setIsLoading] = useState(true);
     const [selectCategory, setSelectCategory] = useState('All');
     const [currentPage, setCurrentPage] = useState(1);
+    const [pageNumbers, setPageNumbers] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(8);
     const booksArray = useSelector(selectMyBooksMap);
     const dispatch = useDispatch();
@@ -68,31 +70,32 @@ useEffect(()=> {
     return a < b ? -1 : (a > b ? 1 : 0);
     }
 
-    // const indexOfLastItem = currentPage * itemsPerPage
-    // const indexOfFirstPost = indexOfLastItem - itemsPerPage
-    // const currentItems = booksArray.slice(indexOfFirstPost, indexOfLastItem)
-    // const pageNumbers = booksArray.length / itemsPerPage
-    indexOfLastItem = currentPage * itemsPerPage
-    indexOfFirstPost = indexOfLastItem - itemsPerPage
-    currentItems = booksArray.slice(indexOfFirstPost, indexOfLastItem)
-    pageNumbers = Math.ceil(booksArray.length / itemsPerPage)
+
+    indexOfLastItem = currentPage * itemsPerPage;
+    indexOfFirstPost = indexOfLastItem - itemsPerPage;
+    currentItems = booksArray.slice(indexOfFirstPost, indexOfLastItem);
+    currentItemsFiltered = booksArray.filter((filteredData) => filteredData.book_category === selectCategory).slice(indexOfFirstPost, indexOfLastItem);
+    pageNumber = Math.ceil((booksArray.filter((filteredData) => filteredData.book_category === selectCategory).length + 1) / itemsPerPage);
+
+    useEffect(() => {
+        if (selectCategory === "All"){
+            setPageNumbers(Math.ceil(booksArray.length / itemsPerPage));
+        }else{
+            setPageNumbers(pageNumber);
+        }
+    },[currentItems, currentItemsFiltered]) 
+
 
     const onPageChange = (event) => {
-        setCurrentPage(event)
+        setCurrentPage(event);
     }
 
     const handleSelectedCategory = (event) => {
-        // event.preventDefault()
-        // console.log("fired")
-        setSelectCategory(event.target.text)
-        setCurrentPage(1)
-        setItemsPerPage(8)
-        indexOfLastItem = currentPage * itemsPerPage
-        indexOfFirstPost = indexOfLastItem - itemsPerPage
-        currentItems = booksArray.filter((filteredData) => filteredData.book_category === selectCategory).slice(indexOfFirstPost, indexOfLastItem)
-        pageNumbers = Math.ceil(booksArray.filter((filteredData) => filteredData.book_category === selectCategory).length / itemsPerPage)
-        // console.log(currentItems, pageNumbers)
-        // console.log("fire End")
+        setSelectCategory(event.target.text);
+        setCurrentPage(1);
+        setItemsPerPage(8);
+        indexOfLastItem = currentPage * itemsPerPage;
+        indexOfFirstPost = indexOfLastItem - itemsPerPage;
     }
 
   
@@ -141,7 +144,7 @@ useEffect(()=> {
                                         <p className='text-gray-500 text-center'>...No Book In {selectCategory} Category</p>
                                         </div>
                                     ) : (
-                                        currentItems && currentItems.filter((filteredData) => filteredData.book_category === selectCategory).map((item, index) => (
+                                        currentItemsFiltered && currentItemsFiltered.map((item, index) => (
                             
                                             <BookItem key={index} bookImage = {item.imageUrl} title ={item.book_title} author ={item.book_author} owner={item.book_owner} buttonAction="Request Book" status={item.book_status} id ={item.id} owner_id = {item.owner_id}/>
                                         )).sort(order)
