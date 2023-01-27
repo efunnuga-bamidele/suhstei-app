@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { FallingLines } from "react-loader-spinner";
-import { useDispatch, useSelector } from "react-redux";
-import { selectMyBooksMap } from "../../store/myBooks/myBooks.selector";
+// import { useDispatch, useSelector } from "react-redux";
+// import { selectMyBooksMap } from "../../store/myBooks/myBooks.selector";
 
 // Reusable Components Import
 import Footer from "../../components/footer/footer.component";
 import Navigation from "../../components/navigation/navigation.component";
 import BookComponent from "../../components/book-component/book-component";
 import { getBookById } from "../../utils/firebase/firebase.utils";
-import { setMyBooksMap } from "../../store/myBooks/myBooks.action";
+// import { setMyBooksMap } from "../../store/myBooks/myBooks.action";
 
 export default function BookViewPage(){
     const [isLoading, setIsLoading] = useState(true);
     const [bookRequested, setBookRequested] = useState();
-    const { book_id, owner_id } = useParams();
-    const booksItem = useSelector(selectMyBooksMap);
-    const dispatch = useDispatch();
+    // const { book_id, owner_id } = useParams();
+    // const booksItem = useSelector(selectMyBooksMap);
+    // const dispatch = useDispatch();
 
     const location = useLocation();
 

@@ -1,6 +1,6 @@
 
 import React, { Fragment, useEffect, useState } from 'react'
-import { Pagination } from 'flowbite-react'
+// import { Pagination } from 'flowbite-react'
 import { FallingLines } from 'react-loader-spinner'
 import BookItem from '../../components/book-item/book-item-component'
 import Footer from '../../components/footer/footer.component'
