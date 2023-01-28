@@ -60,11 +60,15 @@ export default function SidebarNavigation() {
                             label="Book Requests"
                             >
                         <span className='flex ml-6 text-[0.9em]'>
-                            <NavLink to="/active-request" className="dropdown_hover ml-6" >Active Request</NavLink>
+                            <NavLink to="/borrow-request" className="dropdown_hover ml-6" >Borrow Request</NavLink>
                             <FcSimCardChip className='mr-2 ml-2 mb-2' size={22} />
                         </span>
                         <span className='flex ml-6 text-[0.9em]'>
-                            <NavLink to="/view-request" className="dropdown_hover ml-6" >View Request</NavLink>
+                            <NavLink to="/lending-request" className="dropdown_hover ml-6" >Lending Request</NavLink>
+                            <FcSimCardChip className='mr-2 ml-2 mb-2' size={22} />
+                        </span>
+                        <span className='flex ml-6 text-[0.9em]'>
+                            <NavLink to="/closed-request" className="dropdown_hover ml-6" >Closed Request</NavLink>
                             <FcSimCardChip className='mr-2 ml-2 mb-2' size={22} />
                         </span>
                         </Sidebar.Collapse>
