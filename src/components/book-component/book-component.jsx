@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from 'uuid'
 import { selectCurrentUser } from "../../store/user/user.selector";
 import { BorrowBook } from '../../utils/firebase/firebase.utils';
+import ButtonComponent from "../button-component/button-component";
+import { FallingLines } from "react-loader-spinner";
 
 import { HiOutlineInformationCircle } from "react-icons/hi"
-import { Alert, Modal, Button } from 'flowbite-react'
+import { Alert, Modal } from 'flowbite-react'
 
 export default function BookComponent({ bookDetails}){
     const { id, book_title, imageUrl, book_category, book_description, book_owner, book_status, book_author, createdAt, owner_id } = bookDetails;
@@ -13,28 +15,51 @@ export default function BookComponent({ bookDetails}){
     const unique_id = uuid();
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [showModal, setShowModal] = useState(false)
 
     const handleClick = async (requestedBook) => {
       const requestedAt = new Date();
+      setShowModal(true)
       const response = await BorrowBook(unique_id, requestedBook, currentUser, requestedAt)
 
       console.log(response);
       if(response === "success"){
         setSuccess("Book borrowed successful!");
-        setTimeout(() => setSuccess(''), 10000);
+        setTimeout(() => setSuccess(''), 5000);
         
       }else if(response === "added"){
           setSuccess("Book borrowed successfully!");
-          setTimeout(() => setSuccess(''), 10000);
+          setTimeout(() => setSuccess(''), 5000);
       }else{
           setError("Failed to borrow book");
-          setTimeout(() => setError(''), 10000);
+          setTimeout(() => setError(''), 5000);
       }
-        // console.log(response);
+      setShowModal(false)
       }
 
     return(
         <div className="group flex flex-row max-sm:flex-col justify-start m-2 place-self-center border-2 p-2 rounded-md border-slate-100 ">
+            <Fragment>
+                    <Modal
+                        show={showModal}
+                        size="md"
+                        popup={true}
+                        onClose={showModal}
+                        className="max-md:pt-32 mt-10 bg-opacity-60"
+                    >
+                   
+                        <Modal.Body>
+                            <div className="grid col-span-full place-items-center h-56"> 
+                                <FallingLines
+                                    color="#1e94cc"
+                                    width="120"
+                                    visible={true}
+                                    ariaLabel='falling-lines-loading'
+                                />               
+                            </div>
+                        </Modal.Body>
+                    </Modal>
+                </Fragment>
 
             <div className="">
                 <img
@@ -55,22 +80,9 @@ export default function BookComponent({ bookDetails}){
                 {book_status && (<p className="mt-1 text-md text-gray-500"><strong>Book Status:</strong> <span className='text-blue-600 hover:text-blue-400 hover:border-b-2 hover:border-red-400 cursor-pointer ml-2 font-semibold'>{book_status}</span></p>)}
                 
                 {book_status === 'Available' ? (
-                    <button 
-                      type="button" 
-                      className="inline-block px-7 py-3 mt-2 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
-                      data-mdb-ripple="true"
-                      data-mdb-ripple-color="light"
-                      onClick={(ev) => handleClick(bookDetails)}>
-                          Borrow This Book
-                    </button>
+                    <ButtonComponent btnColor="blue" btnValue ="Borrow This Book" btnSize="px-7 py-3 mt-2" btnClick={(ev) => handleClick(bookDetails)} />
                     ) : (
-                    <button 
-                      type="button" 
-                      className="inline-block px-7 py-3 mt-2 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
-                      data-mdb-ripple="true"
-                      data-mdb-ripple-color="light">
-                          Not Available
-                    </button>
+                    <ButtonComponent btnColor="blue" btnValue ="Not Available" btnSize="px-7 py-3 mt-2" />
                     )}
                     <div className="mb-6">
                       {error &&
