@@ -55,6 +55,9 @@ export default function ActiveRequestPage(){
     getBookRequest();
     },[])
 
+    const handleClick = () => {
+        console.log("Hello World")
+    }
     return(
         <div className='bg-gray-100 mx-1 font-body scroll-smooth h-0'>
             <Navigation />
@@ -150,27 +153,27 @@ export default function ActiveRequestPage(){
                                     <Table.Cell>
                                         {item.borrowers_name === currentUser.displayName ? (  
                                      
-                                            <ButtonComponent btnColor="red" btnValue ="Cancel" />
+                                            <ButtonComponent btnColor="red" btnValue ="Cancel" btnSize="px-4 py-2 mt-2" btnClick={handleClick} />
 
                                         ) : (
                                             
-                                            <ButtonComponent btnColor="blue" btnValue="Approve" />
+                                            <ButtonComponent btnColor="blue" btnValue="Approve" btnSize="px-4 py-2 mt-2" />
                                         )}
                                     </Table.Cell>
                                     <Table.Cell>
                                         {item.borrowers_name === currentUser.displayName ? (  
                                                
-                                                <ButtonComponent btnColor="purple" btnValue="Message" />
+                                                <ButtonComponent btnColor="purple" btnValue="Message" btnSize="px-4 py-2 mt-2" />
                                             ) : (
                                                
-                                                <ButtonComponent btnColor="red" btnValue="Decline" />
+                                                <ButtonComponent btnColor="red" btnValue="Decline" btnSize="px-4 py-2 mt-2" />
                                                 
                                             )}
                                     </Table.Cell>
                                     <Table.Cell>
                                         {item.borrowers_name !== currentUser.displayName &&
 
-                                                <ButtonComponent btnColor="purple" btnValue="Message" />
+                                                <ButtonComponent btnColor="purple" btnValue="Message" btnSize="px-4 py-2 mt-2" />
                                             }
                                     </Table.Cell>
                                 </Table.Row>
