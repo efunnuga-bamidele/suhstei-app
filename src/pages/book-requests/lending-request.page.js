@@ -3,6 +3,7 @@ import { Fragment, useEffect, useState } from "react"
 import { FallingLines } from "react-loader-spinner";
 import { Table, Button } from "flowbite-react";
 
+import PaginationComponent from "../../components/pagination/pagination-component";
 import ButtonComponent from '../../components/button-component/button-component'
 // import { convertTimestamp } from "convert-firebase-timestamp";
 
@@ -27,11 +28,13 @@ import SidebarNavigation from "../../components/sidebar/sidebar.component";
 import { getBookRequests } from "../../utils/firebase/firebase.utils";
 
 
-export default function ActiveRequestPage(){
+export default function LendingRequestPage(){
     const [showLoadingModal, setShowLoadingModal] = useState(false);
     const dispatch = useDispatch();
     const AllBookRequest = useSelector(selectBookRequest);
     const currentUser = useSelector(selectCurrentUser);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     
 
     const convertTimestamp = (timestamp) => {
@@ -54,6 +57,17 @@ export default function ActiveRequestPage(){
 
     getBookRequest();
     },[])
+    
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstPost = indexOfLastItem - itemsPerPage;
+    const currentItems = AllBookRequest.filter((items) => items.borrowers_name !== currentUser.displayName).slice(indexOfFirstPost, indexOfLastItem);
+    const pageNumber = Math.ceil((AllBookRequest.filter((items) => items.borrowers_name !== currentUser.displayName).length) / itemsPerPage);
+
+
+    const onPageChange = (event) => {
+        setCurrentPage(event);
+    }
+
 
     const handleClick = () => {
         console.log("Hello World")
@@ -86,7 +100,7 @@ export default function ActiveRequestPage(){
 
                 <SidebarNavigation />
                 <section className="bg-white mt-12 m-2 p-2 w-full rounded-md relative overflow-x-auto">
-                        <h1 className="font-bold text-lg text-center underline text-gray-600">Active Request</h1>
+                        <h1 className="font-bold text-lg text-center underline text-gray-600">Open Lending Requests</h1>
                        
 
                         <Table className="mt-6" hoverable={true}>
@@ -94,7 +108,7 @@ export default function ActiveRequestPage(){
                                 <Table.HeadCell className="bg-red-400">
                                     Index SN
                                 </Table.HeadCell>
-                                <Table.HeadCell>
+                                <Table.HeadCell className="truncate">
                                     Book Name
                                 </Table.HeadCell>
                                 <Table.HeadCell>
@@ -121,10 +135,13 @@ export default function ActiveRequestPage(){
                                 <Table.HeadCell>
                                     {/* Action */}
                                 </Table.HeadCell>
+                                <Table.HeadCell>
+                                    {/* Action */}
+                                </Table.HeadCell>
                             </Table.Head>
                             <Table.Body className="divide-y">
                             
-                            {AllBookRequest && AllBookRequest.map((item, index) => (
+                            {currentItems && currentItems.map((item, index) => (
                                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 " key={index}>
                                     <Table.Cell className="whitespace-nowarp font-medium text-gray-900 dark:text-white">
                                         {index + 1}
@@ -151,37 +168,22 @@ export default function ActiveRequestPage(){
                                         {item.request_status}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.borrowers_name === currentUser.displayName ? (  
-                                     
-                                            <ButtonComponent btnColor="red" btnValue ="Cancel" btnSize="px-4 py-2 mt-2" btnClick={handleClick} />
-
-                                        ) : (
-                                            
-                                            <ButtonComponent btnColor="blue" btnValue="Approve" btnSize="px-4 py-2 mt-2" />
-                                        )}
+                                        <ButtonComponent btnColor="blue" btnValue="Approve" btnSize="px-4 py-2 mt-2" />
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.borrowers_name === currentUser.displayName ? (  
-                                               
-                                                <ButtonComponent btnColor="purple" btnValue="Message" btnSize="px-4 py-2 mt-2" />
-                                            ) : (
-                                               
-                                                <ButtonComponent btnColor="red" btnValue="Decline" btnSize="px-4 py-2 mt-2" />
-                                                
-                                            )}
+                                        <ButtonComponent btnColor="red" btnValue="Decline" btnSize="px-4 py-2 mt-2" />
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.borrowers_name !== currentUser.displayName &&
-
-                                                <ButtonComponent btnColor="purple" btnValue="Message" btnSize="px-4 py-2 mt-2" />
-                                            }
+                                        <ButtonComponent btnColor="purple" btnValue="Message" btnSize="px-4 py-2 mt-2" />
                                     </Table.Cell>
                                 </Table.Row>
                             ))}
                                 
                             </Table.Body>
                         </Table>
+                            <PaginationComponent currentPage={currentPage} pageNumbers={pageNumber} onPageChange={onPageChange} />
                     </section>
+                    
             </main>
             <Footer/>
         </div>

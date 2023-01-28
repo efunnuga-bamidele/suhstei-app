@@ -27,8 +27,9 @@ import MyBooksPage from './pages/my-books/my-books.page';
 import CreateBookPage from './pages/my-books/create-book.page';
 import DashboardPage from './pages/dashboard/dashboard.page';
 import SettingsPage from './pages/settings/settings.page';
-import ActiveRequestPage from './pages/book-requests/active-request.page';
-import ViewRequstPage from './pages/book-requests/view-request.page';
+import LendingRequestPage from './pages/book-requests/lending-request.page';
+import BorrowRequestPage from './pages/book-requests/borrow-request.page';
+import ClosedRequstPage from './pages/book-requests/closed-request.page';
 
 // Protection Routes
 import { ProtectedLayout } from './components/protected-layout/protected-layout.component';
@@ -145,20 +146,29 @@ function App() {
               />
 
             <Route
-              path='/active-request'
+              path='/lending-request'
               element={
                 <ProfileLayout>
-                  <ActiveRequestPage/>
+                  <LendingRequestPage/>
+                </ProfileLayout>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path='/borrow-request'
+              element={
+                <ProfileLayout>
+                  <BorrowRequestPage/>
                 </ProfileLayout>
               }
               errorElement={<ErrorPage />}
             />
 
           <Route
-            path='/view-request'
+            path='/closed-request'
             element={
               <ProfileLayout>
-                <ViewRequstPage />
+                <ClosedRequstPage />
               </ProfileLayout>
             }
             errorElement={<ErrorPage />}

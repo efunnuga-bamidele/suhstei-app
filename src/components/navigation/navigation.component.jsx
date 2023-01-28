@@ -122,13 +122,18 @@ export default function Navigation() {
             dismissOnClick={false}
           >
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/active-request" className="dropdown_hover">
-                  Active Request
+                <NavLink to="/borrow-request" className="dropdown_hover">
+                  Borrow Request
                 </NavLink>
               </Dropdown.Item>
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/view-request" className="dropdown_hover">
-                  View Request
+                <NavLink to="/lending-request" className="dropdown_hover">
+                  Lending Request
+                </NavLink>
+              </Dropdown.Item>
+              <Dropdown.Item className="cursor-default grid md:hidden">
+                <NavLink to="/closed-request" className="dropdown_hover">
+                  Closed Request
                 </NavLink>
               </Dropdown.Item>
 
