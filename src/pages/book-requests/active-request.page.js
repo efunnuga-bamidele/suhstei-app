@@ -2,6 +2,8 @@ import { Modal } from "flowbite-react";
 import { Fragment, useEffect, useState } from "react"
 import { FallingLines } from "react-loader-spinner";
 import { Table, Button } from "flowbite-react";
+
+import ButtonComponent from '../../components/button-component/button-component'
 // import { convertTimestamp } from "convert-firebase-timestamp";
 
 import { 
@@ -147,67 +149,28 @@ export default function ActiveRequestPage(){
                                     </Table.Cell>
                                     <Table.Cell>
                                         {item.borrowers_name === currentUser.displayName ? (  
-                                            // <Button size='sm' outline={true} color="warning" className="uppercase ">
-                                            //     Cancel
-                                            // </Button>
-                                            <button 
-                                            type="button" 
-                                            className="inline-block px-4 py-2 mt-2 bg-red-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
-                                            data-mdb-ripple="true"
-                                            data-mdb-ripple-color="light"
-                                            >
-                                                Cancel
-                                            </button>
+                                     
+                                            <ButtonComponent btnColor="red" btnValue ="Cancel" />
+
                                         ) : (
-                                            // <Button size="sm" outline={true} className="uppercase ">
-                                            //     Approve
-                                            // </Button>
-                                            <button 
-                                            type="button" 
-                                            className="inline-block px-4 py-2 mt-2 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
-                                            data-mdb-ripple="true"
-                                            data-mdb-ripple-color="light"
-                                            >
-                                                Approve
-                                            </button>
+                                            
+                                            <ButtonComponent btnColor="blue" btnValue="Approve" />
                                         )}
                                     </Table.Cell>
                                     <Table.Cell>
                                         {item.borrowers_name === currentUser.displayName ? (  
-                                                <button 
-                                                type="button" 
-                                                className="inline-block px-4 py-2 mt-2 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
-                                                data-mdb-ripple="true"
-                                                data-mdb-ripple-color="light"
-                                                >
-                                                    {/* <span className='flex'>
-                                                    <MdMessage  /> */}
-                                                    Message
-                                                    {/* </span> */}
-                                                </button>
+                                               
+                                                <ButtonComponent btnColor="purple" btnValue="Message" />
                                             ) : (
-                                                <button 
-                                                type="button" 
-                                                className="inline-block px-4 py-2 mt-2 bg-red-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
-                                                data-mdb-ripple="true"
-                                                data-mdb-ripple-color="light"
-                                                >
-                                                    Decline
-                                                </button>
+                                               
+                                                <ButtonComponent btnColor="red" btnValue="Decline" />
                                                 
                                             )}
                                     </Table.Cell>
                                     <Table.Cell>
                                         {item.borrowers_name !== currentUser.displayName &&
 
-                                                <button 
-                                                type="button" 
-                                                className="inline-block px-4 py-2 mt-2 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
-                                                data-mdb-ripple="true"
-                                                data-mdb-ripple-color="light"
-                                                >
-                                                    Message
-                                                </button>
+                                                <ButtonComponent btnColor="purple" btnValue="Message" />
                                             }
                                     </Table.Cell>
                                 </Table.Row>
