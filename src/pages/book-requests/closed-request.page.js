@@ -102,18 +102,6 @@ export default function ClosedRequestPage(){
                                     Requested By
                                 </Table.HeadCell>
                                 <Table.HeadCell>
-                                    Requested Date
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Received Date
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Due Date
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Returned Date
-                                </Table.HeadCell>
-                                <Table.HeadCell>
                                     Status
                                 </Table.HeadCell>
                             </Table.Head>
@@ -130,7 +118,7 @@ export default function ClosedRequestPage(){
                                          <Table.Cell>
                                              {item.borrowers_name}
                                          </Table.Cell>
-                                         <Table.Cell>
+                                         {/* <Table.Cell>
                                              { item.request_date !== null ? convertTimestamp(item.request_date) : "No Data"}
                                          </Table.Cell>
                                          <Table.Cell>
@@ -141,7 +129,7 @@ export default function ClosedRequestPage(){
                                          </Table.Cell>
                                          <Table.Cell>
                                              { item.return_date !== null ? convertTimestamp(item.return_date) : "No Data"}
-                                         </Table.Cell>
+                                         </Table.Cell> */}
                                          <Table.Cell>
                                              {item.request_status}
                                          </Table.Cell>

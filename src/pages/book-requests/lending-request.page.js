@@ -26,6 +26,7 @@ import Footer from "../../components/footer/footer.component";
 import Navigation from "../../components/navigation/navigation.component";
 import SidebarNavigation from "../../components/sidebar/sidebar.component";
 import { getBookRequests } from "../../utils/firebase/firebase.utils";
+import { Link } from "react-router-dom";
 
 
 export default function LendingRequestPage(){
@@ -115,18 +116,6 @@ export default function LendingRequestPage(){
                                     Requested By
                                 </Table.HeadCell>
                                 <Table.HeadCell>
-                                    Requested Date
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Received Date
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Due Date
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Returned Date
-                                </Table.HeadCell>
-                                <Table.HeadCell>
                                     Status
                                 </Table.HeadCell>
                                 <Table.HeadCell>
@@ -150,19 +139,7 @@ export default function LendingRequestPage(){
                                         {item.book_title}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.borrowers_name}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        { item.request_date !== null ? convertTimestamp(item.request_date) : "No Data"}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        { item.received_date !== null ? convertTimestamp(item.received_date) : "No Data"}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        { item.due_date !== null ? convertTimestamp(item.due_date) : "No Data"}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        { item.return_date !== null ? convertTimestamp(item.return_date) : "No Data"}
+                                    <Link className="text-primary underline">{item.borrowers_name}</Link>
                                     </Table.Cell>
                                     <Table.Cell>
                                         {item.request_status}
