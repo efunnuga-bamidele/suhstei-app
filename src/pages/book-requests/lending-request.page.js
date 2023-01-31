@@ -4,19 +4,7 @@ import { FallingLines } from "react-loader-spinner";
 import { Table, Button } from "flowbite-react";
 
 import PaginationComponent from "../../components/pagination/pagination-component";
-import ButtonComponent from '../../components/button-component/button-component'
-// import { convertTimestamp } from "convert-firebase-timestamp";
-
-import { 
-    MdMessage,
-    FcReading,
-    FcSms,
-    FcReadingEbook,
-    FcSimCardChip,
-    FcAddDatabase,
-    FcCollaboration
-     } from 'react-icons/md';
-
+import ButtonComponent from '../../components/button-component/button-component';
 import { useDispatch, useSelector } from "react-redux";
 import { selectBookRequest } from "../../store/booksRequest/booksRequest.selector";
 import { selectCurrentUser } from "../../store/user/user.selector";

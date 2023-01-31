@@ -350,10 +350,17 @@ const imageDelete = async (imageUrl) => {
     const bookRequestsSnap = await getDoc(bookRequests);
     
     return bookRequestsSnap.data();
-    // if (docSnap.exists()) {
-    //   console.log("Document data:", docSnap.data());
-    // } else {
-    //   // doc.data() will be undefined in this case
-    //   console.log("No such document!");
-    // }
+  }
+
+  export const getProfile = async (profileID) => {
+      
+    try {
+      const userDocRef = doc(db, 'users', profileID);
+      const userSnapshot = await getDoc(userDocRef);
+  
+      return userSnapshot.data();
+    } catch (error) {
+      return "Failed to get profile details"
+    }
+
   }
