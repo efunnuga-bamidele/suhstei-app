@@ -15,7 +15,7 @@ import { setBookRequest } from "../../store/booksRequest/booksRequest.action";
 import Footer from "../../components/footer/footer.component";
 import Navigation from "../../components/navigation/navigation.component";
 import SidebarNavigation from "../../components/sidebar/sidebar.component";
-import { getBookRequests, getProfile } from "../../utils/firebase/firebase.utils";
+import { getBookById, getBookRequests, getProfile, RequestResponse } from "../../utils/firebase/firebase.utils";
 import { Link } from "react-router-dom";
 
 
@@ -34,7 +34,6 @@ export default function BorrowRequestPage() {
             setShowLoadingModal(true)
             const response = await getBookRequests(currentUser.uid);
             dispatch(setBookRequest(response.book_requests))
-            // console.log(response);
             setShowLoadingModal(false)
         }
 
@@ -43,14 +42,26 @@ export default function BorrowRequestPage() {
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstPost = indexOfLastItem - itemsPerPage;
-    const currentItems = AllBookRequest.filter((items) => items.borrowers_name === currentUser.displayName).slice(indexOfFirstPost, indexOfLastItem);
-    const pageNumber = Math.ceil((AllBookRequest.filter((items) => items.borrowers_name === currentUser.displayName).length) / itemsPerPage);
+    const currentItems = AllBookRequest.filter((items) => items.borrowers_name === currentUser.displayName && items.request_status !== "Closed" && items.request_status !== "Canceled").slice(indexOfFirstPost, indexOfLastItem);
+    const pageNumber = Math.ceil((AllBookRequest.filter((items) => items.borrowers_name === currentUser.displayName && items.request_status !== "Closed" && items.request_status !== "Canceled").length) / itemsPerPage);
 
 
     const onPageChange = (event) => {
         setCurrentPage(event);
     }
 
+    const handleCancel = async (bookDetails) => {
+        const data = await getBookById(bookDetails.book_id, bookDetails.book_owner_id);
+        const canceledAt = new Date();
+        const originalBookData = {
+            ...data[0]
+        };
+
+        const response = await RequestResponse(originalBookData, bookDetails, canceledAt, currentUser, "Canceled", "Available");
+        // console.log("Hello World", response);
+        // to be worked on later
+        window.location.reload(true)
+    }
     const handleClick = () => {
         console.log("Hello World")
     }
@@ -195,7 +206,7 @@ export default function BorrowRequestPage() {
                                         {item.request_status}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <ButtonComponent btnColor="red" btnValue="Cancel" btnSize="px-4 py-2 mt-2" btnClick={handleClick} />
+                                        <ButtonComponent btnColor="red" btnValue="Cancel" btnSize="px-4 py-2 mt-2" btnClick={() => handleCancel(item)} />
                                     </Table.Cell>
                                     <Table.Cell>
                                         <ButtonComponent btnColor="purple" btnValue="Message" btnSize="px-4 py-2 mt-2" btnClick={handleClick} />

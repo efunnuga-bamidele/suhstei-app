@@ -338,10 +338,6 @@ const imageDelete = async (imageUrl) => {
 
   }
 
-  // collections
-  // where owner is me?
-  // where borowwer is me?
-
 
   export const getBookRequests = async (userID) => {
 
@@ -362,5 +358,47 @@ const imageDelete = async (imageUrl) => {
     } catch (error) {
       return "Failed to get profile details"
     }
+
+  }
+
+  export const RequestResponse = async (originalBook, requestedBook, canceledAt, currentUser, action, bookStatus) => {
+    if (!currentUser.uid) return;
+    //write request to both owner and borrowers document
+    const userRef = doc(db, 'requests', currentUser.uid);
+    const ownerRef = doc(db, 'requests', originalBook.owner_id);
+
+    const requestDetail = {
+      ...requestedBook, 
+      ["request_status"]:action, 
+      ['cancel_date'] : canceledAt,
+    }
+        try{
+            await updateDoc(userRef, {
+              book_requests: arrayUnion(requestDetail)
+            });
+            await updateDoc(userRef, {
+              book_requests: arrayRemove(requestedBook)
+            });
+            
+            // 
+          }catch (err){
+              return "failed"
+            }
+          // Atomically add a new region to the "regions" array field.
+          try{
+            await updateDoc(ownerRef, {
+              book_requests: arrayUnion(requestDetail)
+            });
+            await updateDoc(ownerRef, {
+              book_requests: arrayRemove(requestedBook)
+            });
+          }catch (err){
+            return "failed"
+          }
+          updateRequestedBook(originalBook, bookStatus)
+
+          return "success"
+
+        
 
   }

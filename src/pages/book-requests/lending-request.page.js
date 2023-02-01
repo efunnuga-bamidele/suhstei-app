@@ -49,8 +49,8 @@ export default function LendingRequestPage(){
     
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstPost = indexOfLastItem - itemsPerPage;
-    const currentItems = AllBookRequest.filter((items) => items.borrowers_name !== currentUser.displayName).slice(indexOfFirstPost, indexOfLastItem);
-    const pageNumber = Math.ceil((AllBookRequest.filter((items) => items.borrowers_name !== currentUser.displayName).length) / itemsPerPage);
+    const currentItems = AllBookRequest.filter((items) => items.borrowers_name !== currentUser.displayName && items.request_status !== "Closed" && items.request_status !== "Canceled").slice(indexOfFirstPost, indexOfLastItem);
+    const pageNumber = Math.ceil((AllBookRequest.filter((items) => items.borrowers_name !== currentUser.displayName && items.request_status !== "Closed" && items.request_status !== "Canceled").length) / itemsPerPage);
 
 
     const onPageChange = (event) => {
