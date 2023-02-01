@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements, Navigate } from 'react-router-dom';
 
 //firebase import
 import {
@@ -92,7 +92,8 @@ function App() {
             <Route 
               path = '/view-book'
               element = {<BookViewPage />}
-              errorElement ={<BooksPage />}
+              // errorElement ={<BooksPage />}
+              errorElement ={<Navigate replace to='/books' />}
             />
 
             <Route 
