@@ -1,7 +1,7 @@
-import { Modal } from "flowbite-react";
 import { Fragment, useEffect, useState } from "react"
 import { FallingLines } from "react-loader-spinner";
-import { Table, Card } from "flowbite-react";
+import { Table, Button, Modal, Card } from "flowbite-react";
+import { HiOutlineExclamationCircle } from "react-icons/hi"
 import { FcRating } from 'react-icons/fc'
 
 import ButtonComponent from '../../components/button-component/button-component'
@@ -21,6 +21,8 @@ import { Link } from "react-router-dom";
 
 export default function BorrowRequestPage() {
     const [showLoadingModal, setShowLoadingModal] = useState(false);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [itemData, setItemData] = useState()
     const [showProfileModal, setShowProfileModal] = useState(false);
     const dispatch = useDispatch();
     const AllBookRequest = useSelector(selectBookRequest);
@@ -50,19 +52,28 @@ export default function BorrowRequestPage() {
         setCurrentPage(event);
     }
 
-    const handleCancel = async (bookDetails) => {
-        setShowLoadingModal(true)
-        const data = await getBookById(bookDetails.book_id, bookDetails.book_owner_id);
-        const canceledAt = new Date();
-        const originalBookData = {
-            ...data[0]
-        };
+    const handleConfirmationModal = (bookDetails) => {
+        setShowConfirmationModal(showConfirmationModal ? false : true);
+        setItemData(bookDetails)
+    }
 
-        const response = await RequestResponse(originalBookData, bookDetails, canceledAt, currentUser, "Canceled", "Available");
-  
-        const getNewResponse = await getBookRequests(currentUser.uid);
-        dispatch(setBookRequest(getNewResponse.book_requests))
-        setShowLoadingModal(false)
+    const handleCancel = async (event) => {
+        if (event === "Yes") {
+            setShowLoadingModal(true)
+            const data = await getBookById(itemData.book_id, itemData.book_owner_id);
+            const canceledAt = new Date();
+            const originalBookData = {
+                ...data[0]
+            };
+
+            const response = await RequestResponse(originalBookData, itemData, canceledAt, currentUser, "Canceled", "Available");
+
+            const getNewResponse = await getBookRequests(currentUser.uid);
+            dispatch(setBookRequest(getNewResponse.book_requests))
+            setShowLoadingModal(false)
+        } else {
+            setShowConfirmationModal(showConfirmationModal ? false : true);
+        }
     }
     const handleClick = () => {
         console.log("Hello World")
@@ -82,6 +93,41 @@ export default function BorrowRequestPage() {
         <div className='bg-gray-100 mx-1 font-body scroll-smooth h-0'>
             <Navigation />
             <main className="bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap overflow-x-hidden">
+
+                <Fragment>
+                    {/* Cancel Request Modal */}
+                    <Modal
+                        show={showConfirmationModal}
+                        size="md"
+                        popup={true}
+                        onClose={handleConfirmationModal}
+                        className="max-md:pt-32 mt-10"
+                    >
+                        <Modal.Header />
+                        <Modal.Body>
+                            <div className="text-center">
+                                <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+                                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                    Are you sure you want to delete this book?
+                                </h3>
+                                <div className="flex justify-center gap-4">
+                                    <Button
+                                        color="failure"
+                                        onClick={() => handleCancel("Yes")}
+                                    >
+                                        Yes, I'm sure
+                                    </Button>
+                                    <Button
+                                        color="gray"
+                                        onClick={() => handleCancel("No")}
+                                    >
+                                        No, cancel
+                                    </Button>
+                                </div>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
+                </Fragment>
 
                 <Fragment>
                     <Modal
@@ -112,9 +158,8 @@ export default function BorrowRequestPage() {
                         onClose={handleClose}
                         className="max-md:pt-32 mt-10 bg-opacity-60"
                     >
-                        <Modal.Header >
-
-                            <h1 className="font-bold text-lg text-center text-slate-600 pl-5">Book Owner Profile</h1>
+                        <Modal.Header  >
+                            <p className="font-bold text-lg text-center text-gray-600 pl-5">Book Owner Profile</p>
                         </Modal.Header>
                         <Modal.Body>
                             <div className="max-w-sm pt-3">
@@ -208,7 +253,7 @@ export default function BorrowRequestPage() {
                                         {item.request_status}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <ButtonComponent btnColor="red" btnValue="Cancel" btnSize="px-4 py-2 mt-2" btnClick={() => handleCancel(item)} />
+                                        <ButtonComponent btnColor="red" btnValue="Cancel" btnSize="px-4 py-2 mt-2" btnClick={() => handleConfirmationModal(item)} />
                                     </Table.Cell>
                                     <Table.Cell>
                                         <ButtonComponent btnColor="purple" btnValue="Message" btnSize="px-4 py-2 mt-2" btnClick={handleClick} />
