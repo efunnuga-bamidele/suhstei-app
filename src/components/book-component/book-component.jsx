@@ -15,6 +15,7 @@ export default function BookComponent({ bookDetails}){
     const unique_id = uuid();
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [bookStatus, setBookStatus] = useState(book_status)
     const [showModal, setShowModal] = useState(false)
 
     const handleClick = async (requestedBook) => {
@@ -25,10 +26,12 @@ export default function BookComponent({ bookDetails}){
       console.log(response);
       if(response === "success"){
         setSuccess("Book borrowed successful!");
+        setBookStatus("Requested");
         setTimeout(() => setSuccess(''), 5000);
         
       }else if(response === "added"){
           setSuccess("Book borrowed successfully!");
+          setBookStatus("Requested");
           setTimeout(() => setSuccess(''), 5000);
       }else{
           setError("Failed to borrow book");
@@ -77,10 +80,10 @@ export default function BookComponent({ bookDetails}){
                 <p className="mt-1 text-md text-gray-500"><strong>Book Author:</strong> <span className='text-blue-600 hover:text-blue-400 hover:border-b-2 hover:border-red-400 cursor-pointer ml-2 font-semibold'>{book_author}</span></p>
                 <p className="mt-1 text-md text-gray-500"><strong>Created Date:</strong> <span className='text-blue-600 hover:text-blue-400 hover:border-b-2 hover:border-red-400 cursor-pointer ml-2 font-semibold'>{createdAt.toDate().toDateString()}</span></p>
                 
-                {book_status && (<p className="mt-1 text-md text-gray-500"><strong>Book Status:</strong> <span className='text-blue-600 hover:text-blue-400 hover:border-b-2 hover:border-red-400 cursor-pointer ml-2 font-semibold'>{book_status}</span></p>)}
+                {bookStatus && (<p className="mt-1 text-md text-gray-500"><strong>Book Status:</strong> <span className='text-blue-600 hover:text-blue-400 hover:border-b-2 hover:border-red-400 cursor-pointer ml-2 font-semibold'>{bookStatus}</span></p>)}
                 
-                {book_status === 'Available' ? (
-                    <ButtonComponent btnColor="blue" btnValue ="Borrow This Book" btnSize="px-7 py-3 mt-2" btnClick={(ev) => handleClick(bookDetails)} />
+                {bookStatus === 'Available' ? (
+                    <ButtonComponent btnColor="blue" btnValue ="Borrow This Book" btnSize="px-7 py-3 mt-2" btnClick={() => handleClick(bookDetails)} />
                     ) : (
                     <ButtonComponent btnColor="blue" btnValue ="Not Available" btnSize="px-7 py-3 mt-2" />
                     )}

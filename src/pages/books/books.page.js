@@ -108,7 +108,7 @@ useEffect(()=> {
                 <h1 className='text-lg text-slate-500 font-semibold'>Categories</h1>
                 <ol className="list-reset flex flex-wrap">
                 {bookCategory.map((item, index) => (
-                        <Fragment>
+                        <Fragment key={index}>
                             <li key={index} className="text-blue-600 hover:text-blue-700 cursor-pointer">
                                 <Link onClick={handleSelectedCategory}>
                                     {item}

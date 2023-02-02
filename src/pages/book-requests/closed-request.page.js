@@ -48,8 +48,8 @@ export default function ClosedRequestPage(){
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstPost = indexOfLastItem - itemsPerPage;
-    const currentItems = AllBookRequest.filter((items) => items.request_status === "Closed" || items.request_status === "Canceled").slice(indexOfFirstPost, indexOfLastItem);
-    const pageNumber = Math.ceil((AllBookRequest.filter((items) => items.request_status === "Closed" || items.request_status === "Canceled").length) / itemsPerPage);
+    const currentItems = AllBookRequest.filter((items) => items.request_status === "Closed" || items.request_status === "Canceled" || items.request_status === "Declined").slice(indexOfFirstPost, indexOfLastItem);
+    const pageNumber = Math.ceil((AllBookRequest.filter((items) => items.request_status === "Closed" || items.request_status === "Canceled" || items.request_status === "Declined").length) / itemsPerPage);
 
 
     const onPageChange = (event) => {
@@ -140,7 +140,7 @@ export default function ClosedRequestPage(){
                                 
                             </Table.Body>
                         </Table>
-                        {AllBookRequest && AllBookRequest.filter((items) => items.request_status === "Closed" || items.request_status === "Canceled").length === 0  && (
+                        {AllBookRequest && AllBookRequest.filter((items) => items.request_status === "Closed" || items.request_status === "Canceled" || items.request_status === "Declined").length === 0  && (
                                 <div className="h-50 m-2 p-2 w-full rounded-md relative"> 
                                     <p className='text-gray-500 text-center'>...No Book Request Closed</p>
                                 </div>

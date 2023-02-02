@@ -157,8 +157,9 @@ export default function MyBooksPage(){
                     setItemData(null)
 
                 }
-            }
-            
+            }else{
+                setShowModal(showModal ? false : true);
+            }      
     }
 
     const handleChange = (event) => {
