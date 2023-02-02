@@ -42,8 +42,8 @@ export default function BorrowRequestPage() {
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstPost = indexOfLastItem - itemsPerPage;
-    const currentItems = AllBookRequest.filter((items) => items.borrowers_name === currentUser.displayName && items.request_status !== "Closed" && items.request_status !== "Canceled").slice(indexOfFirstPost, indexOfLastItem);
-    const pageNumber = Math.ceil((AllBookRequest.filter((items) => items.borrowers_name === currentUser.displayName && items.request_status !== "Closed" && items.request_status !== "Canceled").length) / itemsPerPage);
+    const currentItems = AllBookRequest.filter((items) => items.borrowers_name === currentUser.displayName && items.request_status !== "Closed" && items.request_status !== "Canceled" && items.request_status !== "Declined").slice(indexOfFirstPost, indexOfLastItem);
+    const pageNumber = Math.ceil((AllBookRequest.filter((items) => items.borrowers_name === currentUser.displayName && items.request_status !== "Closed" && items.request_status !== "Canceled" && items.request_status !== "Declined").length) / itemsPerPage);
 
 
     const onPageChange = (event) => {
@@ -51,6 +51,7 @@ export default function BorrowRequestPage() {
     }
 
     const handleCancel = async (bookDetails) => {
+        setShowLoadingModal(true)
         const data = await getBookById(bookDetails.book_id, bookDetails.book_owner_id);
         const canceledAt = new Date();
         const originalBookData = {
@@ -58,9 +59,10 @@ export default function BorrowRequestPage() {
         };
 
         const response = await RequestResponse(originalBookData, bookDetails, canceledAt, currentUser, "Canceled", "Available");
-        // console.log("Hello World", response);
-        // to be worked on later
-        window.location.reload(true)
+  
+        const getNewResponse = await getBookRequests(currentUser.uid);
+        dispatch(setBookRequest(getNewResponse.book_requests))
+        setShowLoadingModal(false)
     }
     const handleClick = () => {
         console.log("Hello World")

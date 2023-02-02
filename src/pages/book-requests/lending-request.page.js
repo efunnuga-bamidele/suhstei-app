@@ -49,14 +49,17 @@ export default function LendingRequestPage(){
     
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstPost = indexOfLastItem - itemsPerPage;
-    const currentItems = AllBookRequest.filter((items) => items.borrowers_name !== currentUser.displayName && items.request_status !== "Closed" && items.request_status !== "Canceled").slice(indexOfFirstPost, indexOfLastItem);
-    const pageNumber = Math.ceil((AllBookRequest.filter((items) => items.borrowers_name !== currentUser.displayName && items.request_status !== "Closed" && items.request_status !== "Canceled").length) / itemsPerPage);
+    const currentItems = AllBookRequest.filter((items) => items.borrowers_name !== currentUser.displayName && items.request_status !== "Closed" && items.request_status !== "Canceled" && items.request_status !== "Declined").slice(indexOfFirstPost, indexOfLastItem);
+    const pageNumber = Math.ceil((AllBookRequest.filter((items) => items.borrowers_name !== currentUser.displayName && items.request_status !== "Closed" && items.request_status !== "Canceled" && items.request_status !== "Declined").length) / itemsPerPage);
 
 
     const onPageChange = (event) => {
         setCurrentPage(event);
     }
 
+    const handleDecline = async () => {
+
+    }
 
     const handleClick = () => {
         console.log("Hello World")
@@ -136,7 +139,7 @@ export default function LendingRequestPage(){
                                         <ButtonComponent btnColor="blue" btnValue="Approve" btnSize="px-4 py-2 mt-2" />
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <ButtonComponent btnColor="red" btnValue="Decline" btnSize="px-4 py-2 mt-2" />
+                                        <ButtonComponent btnColor="red" btnValue="Decline" btnSize="px-4 py-2 mt-2" btnClick={() => handleDecline(item)} />
                                     </Table.Cell>
                                     <Table.Cell>
                                         <ButtonComponent btnColor="purple" btnValue="Message" btnSize="px-4 py-2 mt-2" />
