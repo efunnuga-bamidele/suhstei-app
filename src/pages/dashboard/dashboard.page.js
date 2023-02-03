@@ -136,53 +136,6 @@ export default function DashboardPage(){
                                 </Table.Row>
                             </Table.Body>
                         </Table>
-
-                        <Table className="mt-6" hoverable={true}>
-                            <Table.Head >
-                                <Table.HeadCell className="bg-red-400">
-                                    Index SN
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Book Name
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Requested By
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Requested Date
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Received Date
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Due Date
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Returned Date
-                                </Table.HeadCell>
-                                <Table.HeadCell>
-                                    Status
-                                </Table.HeadCell>
-                            </Table.Head>
-                            <Table.Body className="divide-y">
-                                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                                    <Table.Cell className="whitespace-nowarp font-medium text-gray-900 dark:text-white">
-                                        1
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        Thinking For A Change by John C. Maxwell
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        John Smith
-                                    </Table.Cell>
-                                    <Table.Cell>2022-10-23</Table.Cell>
-                                    <Table.Cell>2022-10-25</Table.Cell>
-                                    <Table.Cell>2022-11-10</Table.Cell>
-                                    <Table.Cell>0000-00-00</Table.Cell>
-                                    <Table.Cell>Pending Return</Table.Cell>
-                                </Table.Row>
-                            </Table.Body>
-                        </Table>
                     </section>
                 </main>
             <Footer />
