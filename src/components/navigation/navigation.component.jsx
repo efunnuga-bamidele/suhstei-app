@@ -111,12 +111,12 @@ export default function Navigation() {
             dismissOnClick={false}
           >
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/messages" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
+                <NavLink to="/active-message" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
                   Active Messages
                 </NavLink>
               </Dropdown.Item>
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/messages" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
+                <NavLink to="/new-message" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
                   New Messages
                 </NavLink>
               </Dropdown.Item>

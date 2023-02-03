@@ -30,6 +30,8 @@ import SettingsPage from './pages/settings/settings.page';
 import LendingRequestPage from './pages/book-requests/lending-request.page';
 import BorrowRequestPage from './pages/book-requests/borrow-request.page';
 import ClosedRequstPage from './pages/book-requests/closed-request.page';
+import ActiveMessagePage from './pages/messages/active-messages.page';
+import NewMessagePage from './pages/messages/new-messages.page';
 
 // Protection Routes
 import { ProtectedLayout } from './components/protected-layout/protected-layout.component';
@@ -170,6 +172,26 @@ function App() {
             element={
               <ProfileLayout>
                 <ClosedRequstPage />
+              </ProfileLayout>
+            }
+            errorElement={<ErrorPage />}
+          />
+
+          <Route
+            path='/active-message'
+            element={
+              <ProfileLayout>
+                <ActiveMessagePage />
+              </ProfileLayout>
+            }
+            errorElement={<ErrorPage />}
+          />
+
+          <Route
+            path='/new-message'
+            element={
+              <ProfileLayout>
+                <NewMessagePage />
               </ProfileLayout>
             }
             errorElement={<ErrorPage />}

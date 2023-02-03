@@ -54,12 +54,12 @@ export default function SidebarNavigation() {
                             label="Messages"
                             >
                         <span className='flex ml-6 text-[0.9em]'>
-                            <NavLink to="/messages" className="dropdown_hover ml-6" onClick={() => setNavClick(!navClick)}>Active Messages</NavLink>
+                            <NavLink to="/active-message" className="dropdown_hover ml-6" onClick={() => setNavClick(!navClick)}>Active Messages</NavLink>
                             <FcCollaboration className='mr-2 ml-2 mb-2' size={22} />
                         </span>
 
                         <span className='flex ml-6 text-[0.9em]'>
-                            <NavLink to="/messages" className="dropdown_hover ml-6" onClick={() => setNavClick(!navClick)}>New Messages</NavLink>
+                            <NavLink to="/new-message" className="dropdown_hover ml-6" onClick={() => setNavClick(!navClick)}>New Messages</NavLink>
                             <FcSms className='mr-2 ml-2 mb-2' size={22} />
                         </span>
 
