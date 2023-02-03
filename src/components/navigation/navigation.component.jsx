@@ -1,4 +1,5 @@
 
+import { useState, useEffect} from 'react'
 import { NavLink } from 'react-router-dom';
 import { Navbar, Avatar } from 'flowbite-react';
 import { Dropdown } from 'flowbite-react';
@@ -19,6 +20,14 @@ import './navigation.css';
 export default function Navigation() {
 
   const currentUser = useSelector(selectCurrentUser);
+
+
+    const [navClick, setNavClick] = useState();
+  
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, [navClick]);
+
 
   return (
     
@@ -64,12 +73,12 @@ export default function Navigation() {
        </span>
      </Dropdown.Header>
         <Dropdown.Item className="cursor-default">
-            <NavLink to="/profile" className="dropdown_hover">
+            <NavLink to="/profile" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
               Profile
             </NavLink>
           </Dropdown.Item>
         <Dropdown.Item className="cursor-default">
-          <NavLink to="/dashboard" className="dropdown_hover">
+          <NavLink to="/dashboard" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
             Dashboard
           </NavLink>
         </Dropdown.Item>
@@ -82,12 +91,12 @@ export default function Navigation() {
             dismissOnClick={false}
           >
               <Dropdown.Item className="cursor-default grid md:hidden">
-                  <NavLink to="/my-books" className="dropdown_hover">
+                  <NavLink to="/my-books" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
                     View Books
                   </NavLink>
               </Dropdown.Item>
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/create-book" className="dropdown_hover">
+                <NavLink to="/create-book" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
                   Create Book
                 </NavLink>
               </Dropdown.Item>
@@ -102,12 +111,12 @@ export default function Navigation() {
             dismissOnClick={false}
           >
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/messages" className="dropdown_hover">
+                <NavLink to="/messages" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
                   Active Messages
                 </NavLink>
               </Dropdown.Item>
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/messages" className="dropdown_hover">
+                <NavLink to="/messages" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
                   New Messages
                 </NavLink>
               </Dropdown.Item>
@@ -122,37 +131,37 @@ export default function Navigation() {
             dismissOnClick={false}
           >
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/borrow-request" className="dropdown_hover">
+                <NavLink to="/borrow-request" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
                   Borrow Request
                 </NavLink>
               </Dropdown.Item>
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/lending-request" className="dropdown_hover">
+                <NavLink to="/lending-request" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
                   Lending Request
                 </NavLink>
               </Dropdown.Item>
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/closed-request" className="dropdown_hover">
+                <NavLink to="/closed-request" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
                   Closed Request
                 </NavLink>
               </Dropdown.Item>
 
           </Dropdown>
         <Dropdown.Item className="cursor-default">
-          <NavLink to="/settings" className="dropdown_hover">
+          <NavLink to="/settings" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
             Settings
           </NavLink>
         </Dropdown.Item>
 
         <Dropdown.Divider />
         <Dropdown.Item className="cursor-default">
-          <NavLink as="Link" onClick={signOutUser} className="dropdown_hover">
+          <NavLink as="Link" onClick={signOutUser} className="dropdown_hover" >
             Sign out
           </NavLink>
         </Dropdown.Item>
    </Dropdown> ) : (
     <Navbar className='list-none'>
-      <NavLink to="/login" className="dropdown_hover">
+      <NavLink to="/login" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
         Sign-In
       </NavLink>
     </Navbar>
@@ -161,19 +170,19 @@ export default function Navigation() {
    <Navbar.Toggle className='ml-2' />
  </div>
  <Navbar.Collapse className=''>
-   <NavLink to="/" className="nav_hover">
+   <NavLink to="/" className="nav_hover" onClick={() => setNavClick(!navClick)}>
       Home
     </NavLink>
-    <NavLink to="/books" className="nav_hover">
+    <NavLink to="/books" className="nav_hover" onClick={() => setNavClick(!navClick)}>
       Books
     </NavLink>
-    <NavLink to="/community" className="nav_hover">
+    <NavLink to="/community" className="nav_hover" onClick={() => setNavClick(!navClick)}>
       Community
     </NavLink>
-    <NavLink to="/about-us" className="nav_hover">
+    <NavLink to="/about-us" className="nav_hover" onClick={() => setNavClick(!navClick)}>
       About Us
     </NavLink>
-    <NavLink to="/contact" className="nav_hover">
+    <NavLink to="/contact" className="nav_hover" onClick={() => setNavClick(!navClick)}>
       Contact
     </NavLink>
     {/* {currentUser &&
