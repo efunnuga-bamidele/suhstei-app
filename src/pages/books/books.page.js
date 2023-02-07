@@ -1,6 +1,6 @@
 
 import React, { Fragment, useEffect, useState } from 'react'
-// import { Pagination } from 'flowbite-react'
+import { Carousel } from 'flowbite-react'
 import { FallingLines } from 'react-loader-spinner'
 import BookItem from '../../components/book-item/book-item-component'
 import Footer from '../../components/footer/footer.component'
@@ -158,8 +158,37 @@ useEffect(()=> {
                     
             </div>{/*end of top review books */}
             <PaginationComponent currentPage={currentPage} pageNumbers={pageNumbers} onPageChange={onPageChange} />
-        </section>
+            {/* Advert */}
+        <section className='pt-2 pb-4 bg-gray-100'>{/* */}
+                    <div className='h-56 sm:h-64 xl:h-80 2xl:h-96 mx-5'>
+                        <Carousel slideInterval={3000}>
+                            <img
+                                src="https://flowbite.com/docs/images/carousel/carousel-1.svg"
+                                alt="..."
+                            />
+                            <div className='flex h-full items-center justify-center bg-gray-400 dark:bg-gray-700 dark:text-white'>
+                                Advert. 2
+                            </div>
+                            <div className='flex h-full items-center justify-center bg-gray-400 dark:bg-gray-700 dark:text-white'>
+                                Advert. 3
+                            </div>
+                            <img
+                                src="https://flowbite.com/docs/images/carousel/carousel-4.svg"
+                                alt="..."
+                            />
+                            <div className='flex h-full items-center justify-center bg-gray-400 dark:bg-gray-700 dark:text-white'>
+                                Advert. 5
+                            </div>
+                            <img
+                                src="https://flowbite.com/docs/images/carousel/carousel-5.svg"
+                                alt="..."
+                            />
+                        </Carousel>
+                    </div>
+
+                </section>{/* */}
         <Footer />
+        </section>
     </main>
   )
 }

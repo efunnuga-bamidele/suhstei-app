@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../store/user/user.selector';
 
@@ -11,6 +11,7 @@ export default function BookItem({ bookImage, title, author, owner, buttonAction
   const handleClick = (book_id, owner_id) => {
     redirect(`/view-book`, {state: {book_Id: book_id, owner_Id: owner_id}})
   }
+
 
   return (
 
@@ -30,18 +31,23 @@ export default function BookItem({ bookImage, title, author, owner, buttonAction
                 style={{"height": '100%', "width": "100%"}}
                 // className="object-center md:object-cover object-scale-down w-full"
               />
-              {owner_id !== currentUser.uid  && (
+              {currentUser ? (
+                  owner_id !== currentUser.uid  && (
 
-                status ==='Available' ? (
-                <button type="button" className="btn bottom-3 rounded-lg " onClick={(ev) => handleClick(id, owner_id)}>
-                    {buttonAction}
-                  </button>
-                ): (
-                  <button type="button" className="btn bottom-3 rounded-lg" onClick={(ev) => handleClick(id, owner_id)}>
-                    View Book
-                  </button>
-                )
-              ) }
+                    status ==='Available' ? (
+                    <button type="button" className="btn bottom-3 rounded-lg " onClick={(ev) => handleClick(id, owner_id)}>
+                        {buttonAction}
+                      </button>
+                    ): (
+                      <button type="button" className="btn bottom-3 rounded-lg" onClick={(ev) => handleClick(id, owner_id)}>
+                        View Book
+                      </button>
+                    )
+                  ) 
+              ) : (
+                    <Link to="/login" className='btn bottom-3 rounded-lg'>Login Required</Link>
+              )}
+
             </div>
             <div className="mt-4 flex justify-between">
               <div>
