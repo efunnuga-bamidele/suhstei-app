@@ -1,8 +1,10 @@
 
 import { useState, useEffect} from 'react'
-import { NavLink } from 'react-router-dom';
-import { Navbar, Avatar } from 'flowbite-react';
-import { Dropdown } from 'flowbite-react';
+import { useNavigation, useNavigate, Navigate, NavLink } from 'react-router-dom';
+import { Navbar, Avatar, Dropdown } from 'flowbite-react';
+import { MdDashboard } from 'react-icons/md';
+import { HiOutlineAdjustments, HiUserCircle, HiLogout, HiLogin } from 'react-icons/hi';
+// import { HiUserCircle } from 'react-icons/md';
 
 import Logo from '../../assets/icons/new-logo.png'
 import ProfileImage from '../../assets/auth/icons8_male_user_500px.png';
@@ -20,6 +22,7 @@ import './navigation.css';
 export default function Navigation() {
 
   const currentUser = useSelector(selectCurrentUser);
+  const navigate = useNavigate();
 
 
     const [navClick, setNavClick] = useState();
@@ -28,6 +31,15 @@ export default function Navigation() {
       window.scrollTo(0, 0);
     }, [navClick]);
 
+
+    const logoutHandle = async () => {
+      const res = await signOutUser()
+      if (res === "success") {
+        setTimeout(() => {
+          navigate("/")
+        }, 500)
+      }
+    }
 
   return (
     
@@ -73,11 +85,13 @@ export default function Navigation() {
        </span>
      </Dropdown.Header>
         <Dropdown.Item className="cursor-default">
+        <HiUserCircle className='mr-2' size={22} />
             <NavLink to="/profile" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
               Profile
             </NavLink>
           </Dropdown.Item>
         <Dropdown.Item className="cursor-default">
+          <MdDashboard className='mr-2' size={22} />
           <NavLink to="/dashboard" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
             Dashboard
           </NavLink>
@@ -148,6 +162,7 @@ export default function Navigation() {
 
           </Dropdown>
         <Dropdown.Item className="cursor-default">
+        <HiOutlineAdjustments className='mr-2' size={22} />
           <NavLink to="/settings" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
             Settings
           </NavLink>
@@ -155,12 +170,14 @@ export default function Navigation() {
 
         <Dropdown.Divider />
         <Dropdown.Item className="cursor-default">
-          <NavLink as="Link" onClick={signOutUser} className="dropdown_hover" >
+          <HiLogout className='mr-2' size={22}/>
+          <NavLink as="Link" onClick={logoutHandle} className="dropdown_hover" >
             Sign out
           </NavLink>
         </Dropdown.Item>
    </Dropdown> ) : (
     <Navbar className='list-none'>
+      {/* <HiLogin className="mr-2" size={22}/> */}
       <NavLink to="/login" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
         Sign-In
       </NavLink>

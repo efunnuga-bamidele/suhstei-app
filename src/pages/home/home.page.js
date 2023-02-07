@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { FallingLines } from 'react-loader-spinner';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Carousel } from 'flowbite-react';
 import { selectMyBooksMap } from '../../store/myBooks/myBooks.selector';
 import { setMyBooksMap } from '../../store/myBooks/myBooks.action';
 
@@ -127,20 +128,34 @@ export default function HomePage() {
 
                     </div>{/*end of top review books */}
                 </section>
-
+                {/* Adverts Section */}
                 <section className='mt-3'>{/* */}
-                    <div className="relative overflow-hidden bg-no-repeat bg-cover bg-center mt-2 opacity-50" style=
-                        {{ backgroundPosition: "50%", backgroundImage: `url("${Advert}")`, height: "380px" }}>
-                        <div className="absolute top-0 right-0 bottom-0 left-0 w-full h-full overflow-hidden bg-fixed"
-                            style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}>
-                            <div className="flex justify-center items-center h-full">
-                                <div className="text-center text-gray-300 px-6 md:px-12">
-
-                                    <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold my-auto mb-3">Advert<span className='text-accent'>.</span></h1>
-                                </div>
+                    <div className='h-56 sm:h-64 xl:h-80 2xl:h-96 mx-5'>
+                        <Carousel slideInterval={3000}>
+                            <img
+                                src="https://flowbite.com/docs/images/carousel/carousel-1.svg"
+                                alt="..."
+                            />
+                            <div className='flex h-full items-center justify-center bg-gray-400 dark:bg-gray-700 dark:text-white'>
+                                Advert. 2
                             </div>
-                        </div>
+                            <div className='flex h-full items-center justify-center bg-gray-400 dark:bg-gray-700 dark:text-white'>
+                                Advert. 3
+                            </div>
+                            <img
+                                src="https://flowbite.com/docs/images/carousel/carousel-4.svg"
+                                alt="..."
+                            />
+                            <div className='flex h-full items-center justify-center bg-gray-400 dark:bg-gray-700 dark:text-white'>
+                                Advert. 5
+                            </div>
+                            <img
+                                src="https://flowbite.com/docs/images/carousel/carousel-5.svg"
+                                alt="..."
+                            />
+                        </Carousel>
                     </div>
+
                 </section>{/* */}
             </main>{/* */}
             <Footer />

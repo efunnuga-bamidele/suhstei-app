@@ -116,8 +116,13 @@ export const sighAuthUserInWithEmailAndPassword = async (email, password) => {
 };
 
 //Signout user
-export const signOutUser = () => {
-  signOut(auth);
+export const signOutUser = async () => {
+ try {
+  await signOut(auth);
+  return "success"
+ } catch (error) {
+  return "failed"
+ }
 }
 //Observer to monitor state change in authentication
 export const onAuthStateChangedListener = (callback) => {
