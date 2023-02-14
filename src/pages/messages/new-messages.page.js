@@ -3,25 +3,92 @@ import { RiSendPlaneFill } from 'react-icons/ri'
 import Footer from '../../components/footer/footer.component'
 import Navigation from '../../components/navigation/navigation.component'
 import SidebarNavigation from "../../components/sidebar/sidebar.component";
+import ProfileImage from '../../assets/auth/icons8_male_user_500px.png';
+import './messages.css'
 
-
+const messages = {
+    sender: "Samuel",
+    senderId: "12345",
+    receiver: "Coal",
+    receiverId: "69784",
+    createdAt: "2023-12-01",
+    chat: [
+        {
+            id: "231254",
+            senderID: "1",
+            createdAt: "8:00",
+            photoURL: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
+            content: "hello, welcome to this chat"
+        },
+        {
+            id: "231255",
+            senderID: "2",
+            createdAt: "8:10",
+            photoURL: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
+            content: "hello, welcome to this chat"
+        },
+        {
+            id: "231256",
+            senderID: "1",
+            createdAt: "8:20",
+            photoURL: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
+            content: "hello, welcome to this chat"
+        },
+        {
+            id: "231257",
+            senderID: "2",
+            createdAt: "8:30",
+            photoURL: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
+            content: "hello, welcome to this chat"
+        },
+        {
+            id: "231258",
+            senderID: "2",
+            createdAt: "8:40",
+            photoURL: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
+            content: "hello, welcome to this chat"
+        },
+        {
+            id: "231259",
+            senderID: "1",
+            createdAt: "8:50",
+            photoURL: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
+            content: "hello, welcome to this chat"
+        },
+        {
+            id: "231260",
+            senderID: "2",
+            createdAt: "9:00",
+            photoURL: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
+            content: "hello, welcome to this chat"
+        },
+        {
+            id: "231261",
+            senderID: "1",
+            createdAt: "9:10",
+            photoURL: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
+            content: "hello, welcome to this chat"
+        },]
+}
 
 export default function NewMessagePage() {
 
-    const ref = useRef()
+    const scroll = useRef();
 
     const onEnterPress = (e) => {
-        if(e.keyCode == 13 && e.shiftKey == false) {
-          e.preventDefault();
-        //   this.myFormRef.requestSubmit();
-        console.log("Form submitted")
+        if (e.keyCode == 13 && e.shiftKey == false) {
+            e.preventDefault();
+            //   this.myFormRef.requestSubmit();
+            console.log("Form submitted")
+            scroll.current.scrollIntoView({ behavior: "smooth" , block: "end", inline: "nearest"});
         }
-      }
+    }
 
-      const handleSend = (e) => {
+    const handleSend = (e) => {
         e.preventDefault();
         console.log("Form submitted")
-      }
+        scroll.current.scrollIntoView({ behavior: "smooth" , block: "end", inline: "nearest"});
+    }
 
     return (
         <div className='bg-gray-100 mx-1 font-body scroll-smooth h-0'>
@@ -30,20 +97,23 @@ export default function NewMessagePage() {
 
                 <SidebarNavigation />
                 <section className="bg-white mt-12 m-2 p-2 w-full rounded-lg relative overflow-x-auto shadow-md">
-                    <h1 className="font-bold text-lg text-left underline">New Message</h1>
+                    <h1 className="font-bold text-lg text-left underline">Message Room</h1>
                     <div className='grid grid-cols-1 md:grid-cols-4 gap-2'>
-                        <div className='bg-gray-400 hidden md:block h-96 md:col-span-1'>
+                        <div className='bg-gray-100 hidden border-2 border-slate-200 p-1 md:block max-h-[60vh] md:col-span-1 overflow-y-scroll scroll-smooth'>
                             {/* list of users */}
                         </div>
                         {/* ----------------------------- */}
-                        <div className='bg-gray-300 rounded-lg h-96 grid grid-rows-6 col-span-4 md:col-span-3'>
+                        <div className='bg-gray-100 rounded-lg border-2 border-slate-200 p-1 max-h-[60vh] grid grid-rows-6 col-span-4 md:col-span-3'>
                             {/* Message Section */}
                             <div className='bg-slate-300 border border-gray-300 rounded-lg px-4 py-4 row-span-5 overflow-y-scroll scroll-smooth'>
-                                {/* Message list */}
-                                01
-
+                                {/* Message */}
+                                <ChatMessage chat={messages} />
+                                <span ref={scroll}></span>
                             </div>
+
+
                             <div className='bg-slate-100 row-span-1'>
+                                {/* Message Form */}
                                 <form className="flex items-center mt-2" onSubmit={handleSend}>
                                     <label htmlFor="chat" className="sr-only">Your message</label>
                                     <div className="relative w-full ">
@@ -75,16 +145,23 @@ export default function NewMessagePage() {
     )
 }
 
-function ChatMessage(props) {
-    const { text, uid, photoURL } = props.message;
-    // const messageClass = uid === selectCurrentUser.uid ? 'sent' : 'received';
-
+function ChatMessage({chat}) {
     return (
         <>
-            <div>
-                <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} alt='' />
-                <p>{text}</p>
-            </div>
+            {chat['chat'] && chat['chat'].map((message, index) => (
+                <div key={index} className={`chat-bubble ${message.senderID === "1" ? "right" : "left"}`}>
+                    <img
+                        className="chat-bubble__left"
+                        src={message.photoURL || ProfileImage}
+                        alt="user avatar"
+                    />
+                    <div className="chat-bubble__right">
+                        <p className="user-name">{message.id}</p>
+                        <p className="user-message">{message.content}</p>
+                        <p className="message-time">{message.createdAt}</p>
+                    </div>
+                </div>
+            ))}
         </>
     )
 }
