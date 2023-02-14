@@ -1,72 +1,70 @@
 import { useRef } from 'react';
-import { RiSendPlaneFill } from 'react-icons/ri'
+import { selectCurrentUser } from '../../store/user/user.selector';
+import { useSelector,useDispatch } from 'react-redux';
 import Footer from '../../components/footer/footer.component'
 import Navigation from '../../components/navigation/navigation.component'
 import SidebarNavigation from "../../components/sidebar/sidebar.component";
 import ProfileImage from '../../assets/auth/icons8_male_user_500px.png';
 import './messages.css'
 
+import { getMessages } from '../../utils/firebase/firebase.utils';
+
 const messages = {
+    room_uid:"grGTjNohr8r2GH3Kprib",
     sender: "Samuel",
     senderId: "12345",
+    senderAvatar: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
     receiver: "Coal",
     receiverId: "69784",
+    receiverAvatar: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
     createdAt: "2023-12-01",
     chat: [
         {
             id: "231254",
-            senderID: "1",
+            senderID: "12345",
             createdAt: "8:00",
-            photoURL: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
             content: "hello, welcome to this chat"
         },
         {
             id: "231255",
-            senderID: "2",
+            senderID: "69784",
             createdAt: "8:10",
-            photoURL: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
             content: "hello, welcome to this chat"
         },
         {
             id: "231256",
-            senderID: "1",
+            senderID: "12345",
             createdAt: "8:20",
-            photoURL: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
             content: "hello, welcome to this chat"
         },
         {
             id: "231257",
-            senderID: "2",
+            senderID: "69784",
             createdAt: "8:30",
-            photoURL: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
             content: "hello, welcome to this chat"
         },
         {
             id: "231258",
-            senderID: "2",
+            senderID: "69784",
             createdAt: "8:40",
-            photoURL: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
             content: "hello, welcome to this chat"
         },
         {
             id: "231259",
-            senderID: "1",
+            senderID: "12345",
             createdAt: "8:50",
-            photoURL: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
             content: "hello, welcome to this chat"
         },
         {
             id: "231260",
-            senderID: "2",
+            senderID: "69784",
             createdAt: "9:00",
-            photoURL: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
             content: "hello, welcome to this chat"
         },
         {
             id: "231261",
-            senderID: "1",
+            senderID: "12345",
             createdAt: "9:10",
-            photoURL: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
             content: "hello, welcome to this chat"
         },]
 }
@@ -100,6 +98,7 @@ const people = [
 ]
 
 export default function NewMessagePage() {
+    const currentUser = useSelector(selectCurrentUser); 
 
     const scroll = useRef();
 
@@ -112,10 +111,11 @@ export default function NewMessagePage() {
         }
     }
 
-    const handleSend = (e) => {
+    const handleSend = async (e) => {
         e.preventDefault();
-        console.log("Form submitted")
+        console.log("get Messages")
         scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+        await getMessages()
     }
 
     return (
@@ -183,14 +183,15 @@ function ChatMessage({ chat }) {
     return (
         <>
             {chat['chat'] && chat['chat'].map((message, index) => (
-                <div key={index} className={`chat-bubble ${message.senderID === "1" ? "right" : "left"}`}>
+                // <div key={index} className={`chat-bubble ${message.senderID === currentUser.uid ? "right" : "left"}`}>
+                <div key={index} className={`chat-bubble ${message.senderID === "12345" ? "right" : "left"}`}>
                     <img
                         className="chat-bubble__left"
-                        src={message.photoURL || ProfileImage}
+                        src={message.senderID === "12345" ? chat['senderAvatar'] || ProfileImage : chat['receiverAvatar']  || ProfileImage}
                         alt="user avatar"
                     />
                     <div className="chat-bubble__right">
-                        <p className="user-name">{message.id}</p>
+                        <p className="user-name">{message.senderID === "12345" ? chat['sender'] : chat['receiver']}</p>
                         <p className="user-message">{message.content}</p>
                         <p className="message-time">{message.createdAt}</p>
                     </div>
