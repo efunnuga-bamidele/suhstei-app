@@ -21,7 +21,10 @@ import  {
   arrayUnion,
   arrayRemove,
   where,
-  query
+  query,
+  orderBy,
+  onSnapshot,
+  limit,
 } from 'firebase/firestore'
 
 import {
@@ -404,6 +407,25 @@ const imageDelete = async (imageUrl) => {
 
           return "success"
 
-        
 
+
+
+  }
+
+
+  export const createRoom =  async (dataSet) => {
+
+  }
+       
+  export const getMessages = async () => {
+    const id = "12345"
+    const otherId = "69784"
+      // const messagesQuery = query(collection(db, "messages"), where("group_id", "array-contains", id), where("group_id", "array-contains", otherId));
+      const messagesQuery = query(collection(db, "messages"), where("group_id", "array-contains", otherId));
+      
+      const querySnapshot = await getDocs(messagesQuery);
+
+      querySnapshot.forEach((doc) => {
+        console.log(doc.id, "=>");
+      })
   }
