@@ -71,6 +71,34 @@ const messages = {
         },]
 }
 
+const people = [
+    {
+        displayName: "Tunde Wale",
+        userId: "1",
+        photoURL: "https://flowbite.com/docs/images/people/profile-picture-1.jpg"
+    },
+    {
+        displayName: "Neil Cole",
+        userId: "2",
+        photoURL: "https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+    },
+    {
+        displayName: "Sarah sharp",
+        userId: "3",
+        photoURL: "https://flowbite.com/docs/images/people/profile-picture-3.jpg"
+    },
+    {
+        displayName: "Nina Austin",
+        userId: "4",
+        photoURL: "https://flowbite.com/docs/images/people/profile-picture-4.jpg"
+    },
+    {
+        displayName: "Peter Smith",
+        userId: "5",
+        photoURL: "https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+    },
+]
+
 export default function NewMessagePage() {
 
     const scroll = useRef();
@@ -80,14 +108,14 @@ export default function NewMessagePage() {
             e.preventDefault();
             //   this.myFormRef.requestSubmit();
             console.log("Form submitted")
-            scroll.current.scrollIntoView({ behavior: "smooth" , block: "end", inline: "nearest"});
+            scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
         }
     }
 
     const handleSend = (e) => {
         e.preventDefault();
         console.log("Form submitted")
-        scroll.current.scrollIntoView({ behavior: "smooth" , block: "end", inline: "nearest"});
+        scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
     }
 
     return (
@@ -99,8 +127,14 @@ export default function NewMessagePage() {
                 <section className="bg-white mt-12 m-2 p-2 w-full rounded-lg relative overflow-x-auto shadow-md">
                     <h1 className="font-bold text-lg text-left underline">Message Room</h1>
                     <div className='grid grid-cols-1 md:grid-cols-4 gap-2'>
-                        <div className='bg-gray-100 hidden border-2 border-slate-200 p-1 md:block max-h-[60vh] md:col-span-1 overflow-y-scroll scroll-smooth'>
+                        <div className='bg-gray-100 hidden border-2 border-slate-200 p-2 md:block max-h-[60vh] md:col-span-1 overflow-y-scroll scroll-smooth'>
                             {/* list of users */}
+                            <h5 className='text-md text-gray-700 font-extrabold pb-3 text-right'>Active Chats</h5>
+                            <ul className='max-w-md divide-y divide-gray-200 dark:divide-gray-700'>
+
+                                <ChatList users={people} />
+
+                            </ul>
                         </div>
                         {/* ----------------------------- */}
                         <div className='bg-gray-100 rounded-lg border-2 border-slate-200 p-1 max-h-[60vh] grid grid-rows-6 col-span-4 md:col-span-3'>
@@ -145,7 +179,7 @@ export default function NewMessagePage() {
     )
 }
 
-function ChatMessage({chat}) {
+function ChatMessage({ chat }) {
     return (
         <>
             {chat['chat'] && chat['chat'].map((message, index) => (
@@ -162,6 +196,28 @@ function ChatMessage({chat}) {
                     </div>
                 </div>
             ))}
+        </>
+    )
+}
+
+function ChatList({ users }) {
+    return (
+        <>
+            {
+                users && users.map((user, index) => (
+                    <li className='pb-2 sm:pb-3' key={index}>
+                        <div className='flex items-center space-x-4'>
+                            <div className='flex-shrink-0'>
+                                <img className="w-8 h-8 rounded-full" src={user.photoURL || ProfileImage} alt="Neil image" />
+                            </div >
+                            <div className='flex-1 min-w-0'>
+                                <button className='inline-flex items-left justify-start pl-4 p-2 mt-2 w-full text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white'>{user.displayName}</button>
+                            </div>
+                        </div>
+                    </li>
+
+                ))
+            }
         </>
     )
 }
