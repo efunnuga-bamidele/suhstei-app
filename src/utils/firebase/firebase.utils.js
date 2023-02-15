@@ -414,9 +414,14 @@ const imageDelete = async (imageUrl) => {
 
 
   export const createRoom =  async (dataSet) => {
-
+    // get currentUser Id, Id of message receiver and names of each party.
+    // check if a chat room exist with the party
+    // if yes open message history of messages
+    // if no create a new chat room and open an empty message section
+    
   }
        
+
   export const getMessages = async () => {
     const id = "12345"
     const otherId = "69784"
