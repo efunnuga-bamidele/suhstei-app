@@ -510,7 +510,7 @@ export const createRoom = async (secondUser, currentUser) => {
       chat: [{
         room_id: chatRoom_id,
         receiver_id: secondUserId.trim(),
-        receiver_Name: secondUser,
+        receiver_name: secondUser,
         sender_id: currentUser.uid,
         sender_name: currentUser.displayName,
         createdAt: createdAt
@@ -524,20 +524,7 @@ export const createRoom = async (secondUser, currentUser) => {
   if (getChatRoom.exists()) {
     masterRoom_id = chatRoom_id;
     console.log("chat exists")
-    // await updateDoc(createChatRoom, {
-    //     chat: [...getChatRoom.data()['chat'],
-    //         {
-    //             senderID: secondUserId.trim(),
-    //             createdAt: "8:12",
-    //             content: "Please, I want to lend a book from you."
-    //         },
-    //         {
-    //             senderID: currentUser.displayName,
-    //             createdAt: "8:13",
-    //             content: "Okay, what is the name of the book?"
-    //         },
-    //     ]
-    // })
+
   } else {
     masterRoom_id = chatRoom_id;
     await setDoc(createChatRoom, {
@@ -550,16 +537,6 @@ export const createRoom = async (secondUser, currentUser) => {
       receiverAvatar: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
       createdAt: createdAt,
       chat: [
-        // {
-        //   senderID: secondUserId.trim(),
-        //   createdAt: "8:00",
-        //   content: "hello, welcome to this chat"
-        // },
-        // {
-        //   senderID: currentUser.displayName,
-        //   createdAt: "8:10",
-        //   content: "hi, welcome to this chat"
-        // },
       ]
     })
   }

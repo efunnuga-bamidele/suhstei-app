@@ -47,6 +47,7 @@ export default function NewMessagePage() {
     const [currentRoom, setCurrentRoom] = useState('');
     const [content, setContent] = useState('');
     const [activeMessages, setActiveMessages] = useState();
+    const [activeChats, setActiveChats] = useState();
 
     const scroll = useRef();
 
@@ -66,7 +67,7 @@ export default function NewMessagePage() {
 
     const handleSend = async (e) => {
         e.preventDefault();
-        
+
 
         const createChatRoom = doc(db, "messages", activeRoom);
         const getChatRoom = await getDoc(createChatRoom);
@@ -83,25 +84,45 @@ export default function NewMessagePage() {
         })
         scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
         setContent("");
-        
+
     }
 
     useEffect(() => {
-        if (currentRoom){
+        if (currentRoom) {
             setActiveRoom(currentRoom)
         }
-        else{
+        else if (location.state) {
             setActiveRoom(location.state['room_id'])
         }
         if (activeRoom) {
             const unsubscribe = onSnapshot(doc(db, "messages", activeRoom), (doc) => {
                 setActiveMessages(doc.data());
                 scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+                // console.log("fired again")
             });
-            
+
             return () => unsubscribe;
         }
     }, []);
+
+    useEffect(() => {
+
+        const unsubscribe = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
+            setActiveChats(doc.data()['chat']);
+        });
+
+        return () => unsubscribe;
+
+    }, []);
+
+    const handleRoomSelect = async (event) => {
+        setCurrentRoom(event.trim())
+        const unsubscribe = await getDoc(doc(db, "messages", event.trim()));
+        setActiveMessages(unsubscribe.data());
+        // console.log("fired Once: ", event)
+        scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+        // console.log(currentRoom)
+    }
 
 
     return (
@@ -117,9 +138,22 @@ export default function NewMessagePage() {
                             {/* list of users */}
                             <h5 className='text-md text-gray-700 font-extrabold pb-3 text-right'>Active Chats</h5>
                             <ul className='max-w-md divide-y divide-gray-200 dark:divide-gray-700'>
+                                {activeChats &&
+                                    // <ChatList users={activeChats} />
+                                    activeChats && activeChats.map((user, index) => (
+                                        <li className='pb-2 sm:pb-3' key={index}>
+                                            <div className='flex items-center space-x-4'>
+                                                <div className='flex-shrink-0'>
+                                                    <img className="w-8 h-8 rounded-full" src={user.photoURL || ProfileImage} alt="Neil image" />
+                                                </div >
+                                                <div className='flex-1 min-w-0'>
+                                                    <button className='inline-flex items-left justify-start pl-4 p-2 mt-2 w-full text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white' onClick={() => handleRoomSelect(user.room_id)}>{user.sender_name === currentUser.displayName ? user.receiver_name : user.sender_name}</button>
+                                                </div>
+                                            </div>
+                                        </li>
 
-                                <ChatList users={currentUser} />
-
+                                    ))
+                                }
                             </ul>
                         </div>
                         {/* ----------------------------- */}
@@ -128,7 +162,7 @@ export default function NewMessagePage() {
                             <div className='bg-slate-300 border border-gray-300 rounded-lg px-4 py-4 row-span-5 overflow-y-scroll scroll-smooth'>
                                 {/* Message */}
                                 {activeMessages &&
-                                <ChatMessage chat={activeMessages} />
+                                    <ChatMessage chat={activeMessages} />
                                 }
                                 <span ref={scroll}></span>
                             </div>
@@ -175,7 +209,7 @@ function ChatMessage({ chat }) {
         let mm = date.getMonth() + 1;
         let dd = date.getDate();
         let yyyy = date.getFullYear();
-    
+
         date = mm + '/' + dd + '/' + yyyy;
         return date;
     }
@@ -185,11 +219,11 @@ function ChatMessage({ chat }) {
                 <div key={index} className={`chat-bubble ${message.senderID === currentUser.uid ? "right" : "left"}`}>
                     <img
                         className="chat-bubble__left"
-                        src={message.senderID === currentUser.uid  ? chat['senderAvatar'] || ProfileImage : chat['receiverAvatar'] || ProfileImage}
+                        src={message.senderID === currentUser.uid ? chat['senderAvatar'] || ProfileImage : chat['receiverAvatar'] || ProfileImage}
                         alt="user avatar"
                     />
                     <div className="chat-bubble__right">
-                        <p className="user-name">{message.senderID === currentUser.uid  ? chat['sender'] : chat['receiver']}</p>
+                        <p className="user-name">{message.senderID === currentUser.uid ? chat['sender'] : chat['receiver']}</p>
                         <p className="user-message">{message.content}</p>
                         <p className="message-time">{convertTimestamp(message.createdAt)}</p>
                     </div>
@@ -200,22 +234,24 @@ function ChatMessage({ chat }) {
 }
 
 function ChatList({ users }) {
+    const currentUser = useSelector(selectCurrentUser);
     return (
         <>
             {
-                users && users['chat'].map((user, index) => (
-                    <li className='pb-2 sm:pb-3' key={index}>
-                        <div className='flex items-center space-x-4'>
-                            <div className='flex-shrink-0'>
-                                <img className="w-8 h-8 rounded-full" src={user.photoURL || ProfileImage} alt="Neil image" />
-                            </div >
-                            <div className='flex-1 min-w-0'>
-                                <button className='inline-flex items-left justify-start pl-4 p-2 mt-2 w-full text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white'>{user.displayName}</button>
-                            </div>
-                        </div>
-                    </li>
+                // console.log(users)
+                // users && users.map((user, index) => (
+                //     <li className='pb-2 sm:pb-3' key={index}>
+                //         <div className='flex items-center space-x-4'>
+                //             <div className='flex-shrink-0'>
+                //                 <img className="w-8 h-8 rounded-full" src={user.photoURL || ProfileImage} alt="Neil image" />
+                //             </div >
+                //             <div className='flex-1 min-w-0'>
+                //                 <button className='inline-flex items-left justify-start pl-4 p-2 mt-2 w-full text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white'>{user.sender_name === currentUser.displayName ? user.receiver_name : user.sender_name} onClick ={() => setActiveRoom(user.room_id)}</button>
+                //             </div>
+                //         </div>
+                //     </li>
 
-                ))
+                // ))
             }
         </>
     )
