@@ -14,8 +14,8 @@ import { setBookRequest } from "../../store/booksRequest/booksRequest.action";
 import Footer from "../../components/footer/footer.component";
 import Navigation from "../../components/navigation/navigation.component";
 import SidebarNavigation from "../../components/sidebar/sidebar.component";
-import { getBookById, getBookRequests, RequestResponse, getProfile } from "../../utils/firebase/firebase.utils";
-import { Link } from "react-router-dom";
+import { getBookById, getBookRequests, RequestResponse, getProfile, createRoom } from "../../utils/firebase/firebase.utils";
+import { Link, useNavigate } from "react-router-dom";
 
 
 export default function LendingRequestPage() {
@@ -29,6 +29,7 @@ export default function LendingRequestPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [profileData, setProfileData] = useState();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getBookRequest = async () => {
@@ -86,9 +87,11 @@ export default function LendingRequestPage() {
         setShowProfileModal(false);
     }
 
-    const handleClick = () => {
-        console.log("Hello World")
-    }
+    const handleMessage = async (itemDetail) => {
+        const res = await createRoom(itemDetail.borrowers_name, currentUser)
+         navigate('/messages', { state: { room_id: res } });
+     }
+
     return (
         <div className='bg-gray-100 mx-1 font-body scroll-smooth h-0'>
             <Navigation />
@@ -259,7 +262,7 @@ export default function LendingRequestPage() {
                                         <ButtonComponent btnColor="red" btnValue="Decline" btnSize="px-4 py-2 mt-2" btnClick={() => handleConfirmationModal(item)} />
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <ButtonComponent btnColor="purple" btnValue="Message" btnSize="px-4 py-2 mt-2" />
+                                        <ButtonComponent btnColor="purple" btnValue="Message" btnSize="px-4 py-2 mt-2" btnClick={() => handleMessage(item)} />
                                     </Table.Cell>
                                 </Table.Row>
                             ))}

@@ -15,10 +15,8 @@ import { setBookRequest } from "../../store/booksRequest/booksRequest.action";
 import Footer from "../../components/footer/footer.component";
 import Navigation from "../../components/navigation/navigation.component";
 import SidebarNavigation from "../../components/sidebar/sidebar.component";
-import { db, getBookById, getBookRequests, getProfile, RequestResponse } from "../../utils/firebase/firebase.utils";
-import { Link,useNavigate } from "react-router-dom";
-
-import { doc, updateDoc, getDoc, arrayRemove, setDoc } from "firebase/firestore";
+import { createRoom, db, getBookById, getBookRequests, getProfile, RequestResponse } from "../../utils/firebase/firebase.utils";
+import { Link, useNavigate } from "react-router-dom";
 
 
 export default function BorrowRequestPage() {
@@ -79,149 +77,8 @@ export default function BorrowRequestPage() {
         }
     }
     const handleMessage = async (itemDetail) => {
-        // currentUser.uid
-        // currentUser.displayName
-        // currentUser.avatarURL
-        // itemDetail.book_owner
-        // itemDetail.book_owner_id
-        // itemDetail.avatarURL
-        const chatRoom_id = currentUser.uid + "_" + itemDetail.book_owner_id
-        const reversedChatRoom_id = itemDetail.book_owner_id + "_" + currentUser.uid
-        let masterRoom_id = "";
-        const createdAt = new Date();
-
-
-        const senderProfile = doc(db, "users", currentUser.uid);
-        const receiverProfile = doc(db, "users", itemDetail.book_owner_id);
-        const createChatRoom = doc(db, "messages", chatRoom_id);
-        const getSenderProfile = await getDoc(senderProfile);
-        const getReceiverProfile = await getDoc(receiverProfile);
-        const getChatRoom = await getDoc(createChatRoom);
-
-        // Handle Sender Update
-        if (getSenderProfile.data()['chat']) { //checks if chat has been created
-            // check if room_id exist
-            const res = getSenderProfile.data()['chat'].filter((items) => items.room_id === chatRoom_id || items.room_id === reversedChatRoom_id)
-            if (res.length === 1) {
-                console.log("Can not create duplicate room: ", res[0].room_id);
-                navigate('/messages', {state: {room_id: res[0].room_id}})
-            } else {
-                console.log("No data")
-                // update sender user detail with chat room details
-                await updateDoc(senderProfile, {
-                    chat: [...getSenderProfile.data()['chat'], {
-                        room_id: chatRoom_id,
-                        receiver_id: itemDetail.book_owner_id,
-                        receiver_Name: itemDetail.book_owner,
-                        sender_id: currentUser.uid,
-                        sender_name: currentUser.displayName,
-                        createdAt: createdAt
-
-                    }
-                    ]
-                })
-            }
-
-        } else {
-            await updateDoc(senderProfile, {
-                chat: [{
-                    room_id: chatRoom_id,
-                    receiver_id: itemDetail.book_owner_id,
-                    receiver_Name: itemDetail.book_owner,
-                    sender_id: currentUser.uid,
-                    sender_name: currentUser.displayName,
-                    createdAt: createdAt
-
-                }
-                ]
-            })
-        }
-
-
-        // Handle receiver update
-        if (getReceiverProfile.data()['chat']) { //checks if chat has been created
-            // check if room_id exist
-            const res = getReceiverProfile.data()['chat'].filter((items) => items.room_id === chatRoom_id || items.room_id === reversedChatRoom_id)
-            if (res.length === 1) {
-                console.log("Can not create duplicate room: ", res[0].room_id)
-            } else {
-                console.log("No data")
-                // update receiver user detail with chat room details
-                await updateDoc(receiverProfile, {
-                    chat: [...getReceiverProfile.data()['chat'], {
-                        room_id: chatRoom_id,
-                        receiver_id: itemDetail.book_owner_id,
-                        receiver_Name: itemDetail.book_owner,
-                        sender_id: currentUser.uid,
-                        sender_name: currentUser.displayName,
-                        createdAt: createdAt
-
-                    }
-                    ]
-                })
-
-
-            }
-
-        } else {
-            // update receiver user detail with chat room details
-            await updateDoc(receiverProfile, {
-                chat: [{
-                    room_id: chatRoom_id,
-                    receiver_id: itemDetail.book_owner_id,
-                    receiver_Name: itemDetail.book_owner,
-                    sender_id: currentUser.uid,
-                    sender_name: currentUser.displayName,
-                    createdAt: createdAt
-
-                }
-                ]
-            })
-        }
-
-        // create chat room
-        if (getChatRoom.exists()){
-            console.log("chat exists")
-            // await updateDoc(createChatRoom, {
-            //     chat: [...getChatRoom.data()['chat'],
-            //         {
-            //             senderID: itemDetail.book_owner_id,
-            //             createdAt: "8:12",
-            //             content: "Please, I want to lend a book from you."
-            //         },
-            //         {
-            //             senderID: currentUser.displayName,
-            //             createdAt: "8:13",
-            //             content: "Okay, what is the name of the book?"
-            //         },
-            //     ]
-            // })
-        }else{
-            
-            await setDoc(createChatRoom, {
-                room_uid: chatRoom_id,
-                sender: currentUser.displayName,
-                senderId: currentUser.uid,
-                senderAvatar: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
-                receiver: itemDetail.book_owner,
-                receiverId: itemDetail.book_owner_id,
-                receiverAvatar: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
-                createdAt: createdAt,
-                chat: [
-                    {
-                        senderID: itemDetail.book_owner_id,
-                        createdAt: "8:00",
-                        content: "hello, welcome to this chat"
-                    },
-                    {
-                        senderID: currentUser.displayName,
-                        createdAt: "8:10",
-                        content: "hi, welcome to this chat"
-                    },
-                ]
-            })
-        }
-        // console.log(currentUser)
+       const res = await createRoom(itemDetail.book_owner, currentUser)
+        navigate('/messages', { state: { room_id: res } });
     }
 
     const handleProfileView = async (profileID) => {
