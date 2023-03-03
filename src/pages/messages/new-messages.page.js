@@ -1,74 +1,16 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { selectCurrentUser } from '../../store/user/user.selector';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Footer from '../../components/footer/footer.component'
 import Navigation from '../../components/navigation/navigation.component'
 import SidebarNavigation from "../../components/sidebar/sidebar.component";
 import ProfileImage from '../../assets/auth/icons8_male_user_500px.png';
 import './messages.css'
 
-import { getMessages } from '../../utils/firebase/firebase.utils';
+import { db, getMessages } from '../../utils/firebase/firebase.utils';
+import { doc, onSnapshot, getDoc, updateDoc, QuerySnapshot } from 'firebase/firestore';
 
-const messages = {
-    room_uid:"grGTjNohr8r2GH3Kprib",
-    sender: "Samuel",
-    senderId: "12345",
-    senderAvatar: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
-    receiver: "Coal",
-    receiverId: "69784",
-    receiverAvatar: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
-    createdAt: "2023-12-01",
-    chat: [
-        {
-            id: "231254",
-            senderID: "12345",
-            createdAt: "8:00",
-            content: "hello, welcome to this chat"
-        },
-        {
-            id: "231255",
-            senderID: "69784",
-            createdAt: "8:10",
-            content: "hello, welcome to this chat"
-        },
-        {
-            id: "231256",
-            senderID: "12345",
-            createdAt: "8:20",
-            content: "hello, welcome to this chat"
-        },
-        {
-            id: "231257",
-            senderID: "69784",
-            createdAt: "8:30",
-            content: "hello, welcome to this chat"
-        },
-        {
-            id: "231258",
-            senderID: "69784",
-            createdAt: "8:40",
-            content: "hello, welcome to this chat"
-        },
-        {
-            id: "231259",
-            senderID: "12345",
-            createdAt: "8:50",
-            content: "hello, welcome to this chat"
-        },
-        {
-            id: "231260",
-            senderID: "69784",
-            createdAt: "9:00",
-            content: "hello, welcome to this chat"
-        },
-        {
-            id: "231261",
-            senderID: "12345",
-            createdAt: "9:10",
-            content: "hello, welcome to this chat"
-        },]
-}
 
 const people = [
     {
@@ -99,28 +41,89 @@ const people = [
 ]
 
 export default function NewMessagePage() {
-    const currentUser = useSelector(selectCurrentUser); 
+    const currentUser = useSelector(selectCurrentUser);
     const location = useLocation()
-
-    console.log("Chat Room ID: ", location.state['room_id'])
+    const [activeRoom, setActiveRoom] = useState();
+    const [currentRoom, setCurrentRoom] = useState('');
+    const [content, setContent] = useState('');
+    const [activeMessages, setActiveMessages] = useState();
+    const [activeChats, setActiveChats] = useState();
 
     const scroll = useRef();
+
+
+
+    const handleChange = (event) => {
+        setContent(event.target.value)
+    }
 
     const onEnterPress = (e) => {
         if (e.keyCode === 13 && e.shiftKey === false) {
             e.preventDefault();
-            //   this.myFormRef.requestSubmit();
-            console.log("Form submitted")
+            handleSend(e)
             scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
         }
     }
 
     const handleSend = async (e) => {
         e.preventDefault();
-        console.log("get Messages")
+
+
+        const createChatRoom = doc(db, "messages", activeRoom);
+        const getChatRoom = await getDoc(createChatRoom);
+
+        await updateDoc(createChatRoom, {
+            chat: [...getChatRoom.data()['chat'],
+            {
+                senderID: currentUser.uid,
+                senderName: currentUser.displayName,
+                createdAt: new Date(),
+                content: content
+            }
+            ]
+        })
         scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
-        await getMessages()
+        setContent("");
+
     }
+
+    useEffect(() => {
+        if (currentRoom) {
+            setActiveRoom(currentRoom)
+        }
+        else if (location.state) {
+            setActiveRoom(location.state['room_id'])
+        }
+        if (activeRoom) {
+            const unsubscribe = onSnapshot(doc(db, "messages", activeRoom), (doc) => {
+                setActiveMessages(doc.data());
+                scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+                // console.log("fired again")
+            });
+
+            return () => unsubscribe;
+        }
+    }, []);
+
+    useEffect(() => {
+
+        const unsubscribe = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
+            setActiveChats(doc.data()['chat']);
+        });
+
+        return () => unsubscribe;
+
+    }, []);
+
+    const handleRoomSelect = async (event) => {
+        setCurrentRoom(event.trim())
+        const unsubscribe = await getDoc(doc(db, "messages", event.trim()));
+        setActiveMessages(unsubscribe.data());
+        // console.log("fired Once: ", event)
+        scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+        // console.log(currentRoom)
+    }
+
 
     return (
         <div className='bg-gray-100 mx-1 font-body scroll-smooth h-0'>
@@ -135,9 +138,22 @@ export default function NewMessagePage() {
                             {/* list of users */}
                             <h5 className='text-md text-gray-700 font-extrabold pb-3 text-right'>Active Chats</h5>
                             <ul className='max-w-md divide-y divide-gray-200 dark:divide-gray-700'>
+                                {activeChats &&
+                                    // <ChatList users={activeChats} />
+                                    activeChats && activeChats.map((user, index) => (
+                                        <li className='pb-2 sm:pb-3' key={index}>
+                                            <div className='flex items-center space-x-4'>
+                                                <div className='flex-shrink-0'>
+                                                    <img className="w-8 h-8 rounded-full" src={user.photoURL || ProfileImage} alt="Neil image" />
+                                                </div >
+                                                <div className='flex-1 min-w-0'>
+                                                    <button className='inline-flex items-left justify-start pl-4 p-2 mt-2 w-full text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white' onClick={() => handleRoomSelect(user.room_id)}>{user.sender_name === currentUser.displayName ? user.receiver_name : user.sender_name}</button>
+                                                </div>
+                                            </div>
+                                        </li>
 
-                                <ChatList users={people} />
-
+                                    ))
+                                }
                             </ul>
                         </div>
                         {/* ----------------------------- */}
@@ -145,7 +161,9 @@ export default function NewMessagePage() {
                             {/* Message Section */}
                             <div className='bg-slate-300 border border-gray-300 rounded-lg px-4 py-4 row-span-5 overflow-y-scroll scroll-smooth'>
                                 {/* Message */}
-                                <ChatMessage chat={messages} />
+                                {activeMessages &&
+                                    <ChatMessage chat={activeMessages} />
+                                }
                                 <span ref={scroll}></span>
                             </div>
 
@@ -163,7 +181,7 @@ export default function NewMessagePage() {
                                             <svg aria-hidden="true" className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.415-1.414 3 3 0 01-4.242 0 1 1 0 00-1.415 1.414 5 5 0 007.072 0z" clipRule="evenodd"></path></svg>
                                             <span className="sr-only">Add emoji</span>
                                         </button>
-                                        <textarea type="text" rows={1} id="simple-search" className="block w-full p-4 pl-24 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 resize-none" placeholder="Your message..." onKeyDown={onEnterPress} autoFocus={true}></textarea>
+                                        <textarea type="text" rows={1} id="user_message" name="user_message" className="block w-full p-4 pl-24 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 resize-none" placeholder="Your message..." onKeyDown={onEnterPress} autoFocus={true} onChange={handleChange} value={content}></textarea>
                                     </div>
                                     <button type="submit" className="p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                         <svg aria-hidden="true" className="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
@@ -184,20 +202,30 @@ export default function NewMessagePage() {
 }
 
 function ChatMessage({ chat }) {
+
+    const currentUser = useSelector(selectCurrentUser);
+    const convertTimestamp = (timestamp) => {
+        let date = timestamp.toDate();
+        let mm = date.getMonth() + 1;
+        let dd = date.getDate();
+        let yyyy = date.getFullYear();
+
+        date = mm + '/' + dd + '/' + yyyy;
+        return date;
+    }
     return (
         <>
             {chat['chat'] && chat['chat'].map((message, index) => (
-                // <div key={index} className={`chat-bubble ${message.senderID === currentUser.uid ? "right" : "left"}`}>
-                <div key={index} className={`chat-bubble ${message.senderID === "12345" ? "right" : "left"}`}>
+                <div key={index} className={`chat-bubble ${message.senderID === currentUser.uid ? "right" : "left"}`}>
                     <img
                         className="chat-bubble__left"
-                        src={message.senderID === "12345" ? chat['senderAvatar'] || ProfileImage : chat['receiverAvatar']  || ProfileImage}
+                        src={message.senderID === currentUser.uid ? chat['senderAvatar'] || ProfileImage : chat['receiverAvatar'] || ProfileImage}
                         alt="user avatar"
                     />
                     <div className="chat-bubble__right">
-                        <p className="user-name">{message.senderID === "12345" ? chat['sender'] : chat['receiver']}</p>
+                        <p className="user-name">{message.senderID === currentUser.uid ? chat['sender'] : chat['receiver']}</p>
                         <p className="user-message">{message.content}</p>
-                        <p className="message-time">{message.createdAt}</p>
+                        <p className="message-time">{convertTimestamp(message.createdAt)}</p>
                     </div>
                 </div>
             ))}
@@ -206,22 +234,24 @@ function ChatMessage({ chat }) {
 }
 
 function ChatList({ users }) {
+    const currentUser = useSelector(selectCurrentUser);
     return (
         <>
             {
-                users && users.map((user, index) => (
-                    <li className='pb-2 sm:pb-3' key={index}>
-                        <div className='flex items-center space-x-4'>
-                            <div className='flex-shrink-0'>
-                                <img className="w-8 h-8 rounded-full" src={user.photoURL || ProfileImage} alt="Neil image" />
-                            </div >
-                            <div className='flex-1 min-w-0'>
-                                <button className='inline-flex items-left justify-start pl-4 p-2 mt-2 w-full text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white'>{user.displayName}</button>
-                            </div>
-                        </div>
-                    </li>
+                // console.log(users)
+                // users && users.map((user, index) => (
+                //     <li className='pb-2 sm:pb-3' key={index}>
+                //         <div className='flex items-center space-x-4'>
+                //             <div className='flex-shrink-0'>
+                //                 <img className="w-8 h-8 rounded-full" src={user.photoURL || ProfileImage} alt="Neil image" />
+                //             </div >
+                //             <div className='flex-1 min-w-0'>
+                //                 <button className='inline-flex items-left justify-start pl-4 p-2 mt-2 w-full text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white'>{user.sender_name === currentUser.displayName ? user.receiver_name : user.sender_name} onClick ={() => setActiveRoom(user.room_id)}</button>
+                //             </div>
+                //         </div>
+                //     </li>
 
-                ))
+                // ))
             }
         </>
     )
