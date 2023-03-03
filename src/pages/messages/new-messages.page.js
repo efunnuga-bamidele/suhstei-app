@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { selectCurrentUser } from '../../store/user/user.selector';
 import { useSelector,useDispatch } from 'react-redux';
 import Footer from '../../components/footer/footer.component'
@@ -99,11 +100,14 @@ const people = [
 
 export default function NewMessagePage() {
     const currentUser = useSelector(selectCurrentUser); 
+    const location = useLocation()
+
+    console.log("Chat Room ID: ", location.state['room_id'])
 
     const scroll = useRef();
 
     const onEnterPress = (e) => {
-        if (e.keyCode == 13 && e.shiftKey == false) {
+        if (e.keyCode === 13 && e.shiftKey === false) {
             e.preventDefault();
             //   this.myFormRef.requestSubmit();
             console.log("Form submitted")
