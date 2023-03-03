@@ -176,7 +176,7 @@ function App() {
             }
             errorElement={<ErrorPage />}
           />
-
+{/* 
           <Route
             path='/active-message'
             element={
@@ -185,10 +185,10 @@ function App() {
               </ProfileLayout>
             }
             errorElement={<ErrorPage />}
-          />
+          /> */}
 
           <Route
-            path='/new-message'
+            path='/messages'
             element={
               <ProfileLayout>
                 <NewMessagePage />

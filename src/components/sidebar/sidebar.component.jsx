@@ -48,8 +48,12 @@ export default function SidebarNavigation() {
                         </span>
 
                         </Sidebar.Collapse>
-
-                        <Sidebar.Collapse
+                        
+                        <span className='flex'>
+                        <FcSms className='mr-3 ml-2 mb-0' size={22} />
+                        <NavLink to="/messages" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>Messages</NavLink>
+                        </span>
+                        {/* <Sidebar.Collapse
                             icon={FcSms}
                             label="Messages"
                             >
@@ -63,7 +67,7 @@ export default function SidebarNavigation() {
                             <FcSms className='mr-2 ml-2 mb-2' size={22} />
                         </span>
 
-                        </Sidebar.Collapse>
+                        </Sidebar.Collapse> */}
                         <Sidebar.Collapse
                             icon={FcSimCardChip}
                             label="Book Requests"

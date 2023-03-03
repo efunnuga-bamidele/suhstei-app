@@ -2,7 +2,7 @@
 import { useState, useEffect} from 'react'
 import { useNavigation, useNavigate, Navigate, NavLink } from 'react-router-dom';
 import { Navbar, Avatar, Dropdown } from 'flowbite-react';
-import { MdDashboard } from 'react-icons/md';
+import { MdDashboard, MdMessage } from 'react-icons/md';
 import { HiOutlineAdjustments, HiUserCircle, HiLogout, HiLogin } from 'react-icons/hi';
 // import { HiUserCircle } from 'react-icons/md';
 
@@ -117,7 +117,13 @@ export default function Navigation() {
         </Dropdown>
         {/* End */}
         {/* collapsable Menu */}
-        <Dropdown
+        <Dropdown.Item className="cursor-default">
+          <MdMessage className='mr-2' size={22} />
+          <NavLink to="/messages" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
+                  Messages
+                </NavLink>
+        </Dropdown.Item>
+        {/* <Dropdown
             id= "collapsable-dropdown"
             color="white"
             label="Messages"
@@ -130,11 +136,11 @@ export default function Navigation() {
                 </NavLink>
               </Dropdown.Item>
               <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/new-message" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
-                  New Messages
+                <NavLink to="/messages" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
+                  Messages
                 </NavLink>
               </Dropdown.Item>
-        </Dropdown>
+        </Dropdown> */}
         {/* End */}
         {/* collapsable Menu */}
         <Dropdown
