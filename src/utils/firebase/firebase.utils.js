@@ -468,7 +468,7 @@ export const createRoom = async (secondUser, currentUser) => {
         chat: [...getSenderProfile.data()['chat'], {
           room_id: chatRoom_id,
           receiver_id: secondUserId.trim(),
-          receiver_Name: secondUser,
+          receiver_name: secondUser,
           sender_id: currentUser.uid,
           sender_name: currentUser.displayName,
           createdAt: createdAt
@@ -483,7 +483,7 @@ export const createRoom = async (secondUser, currentUser) => {
       chat: [{
         room_id: chatRoom_id,
         receiver_id: secondUserId.trim(),
-        receiver_Name: secondUser,
+        receiver_name: secondUser,
         sender_id: currentUser.uid,
         sender_name: currentUser.displayName,
         createdAt: createdAt
@@ -506,7 +506,7 @@ export const createRoom = async (secondUser, currentUser) => {
         chat: [...getReceiverProfile.data()['chat'], {
           room_id: chatRoom_id,
           receiver_id: secondUserId.trim(),
-          receiver_Name: secondUser,
+          receiver_name: secondUser,
           sender_id: currentUser.uid,
           sender_name: currentUser.displayName,
           createdAt: createdAt
@@ -533,14 +533,6 @@ export const createRoom = async (secondUser, currentUser) => {
       ]
     })
   }
-
-  // create chat room
-
-
-  // l0vVfFuOTyVtIyEZF0tKggQKn9p2_dTARGAWUzGb1cym3h0mA61EcdGy1
-
-  // dTARGAWUzGb1cym3h0mA61EcdGy1_l0vVfFuOTyVtIyEZF0tKggQKn9p2
-
 
   const createChatRoom = doc(db, "messages", chatRoom_id);
   const createChatRoom_rev = doc(db, "messages", reversedChatRoom_id);
