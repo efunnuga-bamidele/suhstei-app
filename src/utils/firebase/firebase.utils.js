@@ -7,7 +7,11 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  FacebookAuthProvider
+  FacebookAuthProvider,
+  sendEmailVerification,
+  updateEmail,
+  sendPasswordResetEmail,
+  reauthenticateWithCredential
 
 } from 'firebase/auth';
 import {
@@ -22,9 +26,6 @@ import {
   arrayRemove,
   where,
   query,
-  orderBy,
-  onSnapshot,
-  limit,
 } from 'firebase/firestore'
 
 import {
@@ -117,6 +118,10 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
 //signin with email and password
 export const sighAuthUserInWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
+  // await signInWithEmailAndPassword(auth, email, password);
+  // if (auth.currentUser['emailVerified'] === false){
+
+  // }
   return await signInWithEmailAndPassword(auth, email, password);
 };
 
@@ -581,4 +586,9 @@ export const getMessages = async (chahRoomId) => {
   querySnapshot.forEach((doc) => {
     console.log(doc.id, "=>");
   })
+}
+
+export const sendVerificationEmail = async () => {
+    if(!auth.currentUser) return;
+    return await sendEmailVerification(auth.currentUser)
 }

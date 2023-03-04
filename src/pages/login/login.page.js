@@ -56,6 +56,7 @@ export default function LoginPage() {
         try{
             await sighAuthUserInWithEmailAndPassword(formField.email, formField.password)
             // console.log(user)
+            
             resetFields();
 
         }catch(err){
