@@ -12,38 +12,38 @@ import { db, getMessages } from '../../utils/firebase/firebase.utils';
 import { doc, onSnapshot, getDoc, updateDoc, QuerySnapshot } from 'firebase/firestore';
 
 
-const people = [
-    {
-        displayName: "Tunde Wale",
-        userId: "1",
-        photoURL: "https://flowbite.com/docs/images/people/profile-picture-1.jpg"
-    },
-    {
-        displayName: "Neil Cole",
-        userId: "2",
-        photoURL: "https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-    },
-    {
-        displayName: "Sarah sharp",
-        userId: "3",
-        photoURL: "https://flowbite.com/docs/images/people/profile-picture-3.jpg"
-    },
-    {
-        displayName: "Nina Austin",
-        userId: "4",
-        photoURL: "https://flowbite.com/docs/images/people/profile-picture-4.jpg"
-    },
-    {
-        displayName: "Peter Smith",
-        userId: "5",
-        photoURL: "https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-    },
-]
+// const people = [
+//     {
+//         displayName: "Tunde Wale",
+//         userId: "1",
+//         photoURL: "https://flowbite.com/docs/images/people/profile-picture-1.jpg"
+//     },
+//     {
+//         displayName: "Neil Cole",
+//         userId: "2",
+//         photoURL: "https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+//     },
+//     {
+//         displayName: "Sarah sharp",
+//         userId: "3",
+//         photoURL: "https://flowbite.com/docs/images/people/profile-picture-3.jpg"
+//     },
+//     {
+//         displayName: "Nina Austin",
+//         userId: "4",
+//         photoURL: "https://flowbite.com/docs/images/people/profile-picture-4.jpg"
+//     },
+//     {
+//         displayName: "Peter Smith",
+//         userId: "5",
+//         photoURL: "https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+//     },
+// ]
 
 export default function NewMessagePage() {
     const currentUser = useSelector(selectCurrentUser);
     const location = useLocation()
-    const [activeRoom, setActiveRoom] = useState();
+    const [activeRoom, setActiveRoom] = useState(location.state['room_id']);
     const [currentRoom, setCurrentRoom] = useState('');
     const [content, setContent] = useState('');
     const [activeMessages, setActiveMessages] = useState();
@@ -90,11 +90,14 @@ export default function NewMessagePage() {
     useEffect(() => {
         if (currentRoom) {
             setActiveRoom(currentRoom)
+            console.log("fired again 1: ",activeRoom)
         }
         else if (location.state) {
-            setActiveRoom(location.state['room_id'])
+            console.log("Location: ",location.state['room_id'])
+            // setActiveRoom(location.state['room_id'])
         }
         if (activeRoom) {
+            console.log("fired again 2: ",activeRoom)
             const unsubscribe = onSnapshot(doc(db, "messages", activeRoom), (doc) => {
                 setActiveMessages(doc.data());
                 scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
