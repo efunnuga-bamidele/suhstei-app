@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { selectCurrentUser } from '../../store/user/user.selector';
 import { useSelector, useDispatch } from 'react-redux';
 import Footer from '../../components/footer/footer.component'
@@ -10,19 +10,13 @@ import './messages.css'
 
 import { db, getMessages } from '../../utils/firebase/firebase.utils';
 import { doc, onSnapshot, getDoc, updateDoc, QuerySnapshot } from 'firebase/firestore';
-
-
-// const people = [
-//     {
-//         displayName: "Tunde Wale",
-//         userId: "1",
-//         photoURL: "https://flowbite.com/docs/images/people/profile-picture-1.jpg"
-//     },
+import { ThreeDots } from "react-loader-spinner";
 
 export default function NewMessagePage() {
     const currentUser = useSelector(selectCurrentUser);
     const location = useLocation()
-    const [activeRoom, setActiveRoom] = useState(location.state['room_id']);
+    const navigate = useNavigate()
+    const [activeRoom, setActiveRoom] = useState();
     const [currentRoom, setCurrentRoom] = useState('');
     const [content, setContent] = useState('');
     const [activeMessages, setActiveMessages] = useState();
@@ -42,22 +36,23 @@ export default function NewMessagePage() {
     }
 
 
-
     const handleChange = (event) => {
         setContent(event.target.value)
-    }
+            }
+
 
     const onEnterPress = (e) => {
         if (e.keyCode === 13 && e.shiftKey === false) {
             e.preventDefault();
             handleSend(e)
-            scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
         }
     }
 
-    const handleSend = async (e) => {
-        e.preventDefault();
 
+
+    const handleSend = async (e) => {
+        scroll.current.scrollIntoViewIfNeeded()
+        e.preventDefault();
 
         const createChatRoom = doc(db, "messages", activeRoom);
         const getChatRoom = await getDoc(createChatRoom);
@@ -72,33 +67,36 @@ export default function NewMessagePage() {
             }
             ]
         })
-        scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
         setContent("");
+    }
 
+    const fetchPost = async () => {
+
+        console.log("Fetch was Fired")
+        const unsubscribe = onSnapshot(doc(db, "messages", location.state['room_id']), (doc) => {
+            setActiveMessages(doc.data());
+        });
+        return () => unsubscribe;
     }
 
     useEffect(() => {
-        if (currentRoom) {
-            setActiveRoom(currentRoom)
-            console.log("fired again 1: ",activeRoom)
-        }
-        else if (location.state) {
-            console.log("Location: ",location.state['room_id'])
-            // setActiveRoom(location.state['room_id'])
+        if (location.state) {
+            setCurrentRoom(location.state['room_id'])
+            setActiveRoom(location.state['room_id'])
+            fetchPost();
         }
         if (activeRoom) {
-            console.log("fired again 2: ",activeRoom)
             const unsubscribe = onSnapshot(doc(db, "messages", activeRoom), (doc) => {
                 setActiveMessages(doc.data());
-                scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
             });
-
             return () => unsubscribe;
+
+
         }
     }, []);
 
     useEffect(() => {
-
+        // userList
         const unsubscribe = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
             setActiveChats(doc.data()['chat']);
         });
@@ -107,13 +105,22 @@ export default function NewMessagePage() {
 
     }, []);
 
+
+    // manage scrolling
+    useEffect(() => {
+        scroll.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    }, [activeMessages])
+
+    
+
     const handleRoomSelect = async (event) => {
-        setCurrentRoom(event.trim())
+        // setCurrentRoom(event.trim())
+        // setActiveRoom(event.trim())
         const unsubscribe = await getDoc(doc(db, "messages", event.trim()));
         setActiveMessages(unsubscribe.data());
-        // console.log("fired Once: ", event)
-        scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
-        // console.log(currentRoom)
+        // use navigat to persist data
+        navigate('/messages', { state: { room_id: event.trim() } });
+        
     }
 
 
@@ -130,21 +137,20 @@ export default function NewMessagePage() {
                             {/* list of users */}
                             <h5 className='text-md text-gray-700 font-extrabold pb-3 text-right'>Active Chats</h5>
                             <ul className='max-w-md divide-y divide-gray-200 dark:divide-gray-700'>
-                                {activeChats &&
-                                    // <ChatList users={activeChats} />
-                                    activeChats && activeChats.map((user, index) => (
-                                        <li className='pb-2 sm:pb-3' key={index}>
-                                            <div className='flex items-center space-x-4'>
-                                                <div className='flex-shrink-0'>
-                                                    <img className="w-8 h-8 rounded-full" src={user.photoURL || ProfileImage} alt="Neil image" />
-                                                </div >
-                                                <div className='flex-1 min-w-0'>
-                                                    <button className='inline-flex items-left justify-start pl-4 p-2 mt-2 w-full text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white' onClick={() => handleRoomSelect(user.room_id)}>{user.sender_name === currentUser.displayName ? user.receiver_name : user.sender_name}</button>
-                                                </div>
+                                {activeChats && activeChats.map((user, index) => (
+                                    <li className='pb-2 sm:pb-3' key={index}>
+                                        <div className='flex items-center space-x-4'>
+                                            <div className='flex-shrink-0'>
+                                                <img className="w-8 h-8 rounded-full" src={user.photoURL || ProfileImage} alt="Neil image" />
+                                            </div >
+                                            <div className='flex-1 min-w-0'>
+                                                <button className='inline-flex items-left justify-start pl-4 p-2 mt-2 w-full text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white' onClick={() => handleRoomSelect(user.room_id)}>
+                                                    {user.sender_name.trim() === currentUser.displayName.trim() ? (user.receiver_name): (user.sender_name)}</button>
                                             </div>
-                                        </li>
+                                        </div>
+                                    </li>
 
-                                    ))
+                                ))
                                 }
                             </ul>
                         </div>
@@ -154,21 +160,35 @@ export default function NewMessagePage() {
                             <div className='bg-slate-300 border border-gray-300 rounded-lg px-4 py-4 row-span-5 overflow-y-scroll scroll-smooth'>
                                 {/* Message */}
                                 {activeMessages && activeMessages['chat'].map((message, index) => (
-                                        <div key={index} className={`chat-bubble ${message.senderID === currentUser.uid ? "right" : "left"}`}>
-                                            <img
-                                                className="chat-bubble__left"
-                                                src={message.senderID === currentUser.uid ? activeMessages['senderAvatar'] || ProfileImage : activeMessages['receiverAvatar'] || ProfileImage}
-                                                alt="user avatar"
-                                            />
-                                            <div className="chat-bubble__right">
-                                                <p className="user-name">{message.senderID === currentUser.uid ? activeMessages['sender'] : activeMessages['receiver']}</p>
-                                                <p className="user-message">{message.content}</p>
-                                                <p className="message-time">{convertTimestamp(message.createdAt)}</p>
-                                            </div>
+
+                                    <div key={index} className={`chat-bubble ${message.senderID === currentUser.uid ? "right" : "left"}`}>
+                                        <img
+                                            className="chat-bubble__left"
+                                            src={message.senderAvatar || ProfileImage}
+                                            alt="user avatar"
+                                        />
+                                        <div className="chat-bubble__right">
+                                            <p className="user-name">{message.senderName}</p>
+                                            <p className="user-message">{message.content}</p>
+                                            <p className="message-time">{convertTimestamp(message.createdAt)}</p>
                                         </div>
-                                    ))}
-                                    {/* "Typing..." */}
+                                    </div>
+                                ))}
+                                {
+                                    // use realtime database to manage typing message
                                     
+                                    // <ThreeDots
+                                    //     height="80"
+                                    //     width="80"
+                                    //     radius="9"
+                                    //     color="#4fa94d"
+                                    //     ariaLabel="three-dots-loading"
+                                    //     wrapperStyle={{}}
+                                    //     wrapperClassName=""
+                                    //     visible={true}
+                                    // />
+                                }
+
                                 <span ref={scroll}></span>
                             </div>
 
