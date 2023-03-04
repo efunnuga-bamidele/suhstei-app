@@ -432,7 +432,7 @@ export const createRoom = async (secondUser, currentUser) => {
   const createdAt = new Date();
 
 
-  const senderProfile = doc(db, "users", currentUser.uid);
+  const senderProfile = doc(db, "users", currentUser.uid.trim());
   const receiverProfile = doc(db, "users", secondUserId.trim());
   const getSenderProfile = await getDoc(senderProfile);
   const getReceiverProfile = await getDoc(receiverProfile);
@@ -533,6 +533,7 @@ export const createRoom = async (secondUser, currentUser) => {
   }
   else if(getChatRoom_rev.exists()){
     masterRoom_id = reversedChatRoom_id;
+    console.log("chat exists")
   }
    else {
     masterRoom_id = chatRoom_id;
