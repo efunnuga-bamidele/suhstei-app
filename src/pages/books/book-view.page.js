@@ -31,7 +31,7 @@ export default function BookViewPage(){
             <Navigation />
             <main className="bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap">
             <section className='bg-white mt-12 m-2 p-4 w-full rounded-md'>
-                <div classname="m-6 px-8 overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 gap-10">
+                <div className="m-6 px-8 overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 gap-10">
                     {isLoading ? (
                         <div className="grid col-span-full place-items-center h-50">
                         <FallingLines

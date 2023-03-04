@@ -3,9 +3,9 @@ import Footer from "../../components/footer/footer.component";
 import Navigation from "../../components/navigation/navigation.component";
 import SidebarNavigation from "../../components/sidebar/sidebar.component";
 import { deleteBook, getUserBooks, updateBook } from "../../utils/firebase/firebase.utils";
-import{ FiEdit } from "react-icons/fi"
-import{ RiDeleteBin6Line } from "react-icons/ri"
-import {HiOutlineExclamationCircle, HiOutlineInformationCircle} from "react-icons/hi"
+import { FiEdit } from "react-icons/fi"
+import { RiDeleteBin6Line } from "react-icons/ri"
+import { HiOutlineExclamationCircle, HiOutlineInformationCircle } from "react-icons/hi"
 import { FallingLines } from 'react-loader-spinner'
 import PaginationComponent from '../../components/pagination/pagination-component'
 
@@ -14,7 +14,7 @@ import { selectCurrentUser } from "../../store/user/user.selector";
 import FileResizer from 'react-image-file-resizer'
 import BookItem from "../../components/book-item/book-item-component";
 
-import { Button, Modal, Tooltip, Alert} from "flowbite-react";
+import { Button, Modal, Tooltip, Alert } from "flowbite-react";
 import FormInput from '../../components/form-input/form-input.component'
 import { setUserBookMap } from "../../store/userBook/userBook.action";
 import { selectUserBooksMap } from "../../store/userBook/userBook.selector";
@@ -64,8 +64,8 @@ const defaultFormField = {
 // let currentItemsFiltered = []
 // let pageNumber = []
 
-export default function MyBooksPage(){
-    
+export default function MyBooksPage() {
+
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(8);
     const [isLoading, setIsLoading] = useState(true);
@@ -79,7 +79,7 @@ export default function MyBooksPage(){
     const [success, setSuccess] = useState('');
     const [formFields, setFormFields] = useState(defaultFormField);
     const [initialFormData, setInitialFormData] = useState(defaultFormField);
-    const {book_owner, book_author, book_title, book_category, book_description, book_status} = formFields;
+    const { book_owner, book_author, book_title, book_category, book_description, book_status } = formFields;
     let [thumbnail, setThumbnail] = useState(null)
     let [fileUrl, setFileUrl] = useState(null)
     const dispatch = useDispatch()
@@ -93,41 +93,43 @@ export default function MyBooksPage(){
     // Image File Resizing function
 
     const resizeFile = (file) =>
-    new Promise((resolve) => {
-      FileResizer.imageFileResizer(
-        file,
-        300,
-        300,
-        "JPEG",
-        100,
-        0,
-        (uri) => {
-          resolve(uri);
-        },
-        "file"
-      );
-    });
-    
-// Get Books to Populate the page
+        new Promise((resolve) => {
+            FileResizer.imageFileResizer(
+                file,
+                300,
+                300,
+                "JPEG",
+                100,
+                0,
+                (uri) => {
+                    resolve(uri);
+                },
+                "file"
+            );
+        });
+
+    // Get Books to Populate the page
     useEffect(() => {
-      
+
         const getBooks = async () => {
 
             const books = await getUserBooks(currentUser.uid);
-            dispatch(setUserBookMap(books.mybooks))
+            if (books !== undefined) {
+                dispatch(setUserBookMap(books.mybooks))
+            }
             setIsLoading(false)
         }
         getBooks(dispatch)
-        
-    },[])
+
+    }, [])
 
     const resetFields = () => {
         setFormFields(defaultFormField);
         const categoryOption = document.querySelector('#book_category')
         const statusOption = document.querySelector('#book_status')
         document.getElementById('thumbnail').value = ''
-        categoryOption.selectedIndex  = 0
-        statusOption.selectedIndex  = 0
+        categoryOption.selectedIndex = 0
+        statusOption.selectedIndex = 0
         setThumbnail = null
 
     }
@@ -135,31 +137,30 @@ export default function MyBooksPage(){
     const onPageChange = (event) => {
         setCurrentPage(event);
     }
-    
-     const handleDeleteModal = (el, imageUrl) => {
+
+    const handleDeleteModal = (el, imageUrl) => {
         setShowModal(showModal ? false : true)
-        setItemData({el, imageUrl})
+        setItemData({ el, imageUrl })
     }
 
-   
+
     const handleDeleteResponse = async (event) => {
-        
-            if (event === "Yes"){
-                setShowLoadingModal(true);
-                const newBooks = myBooks.filter((item) => item.id !== itemData['el'])
-                const res = await deleteBook(currentUser.uid, newBooks, itemData['imageUrl'])
 
-                if (res === "success")
-                {
-                    dispatch(setUserBookMap(newBooks))
-                    setShowLoadingModal(false);
-                    setShowModal(showModal ? false : true)
-                    setItemData(null)
+        if (event === "Yes") {
+            setShowLoadingModal(true);
+            const newBooks = myBooks.filter((item) => item.id !== itemData['el'])
+            const res = await deleteBook(currentUser.uid, newBooks, itemData['imageUrl'])
 
-                }
-            }else{
-                setShowModal(showModal ? false : true);
-            }      
+            if (res === "success") {
+                dispatch(setUserBookMap(newBooks))
+                setShowLoadingModal(false);
+                setShowModal(showModal ? false : true)
+                setItemData(null)
+
+            }
+        } else {
+            setShowModal(showModal ? false : true);
+        }
     }
 
     const handleChange = (event) => {
@@ -172,17 +173,17 @@ export default function MyBooksPage(){
         let selected = event.target.files[0];
         const resizedImage = await resizeFile(selected);
         // console.log(resizedImage.size);
-        if(!resizedImage){
+        if (!resizedImage) {
             setError("Please select a file");
             setTimeout(() => setError(''), 10000);
             return;
         }
-        if (!resizedImage.type.includes('image')){
+        if (!resizedImage.type.includes('image')) {
             setError("Selected file must be an image");
             setTimeout(() => setError(''), 10000);
             return;
         }
-        if (resizedImage.size > 1000000){ //1000000 == 1 mb
+        if (resizedImage.size > 1000000) { //1000000 == 1 mb
             setError("Image file size must be less than 1mb");
             setTimeout(() => setError(''), 10000);
             return;
@@ -195,7 +196,7 @@ export default function MyBooksPage(){
     const handleEditModal = (el, imageUrl) => {
         setShowEditModal(showEditModal ? false : true)
         setInitialFormData(el);
-        if (el && imageUrl){
+        if (el && imageUrl) {
             setFormFields(el)
             setFileUrl(imageUrl.split('%2Fbooks%2')[1].split('?')[0])
             setThumbnail(imageUrl)
@@ -211,9 +212,9 @@ export default function MyBooksPage(){
         setError('');
 
         setShowLoadingModal(true);
-       const res = await updateBook(currentUser.uid, thumbnail, formFields, imageState, initialFormData);
+        const res = await updateBook(currentUser.uid, thumbnail, formFields, imageState, initialFormData);
 
-        if(res === "success"){
+        if (res === "success") {
             setSuccess("Book updated successfully!");
             setShowLoadingModal(false);
             resetFields();
@@ -222,42 +223,42 @@ export default function MyBooksPage(){
             dispatch(setUserBookMap(books.mybooks))
             setShowEditModal(false)
 
-        }else{
+        } else {
             setError("Failed to updated book");
             setTimeout(() => setError(''), 500);
             setShowLoadingModal(false);
             setShowEditModal(true)
         }
-        
-        
-        
-        
+
+
+
+
     }
 
 
-    
 
-    return(
+
+    return (
         <div className='bg-gray-100 font-body scroll-smooth h-0'>
-        <Navigation />
+            <Navigation />
             <main className="bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap">
-                        <Fragment>
-                            {/* Delete Book Modal */}
-                            <Modal
-                                show={showModal}
-                                size="md"
-                                popup={true}
-                                onClose={handleDeleteModal}
-                                className="max-md:pt-32 mt-10"
-                            >
-                                <Modal.Header />
-                                <Modal.Body>
-                                <div className="text-center">
-                                    <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-                                    <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                <Fragment>
+                    {/* Delete Book Modal */}
+                    <Modal
+                        show={showModal}
+                        size="md"
+                        popup={true}
+                        onClose={handleDeleteModal}
+                        className="max-md:pt-32 mt-10"
+                    >
+                        <Modal.Header />
+                        <Modal.Body>
+                            <div className="text-center">
+                                <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+                                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
                                     Are you sure you want to delete this book?
-                                    </h3>
-                                    <div className="flex justify-center gap-4">
+                                </h3>
+                                <div className="flex justify-center gap-4">
                                     <Button
                                         color="failure"
                                         onClick={() => handleDeleteResponse("Yes")}
@@ -266,52 +267,52 @@ export default function MyBooksPage(){
                                     </Button>
                                     <Button
                                         color="gray"
-                                        onClick={() => handleDeleteResponse("No") }
+                                        onClick={() => handleDeleteResponse("No")}
                                     >
                                         No, cancel
                                     </Button>
-                                    </div>
                                 </div>
-                                </Modal.Body>
-                            </Modal>
-                        </Fragment>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
+                </Fragment>
 
-                        
 
-                        <Fragment>
-                            <Modal
-                                show={showEditModal}
-                                size="3xl"
-                                popup={true}
-                                onClose={handleEditModal}
-                                className="max-md:pt-16 mt-10 bg-opacity-60"
-                            >
-                                <Modal.Header />
-                                <Modal.Body>
-                                    {/* Loading Modal */}
-                                <Fragment>
-                                    <Modal
-                                        show={showLoadingModal}
-                                        size="md"
-                                        popup={true}
-                                        onClose={showLoadingModal}
-                                        className="max-md:pt-32 mt-10 bg-opacity-60 z-50"
-                                    >
-                                
-                                        <Modal.Body>
-                                            <div className="grid col-span-full place-items-center h-56"> 
-                                                <FallingLines
-                                                    color="#1e94cc"
-                                                    width="120"
-                                                    visible={true}
-                                                    ariaLabel='falling-lines-loading'
-                                                />               
-                                            </div>
-                                        </Modal.Body>
-                                    </Modal>
-                                </Fragment>
 
-                                <div className='container px-6 py-2 h-full'>
+                <Fragment>
+                    <Modal
+                        show={showEditModal}
+                        size="3xl"
+                        popup={true}
+                        onClose={handleEditModal}
+                        className="max-md:pt-16 mt-10 bg-opacity-60"
+                    >
+                        <Modal.Header />
+                        <Modal.Body>
+                            {/* Loading Modal */}
+                            <Fragment>
+                                <Modal
+                                    show={showLoadingModal}
+                                    size="md"
+                                    popup={true}
+                                    onClose={showLoadingModal}
+                                    className="max-md:pt-32 mt-10 bg-opacity-60 z-50"
+                                >
+
+                                    <Modal.Body>
+                                        <div className="grid col-span-full place-items-center h-56">
+                                            <FallingLines
+                                                color="#1e94cc"
+                                                width="120"
+                                                visible={true}
+                                                ariaLabel='falling-lines-loading'
+                                            />
+                                        </div>
+                                    </Modal.Body>
+                                </Modal>
+                            </Fragment>
+
+                            <div className='container px-6 py-2 h-full'>
                                 <form onSubmit={handleBookEdit}>
                                     <div className='relative z-0 mb-8 w-full group'>
                                         <h1 className='text-1xl sm:text-2xl md:text-3xl font-bold my-auto mb-4 text-primary'>Edit Book Detail</h1>
@@ -363,11 +364,11 @@ export default function MyBooksPage(){
                                     </div>
                                     <div className="grid md:grid-cols-2 md:gap-6">
                                         <div className='relative z-0 mb-6 w-full group'>
-                                           
+
                                             <FormInput
                                                 name="thumbnail"
                                                 id="thumbnail"
-                                                label={thumbnail && fileUrl ? `Book Image : ${fileUrl}` : "Book Image"}                                                
+                                                label={thumbnail && fileUrl ? `Book Image : ${fileUrl}` : "Book Image"}
                                                 type="file"
                                                 onChange={handleFileChange}
                                             />
@@ -490,30 +491,38 @@ export default function MyBooksPage(){
                                 />
                             </div>
                         ) : (
-                            currentItems && currentItems.map((item, index) => (
-                                <div key={index} className="relative group/div">
-                                    <Tooltip
-                                        content="Edit Book"
-                                        placement="right"
-                                        className="absolute ml-20 mt-6"
-                                    >
-                                        {/* Edit Button */}
-                                        <button className="group absolute ml-7 mt-7 z-50 text-white font-extrabold bg-gray-100 py-1 px-2 rounded-md border-2 border-slate-300 hover:scale-x-125 hover:scale-y-95 hover:translate-x-1 transition duration-700 ease-in-out shadow-md opacity-0 group-hover/div:opacity-100">
-                                            <FiEdit color="blue" onClick={() => handleEditModal(item, item.imageUrl)} />
-                                        </button>
-                                    </Tooltip>
-                                    <Tooltip
-                                        content="Delete Book"
-                                        placement="right"
-                                        className="absolute ml-20 mt-14"
-                                    >
-                                        {/* Delete Button */}
-                                        <button className="group absolute ml-7 mt-16 z-50 text-white font-extrabold bg-gray-100 py-1 px-2 rounded-md border-2 border-slate-300 hover:scale-x-125 hover:scale-y-95 hover:translate-x-1 transition duration-700 ease-in-out opacity-0 group-hover/div:opacity-100"><RiDeleteBin6Line color="red" onClick={() => handleDeleteModal(item.id, item.imageUrl)} /></button>
-                                    </Tooltip>
+                          
+                            (currentItems.length > 0) ? (
+                                currentItems.map((item, index) => (
+                                    <div key={index} className="relative group/div">
+                                        <Tooltip
+                                            content="Edit Book"
+                                            placement="right"
+                                            className="absolute ml-20 mt-6"
+                                        >
+                                            {/* Edit Button */}
+                                            <button className="group absolute ml-7 mt-7 z-50 text-white font-extrabold bg-gray-100 py-1 px-2 rounded-md border-2 border-slate-300 hover:scale-x-125 hover:scale-y-95 hover:translate-x-1 transition duration-700 ease-in-out shadow-md opacity-0 group-hover/div:opacity-100">
+                                                <FiEdit color="blue" onClick={() => handleEditModal(item, item.imageUrl)} />
+                                            </button>
+                                        </Tooltip>
+                                        <Tooltip
+                                            content="Delete Book"
+                                            placement="right"
+                                            className="absolute ml-20 mt-14"
+                                        >
+                                            {/* Delete Button */}
+                                            <button className="group absolute ml-7 mt-16 z-50 text-white font-extrabold bg-gray-100 py-1 px-2 rounded-md border-2 border-slate-300 hover:scale-x-125 hover:scale-y-95 hover:translate-x-1 transition duration-700 ease-in-out opacity-0 group-hover/div:opacity-100"><RiDeleteBin6Line color="red" onClick={() => handleDeleteModal(item.id, item.imageUrl)} /></button>
+                                        </Tooltip>
 
-                                    <BookItem key={index} bookImage={item.imageUrl} title={item.book_title} author={item.book_author} owner={item.book_owner} buttonAction="View Book" status={item.book_status} id={item.id} owner_id = {item.owner_id}/>
+                                        <BookItem key={index} bookImage={item.imageUrl} title={item.book_title} author={item.book_author} owner={item.book_owner} buttonAction="View Book" status={item.book_status} id={item.id} owner_id={item.owner_id} />
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="grid col-span-full place-items-center h-56">
+                                        <h1>You do not have any books....</h1>
+
                                 </div>
-                            ))
+                            )
                         )}
                     </div>
                     <PaginationComponent currentPage={currentPage} pageNumbers={pageNumbers} onPageChange={onPageChange} />

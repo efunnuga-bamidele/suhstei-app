@@ -62,14 +62,14 @@ facebookProvider.setCustomParameters({
 });
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => {
+export const signInWithGooglePopup = async () => {
   // console.log('signInWithGooglePopup Fired')
-  signInWithPopup(auth, googleProvider);
+  await signInWithPopup(auth, googleProvider);
 }
 
-export const signInWithFacebookPopup = () => {
+export const signInWithFacebookPopup = async () => {
   // console.log('signInWithFacebookPopup Fired')
-  signInWithPopup(auth, facebookProvider)
+  await signInWithPopup(auth, facebookProvider)
 }
 
 // Firestore initialization
@@ -77,7 +77,7 @@ export const db = getFirestore();
 
 // Firebase Collections
 const colBookRef = collection(db, 'books');
-const colRequestRef = collection(db, 'requests');
+// const colRequestRef = collection(db, 'requests');
 
 // Function to create new user on authentication
 export const createUserDocumentFromAuth = async (userAuth, additionalinformation) => {
@@ -94,7 +94,7 @@ export const createUserDocumentFromAuth = async (userAuth, additionalinformation
 
     try {
       await setDoc(userDocRef, {
-        id: userAuth,
+        id: userAuth.uid,
         status: "online",
         displayName,
         email,
@@ -303,16 +303,30 @@ export const BorrowBook = async (unique_id, requestedBook, currentUser, requeste
       updateRequestedBook(requestedBook, "Requested")
       return "success";
     } catch (err) {
+      console.log("error 1: ", err)
       return "Failed";
     }
 
-  } else {
+  }
+  else if (userDocSnapshot.data() === undefined && ownerDocSnapshot.data() !== undefined) {
+    try {
+      await setDoc(userRef, { [fieldName]: [{ ...requestDetail }] });
+      await updateDoc(ownerRef, { [fieldName]: [...ownerDocSnapshot.data()[fieldName], { ...requestDetail }] });
+      updateRequestedBook(requestedBook, "Requested")
+      return "success";
+    } catch (err) {
+      console.log("error 2: ", err)
+      return "Failed";
+    }
+  }
+  else {
     try {
       await updateDoc(userRef, { [fieldName]: [...userDocSnapshot.data()[fieldName], { ...requestDetail }] });
       await updateDoc(ownerRef, { [fieldName]: [...ownerDocSnapshot.data()[fieldName], { ...requestDetail }] });
       updateRequestedBook(requestedBook, "Requested")
       return "added";
     } catch (err) {
+      console.log("error 3: ", err)
       return "Failed";
     }
   }
