@@ -20,25 +20,13 @@ import {
     signInWithFacebookPopup,
 } from '../../utils/firebase/firebase.utils';
 
-import { useSelector } from 'react-redux'
-import { selectCurrentUser } from '../../store/user/user.selector'
-
 
 const defaultFormFields = {
     email: '',
     password: ''
 }
 
-export default function LoginPage() {
-    const currentUser  = useSelector(selectCurrentUser) 
-    const redirect = useNavigate()
-    
-    // useEffect(() => {
-    //     if (currentUser){
-    //         redirect('/')
-    //         console.log('Logged In')
-    //     }
-    // },[currentUser])
+export default function LoginPage() {    
 
     const [ formField, setFormField ] = useState(defaultFormFields);
     const { email, password } = formField;
@@ -54,11 +42,11 @@ export default function LoginPage() {
     };
 
     const logGooglePopUser = async () => {
-        const { user } = await signInWithGooglePopup();
+        await signInWithGooglePopup();
     }
 
     const loggFacebookProvider = async () => {
-        const { user } = await signInWithFacebookPopup();
+        await signInWithFacebookPopup();
     }
 
     const handleSubmit = async (event) => {
@@ -66,7 +54,7 @@ export default function LoginPage() {
         setError('');
 
         try{
-            const { user } = await sighAuthUserInWithEmailAndPassword(formField.email, formField.password)
+            await sighAuthUserInWithEmailAndPassword(formField.email, formField.password)
             // console.log(user)
             resetFields();
 

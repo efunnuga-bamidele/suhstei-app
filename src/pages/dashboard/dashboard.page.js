@@ -5,8 +5,10 @@ import { Table } from "flowbite-react";
 
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { getUserBooks } from "../../utils/firebase/firebase.utils";
+import { Modal } from "flowbite-react";
+import { FallingLines } from 'react-loader-spinner'
 
 export default function DashboardPage(){
 
@@ -25,7 +27,9 @@ export default function DashboardPage(){
       
         const getBooks = async () => {
             const books = await getUserBooks(currentUser.uid);
-            setMyBooks(books.mybooks)
+            if(books !== undefined){
+                setMyBooks(books.mybooks)
+            }
             setIsLoading(false)
         }
         getBooks()
@@ -59,7 +63,17 @@ export default function DashboardPage(){
                     <SidebarNavigation />
                     <section className="bg-white mt-12 m-2 p-2 w-full rounded-lg relative overflow-x-auto shadow-md">
                         <h1 className="font-bold text-lg text-center underline">My Dashboard</h1>
-                        {isLoading && <p>Loading.........</p>}
+                        {isLoading ? (
+                            <div className="grid col-span-full place-items-center h-56">
+
+                                <FallingLines
+                                    color="#1e94cc"
+                                    width="100"
+                                    visible={true}
+                                    ariaLabel='falling-lines-loading'
+                                />
+                            </div>
+                        ) : (
                         
                         <Table hoverable={true}>
                             <Table.Head>
@@ -88,7 +102,7 @@ export default function DashboardPage(){
                                         {currentUser.displayName}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {myBooks.length !== 0 ? myBooks.length : 'Fetching data..'}
+                                        {myBooks.length !== 0 ? myBooks.length : '0'}
                                     </Table.Cell>
                                 </Table.Row>
 
@@ -103,7 +117,7 @@ export default function DashboardPage(){
                                         {currentUser.displayName}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {myAvailableBooks.length !== 0 ? myAvailableBooks.length : 'Fetching data...'}
+                                        {myAvailableBooks.length !== 0 ? myAvailableBooks.length : '0'}
                                     </Table.Cell>
                                 </Table.Row>
                                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
@@ -117,7 +131,7 @@ export default function DashboardPage(){
                                         {currentUser.displayName}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {myRequestedBooks.length !== 0 ? myRequestedBooks.length : 'Fetching data...'}
+                                        {myRequestedBooks.length !== 0 ? myRequestedBooks.length : '0'}
                                     </Table.Cell>
                                 </Table.Row>
                                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
@@ -131,11 +145,12 @@ export default function DashboardPage(){
                                     {currentUser.displayName}
                                     </Table.Cell>
                                     <Table.Cell>
-                                    {myNotAvailableBooks.length !== 0 ? myNotAvailableBooks.length : 'Fetching data...'}
+                                    {myNotAvailableBooks.length !== 0 ? myNotAvailableBooks.length : '0'}
                                     </Table.Cell>
                                 </Table.Row>
                             </Table.Body>
                         </Table>
+                        )}
                     </section>
                 </main>
             <Footer />

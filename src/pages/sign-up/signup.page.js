@@ -7,7 +7,9 @@ import { HiOutlineInformationCircle } from "react-icons/hi"
 // Firebase
 import {
     createAuthUserWithEmailAndPassword,
-    createUserDocumentFromAuth
+    createUserDocumentFromAuth,
+    signInWithGooglePopup,
+    signInWithFacebookPopup
 } from '../../utils/firebase/firebase.utils'
 
 import { ReactComponent as GoogleIcon} from '../../assets/socials/icons8_google.svg'
@@ -16,6 +18,7 @@ import Signup_Image from '../../assets/auth/signup.webp'
 import Navigation from '../../components/navigation/navigation.component'
 import Footer from '../../components/footer/footer.component'
 import FormInput from '../../components/form-input/form-input.component'
+import { getAuth, updateProfile } from 'firebase/auth'
 
 
 const defaultFormFields = {
@@ -52,8 +55,16 @@ export default function SignupPage() {
 
         try{
             const { user } = await createAuthUserWithEmailAndPassword(formFields.email, formFields.password);
-
+            // console.log("New Auth:",user);
             await createUserDocumentFromAuth( user, { displayName, firstName, lastName, country });
+            
+            const auth = getAuth();
+
+            await updateProfile(auth.currentUser, {
+                displayName
+            });
+
+
 
             resetFormFields();
         }catch(err){
@@ -73,6 +84,14 @@ export default function SignupPage() {
         const { name, value } = event.target;
         setFormFields({...formFields, [name]:value});
         console.log(formFields)
+    }
+
+    const logGooglePopUser = async () => {
+        await signInWithGooglePopup();
+    }
+
+    const loggFacebookProvider = async () => {
+        await signInWithFacebookPopup();
     }
 
 
@@ -211,6 +230,7 @@ export default function SignupPage() {
                     role="button"
                     data-mdb-ripple="true"
                     data-mdb-ripple-color="light"
+                    onClick={loggFacebookProvider}
                     >
                     <FacebookIcon /><span className='ml-2'>Sign up with Facebook</span>
                     </Link>
@@ -220,6 +240,7 @@ export default function SignupPage() {
                     role="button"
                     data-mdb-ripple="true"
                     data-mdb-ripple-color="light"
+                    onClick={logGooglePopUser}
                     >
                     <GoogleIcon /><span className='ml-2'>Sign up with Google</span>
                     </Link>

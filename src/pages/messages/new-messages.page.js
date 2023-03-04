@@ -18,27 +18,6 @@ import { doc, onSnapshot, getDoc, updateDoc, QuerySnapshot } from 'firebase/fire
 //         userId: "1",
 //         photoURL: "https://flowbite.com/docs/images/people/profile-picture-1.jpg"
 //     },
-//     {
-//         displayName: "Neil Cole",
-//         userId: "2",
-//         photoURL: "https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-//     },
-//     {
-//         displayName: "Sarah sharp",
-//         userId: "3",
-//         photoURL: "https://flowbite.com/docs/images/people/profile-picture-3.jpg"
-//     },
-//     {
-//         displayName: "Nina Austin",
-//         userId: "4",
-//         photoURL: "https://flowbite.com/docs/images/people/profile-picture-4.jpg"
-//     },
-//     {
-//         displayName: "Peter Smith",
-//         userId: "5",
-//         photoURL: "https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-//     },
-// ]
 
 export default function NewMessagePage() {
     const currentUser = useSelector(selectCurrentUser);
@@ -48,8 +27,19 @@ export default function NewMessagePage() {
     const [content, setContent] = useState('');
     const [activeMessages, setActiveMessages] = useState();
     const [activeChats, setActiveChats] = useState();
+    const [typing, setTyping] = useState(false);
 
     const scroll = useRef();
+
+    const convertTimestamp = (timestamp) => {
+        let date = timestamp.toDate();
+        let mm = date.getMonth() + 1;
+        let dd = date.getDate();
+        let yyyy = date.getFullYear();
+
+        date = mm + '/' + dd + '/' + yyyy;
+        return date;
+    }
 
 
 
@@ -101,7 +91,6 @@ export default function NewMessagePage() {
             const unsubscribe = onSnapshot(doc(db, "messages", activeRoom), (doc) => {
                 setActiveMessages(doc.data());
                 scroll.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
-                // console.log("fired again")
             });
 
             return () => unsubscribe;
@@ -164,9 +153,22 @@ export default function NewMessagePage() {
                             {/* Message Section */}
                             <div className='bg-slate-300 border border-gray-300 rounded-lg px-4 py-4 row-span-5 overflow-y-scroll scroll-smooth'>
                                 {/* Message */}
-                                {activeMessages &&
-                                    <ChatMessage chat={activeMessages} />
-                                }
+                                {activeMessages && activeMessages['chat'].map((message, index) => (
+                                        <div key={index} className={`chat-bubble ${message.senderID === currentUser.uid ? "right" : "left"}`}>
+                                            <img
+                                                className="chat-bubble__left"
+                                                src={message.senderID === currentUser.uid ? activeMessages['senderAvatar'] || ProfileImage : activeMessages['receiverAvatar'] || ProfileImage}
+                                                alt="user avatar"
+                                            />
+                                            <div className="chat-bubble__right">
+                                                <p className="user-name">{message.senderID === currentUser.uid ? activeMessages['sender'] : activeMessages['receiver']}</p>
+                                                <p className="user-message">{message.content}</p>
+                                                <p className="message-time">{convertTimestamp(message.createdAt)}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {/* "Typing..." */}
+                                    
                                 <span ref={scroll}></span>
                             </div>
 
@@ -204,58 +206,34 @@ export default function NewMessagePage() {
     )
 }
 
-function ChatMessage({ chat }) {
+// function ChatMessage({ chat }) {
 
-    const currentUser = useSelector(selectCurrentUser);
-    const convertTimestamp = (timestamp) => {
-        let date = timestamp.toDate();
-        let mm = date.getMonth() + 1;
-        let dd = date.getDate();
-        let yyyy = date.getFullYear();
+//     const currentUser = useSelector(selectCurrentUser);
+//     const convertTimestamp = (timestamp) => {
+//         let date = timestamp.toDate();
+//         let mm = date.getMonth() + 1;
+//         let dd = date.getDate();
+//         let yyyy = date.getFullYear();
 
-        date = mm + '/' + dd + '/' + yyyy;
-        return date;
-    }
-    return (
-        <>
-            {chat['chat'] && chat['chat'].map((message, index) => (
-                <div key={index} className={`chat-bubble ${message.senderID === currentUser.uid ? "right" : "left"}`}>
-                    <img
-                        className="chat-bubble__left"
-                        src={message.senderID === currentUser.uid ? chat['senderAvatar'] || ProfileImage : chat['receiverAvatar'] || ProfileImage}
-                        alt="user avatar"
-                    />
-                    <div className="chat-bubble__right">
-                        <p className="user-name">{message.senderID === currentUser.uid ? chat['sender'] : chat['receiver']}</p>
-                        <p className="user-message">{message.content}</p>
-                        <p className="message-time">{convertTimestamp(message.createdAt)}</p>
-                    </div>
-                </div>
-            ))}
-        </>
-    )
-}
-
-function ChatList({ users }) {
-    const currentUser = useSelector(selectCurrentUser);
-    return (
-        <>
-            {
-                // console.log(users)
-                // users && users.map((user, index) => (
-                //     <li className='pb-2 sm:pb-3' key={index}>
-                //         <div className='flex items-center space-x-4'>
-                //             <div className='flex-shrink-0'>
-                //                 <img className="w-8 h-8 rounded-full" src={user.photoURL || ProfileImage} alt="Neil image" />
-                //             </div >
-                //             <div className='flex-1 min-w-0'>
-                //                 <button className='inline-flex items-left justify-start pl-4 p-2 mt-2 w-full text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white'>{user.sender_name === currentUser.displayName ? user.receiver_name : user.sender_name} onClick ={() => setActiveRoom(user.room_id)}</button>
-                //             </div>
-                //         </div>
-                //     </li>
-
-                // ))
-            }
-        </>
-    )
-}
+//         date = mm + '/' + dd + '/' + yyyy;
+//         return date;
+//     }
+//     return (
+//         <>
+//             {chat['chat'] && chat['chat'].map((message, index) => (
+//                 <div key={index} className={`chat-bubble ${message.senderID === currentUser.uid ? "right" : "left"}`}>
+//                     <img
+//                         className="chat-bubble__left"
+//                         src={message.senderID === currentUser.uid ? chat['senderAvatar'] || ProfileImage : chat['receiverAvatar'] || ProfileImage}
+//                         alt="user avatar"
+//                     />
+//                     <div className="chat-bubble__right">
+//                         <p className="user-name">{message.senderID === currentUser.uid ? chat['sender'] : chat['receiver']}</p>
+//                         <p className="user-message">{message.content}</p>
+//                         <p className="message-time">{convertTimestamp(message.createdAt)}</p>
+//                     </div>
+//                 </div>
+//             ))}
+//         </>
+//     )
+// }
