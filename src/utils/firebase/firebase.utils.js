@@ -423,11 +423,12 @@ export const createRoom = async (secondUser, currentUser) => {
   let secondUserId = "";
   querySnapshot.forEach((doc) => {
     secondUserId = doc.data().id;
-    
+
   });
 
   const chatRoom_id = currentUser.uid.trim() + "_" + secondUserId.trim()
   const reversedChatRoom_id = secondUserId.trim() + "_" + currentUser.uid.trim()
+
   let masterRoom_id = "";
   const createdAt = new Date();
 
@@ -440,7 +441,7 @@ export const createRoom = async (secondUser, currentUser) => {
 
   // Handle Sender Update
   if (getSenderProfile.data()['chat']) { //checks if chat has been created
-    // check if room_id exist
+    // check if room_id exist in user profile
     const res = getSenderProfile.data()['chat'].filter((items) => items.room_id === chatRoom_id || items.room_id === reversedChatRoom_id)
     if (res.length === 1) {
       // console.log("Can not create duplicate room: ", res[0].room_id);
@@ -448,7 +449,7 @@ export const createRoom = async (secondUser, currentUser) => {
 
     } else {
       // console.log("No data")
-      // update sender user detail with chat room details
+      // update sender user detail with chat room details  as well as previous rooms details
       await updateDoc(senderProfile, {
         chat: [...getSenderProfile.data()['chat'], {
           room_id: chatRoom_id,
@@ -521,6 +522,12 @@ export const createRoom = async (secondUser, currentUser) => {
 
   // create chat room
 
+
+  // l0vVfFuOTyVtIyEZF0tKggQKn9p2_dTARGAWUzGb1cym3h0mA61EcdGy1
+
+  // dTARGAWUzGb1cym3h0mA61EcdGy1_l0vVfFuOTyVtIyEZF0tKggQKn9p2
+
+
   const createChatRoom = doc(db, "messages", chatRoom_id);
   const createChatRoom_rev = doc(db, "messages", reversedChatRoom_id);
   const getChatRoom = await getDoc(createChatRoom);
@@ -528,14 +535,13 @@ export const createRoom = async (secondUser, currentUser) => {
 
   if (getChatRoom.exists()) {
     masterRoom_id = chatRoom_id;
-    console.log("chat exists")
-
+    console.log("chat exists: ", chatRoom_id)
   }
-  else if(getChatRoom_rev.exists()){
+  else if (getChatRoom_rev.exists()) {
     masterRoom_id = reversedChatRoom_id;
-    console.log("chat exists")
+    console.log("chat exists", reversedChatRoom_id)
   }
-   else {
+  else if (!getChatRoom.exists() || !getChatRoom_rev.exists()) {
     masterRoom_id = chatRoom_id;
     await setDoc(createChatRoom, {
       room_uid: chatRoom_id,
