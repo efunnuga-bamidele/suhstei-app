@@ -436,8 +436,7 @@ export const createRoom = async (secondUser, currentUser) => {
   const receiverProfile = doc(db, "users", secondUserId.trim());
   const getSenderProfile = await getDoc(senderProfile);
   const getReceiverProfile = await getDoc(receiverProfile);
-  const createChatRoom = doc(db, "messages", chatRoom_id);
-  const getChatRoom = await getDoc(createChatRoom);
+
 
   // Handle Sender Update
   if (getSenderProfile.data()['chat']) { //checks if chat has been created
@@ -521,11 +520,21 @@ export const createRoom = async (secondUser, currentUser) => {
   }
 
   // create chat room
+
+  const createChatRoom = doc(db, "messages", chatRoom_id);
+  const createChatRoom_rev = doc(db, "messages", reversedChatRoom_id);
+  const getChatRoom = await getDoc(createChatRoom);
+  const getChatRoom_rev = await getDoc(createChatRoom_rev);
+
   if (getChatRoom.exists()) {
     masterRoom_id = chatRoom_id;
     console.log("chat exists")
 
-  } else {
+  }
+  else if(getChatRoom_rev.exists()){
+    masterRoom_id = reversedChatRoom_id;
+  }
+   else {
     masterRoom_id = chatRoom_id;
     await setDoc(createChatRoom, {
       room_uid: chatRoom_id,
