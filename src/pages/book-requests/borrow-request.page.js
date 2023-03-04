@@ -36,7 +36,9 @@ export default function BorrowRequestPage() {
         const getBookRequest = async () => {
             setShowLoadingModal(true)
             const response = await getBookRequests(currentUser.uid);
+            if (response !== undefined) {
             dispatch(setBookRequest(response.book_requests))
+            }
             setShowLoadingModal(false)
         }
 
