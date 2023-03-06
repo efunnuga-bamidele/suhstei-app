@@ -8,7 +8,7 @@ import SidebarNavigation from "../../components/sidebar/sidebar.component";
 import ProfileImage from '../../assets/auth/icons8_male_user_500px.png';
 import './messages.css'
 
-import { db, getMessages } from '../../utils/firebase/firebase.utils';
+import { db } from '../../utils/firebase/firebase.utils';
 import { doc, onSnapshot, getDoc, updateDoc, QuerySnapshot } from 'firebase/firestore';
 import { ThreeDots } from "react-loader-spinner";
 
@@ -17,11 +17,10 @@ export default function NewMessagePage() {
     const location = useLocation()
     const navigate = useNavigate()
     const [activeRoom, setActiveRoom] = useState();
-    const [currentRoom, setCurrentRoom] = useState('');
+    const [currentRoom, setCurrentRoom] = useState(undefined);
     const [content, setContent] = useState('');
     const [activeMessages, setActiveMessages] = useState();
     const [activeChats, setActiveChats] = useState();
-    const [typing, setTyping] = useState(false);
 
     const scroll = useRef();
 
@@ -30,15 +29,20 @@ export default function NewMessagePage() {
         let mm = date.getMonth() + 1;
         let dd = date.getDate();
         let yyyy = date.getFullYear();
+        let hour = date.getHours();
+        let ampm = hour >= 12 ? 'pm' : 'am';
+        hour = hour % 12;
+        hour = hour ? hour : 12;
+        let minutes = date.getMinutes();
 
-        date = mm + '/' + dd + '/' + yyyy;
+        date = mm + '/' + dd + '/' + yyyy +' - '+ hour +' : '+ minutes+""+ampm;
         return date;
     }
 
 
     const handleChange = (event) => {
         setContent(event.target.value)
-            }
+    }
 
 
     const onEnterPress = (e) => {
@@ -80,10 +84,17 @@ export default function NewMessagePage() {
     }
 
     useEffect(() => {
-        if (location.state) {
+        if (location.state !== null && currentRoom === undefined) {
             setCurrentRoom(location.state['room_id'])
             setActiveRoom(location.state['room_id'])
             fetchPost();
+        }
+        else if (currentRoom !== undefined) {
+            setActiveRoom(currentRoom)
+            const unsubscribe = onSnapshot(doc(db, "messages", currentRoom), (doc) => {
+                setActiveMessages(doc.data());
+            });
+            return () => unsubscribe;
         }
         if (activeRoom) {
             const unsubscribe = onSnapshot(doc(db, "messages", activeRoom), (doc) => {
@@ -111,16 +122,16 @@ export default function NewMessagePage() {
         scroll.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
     }, [activeMessages])
 
-    
+
 
     const handleRoomSelect = async (event) => {
-        // setCurrentRoom(event.trim())
-        // setActiveRoom(event.trim())
-        const unsubscribe = await getDoc(doc(db, "messages", event.trim()));
-        setActiveMessages(unsubscribe.data());
-        // use navigat to persist data
+        // const unsubscribe = await getDoc(doc(db, "messages", event.trim()));
+        // setActiveMessages(unsubscribe.data());
+        const unsubscribe = onSnapshot(doc(db, "messages", event.trim()), (doc) => {
+            setActiveMessages(doc.data());
+        });
         navigate('/messages', { state: { room_id: event.trim() } });
-        
+
     }
 
 
@@ -145,7 +156,7 @@ export default function NewMessagePage() {
                                             </div >
                                             <div className='flex-1 min-w-0'>
                                                 <button className='inline-flex items-left justify-start pl-4 p-2 mt-2 w-full text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white' onClick={() => handleRoomSelect(user.room_id)}>
-                                                    {user.sender_name.trim() === currentUser.displayName.trim() ? (user.receiver_name): (user.sender_name)}</button>
+                                                    {user.sender_name.trim() === currentUser.displayName.trim() ? (user.receiver_name) : (user.sender_name)}</button>
                                             </div>
                                         </div>
                                     </li>
@@ -170,13 +181,13 @@ export default function NewMessagePage() {
                                         <div className="chat-bubble__right">
                                             <p className="user-name">{message.senderName}</p>
                                             <p className="user-message">{message.content}</p>
-                                            <p className="message-time">{convertTimestamp(message.createdAt)}</p>
+                                            <p className="message-time text-sm">{convertTimestamp(message.createdAt)}</p>
                                         </div>
                                     </div>
                                 ))}
                                 {
                                     // use realtime database to manage typing message
-                                    
+
                                     // <ThreeDots
                                     //     height="80"
                                     //     width="80"
