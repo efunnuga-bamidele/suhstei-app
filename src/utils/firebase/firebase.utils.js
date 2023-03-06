@@ -308,7 +308,7 @@ export const BorrowBook = async (unique_id, requestedBook, currentUser, requeste
       updateRequestedBook(requestedBook, "Requested")
       return "success";
     } catch (err) {
-      console.log("error 1: ", err)
+      // console.log("error 1: ", err)
       return "Failed";
     }
 
@@ -320,7 +320,18 @@ export const BorrowBook = async (unique_id, requestedBook, currentUser, requeste
       updateRequestedBook(requestedBook, "Requested")
       return "success";
     } catch (err) {
-      console.log("error 2: ", err)
+      // console.log("error 2: ", err)
+      return "Failed";
+    }
+  }
+  else if (userDocSnapshot.data() !== undefined && ownerDocSnapshot.data() === undefined) {
+    try {
+      await updateDoc(userRef, { [fieldName]: [...userDocSnapshot.data()[fieldName], { ...requestDetail }] });
+      await setDoc(ownerRef, { [fieldName]: [{ ...requestDetail }] });
+      updateRequestedBook(requestedBook, "Requested")
+      return "success";
+    } catch (err) {
+      // console.log("error 3: ", err)
       return "Failed";
     }
   }
@@ -331,7 +342,7 @@ export const BorrowBook = async (unique_id, requestedBook, currentUser, requeste
       updateRequestedBook(requestedBook, "Requested")
       return "added";
     } catch (err) {
-      console.log("error 3: ", err)
+      // console.log("error 4 ", err)
       return "Failed";
     }
   }
@@ -546,11 +557,11 @@ export const createRoom = async (secondUser, currentUser) => {
 
   if (getChatRoom.exists()) {
     masterRoom_id = chatRoom_id;
-    console.log("chat exists: ", chatRoom_id)
+    // console.log("chat exists: ", chatRoom_id)
   }
   else if (getChatRoom_rev.exists()) {
     masterRoom_id = reversedChatRoom_id;
-    console.log("chat exists", reversedChatRoom_id)
+    // console.log("chat exists", reversedChatRoom_id)
   }
   else if (!getChatRoom.exists() || !getChatRoom_rev.exists()) {
     masterRoom_id = chatRoom_id;
@@ -570,25 +581,17 @@ export const createRoom = async (secondUser, currentUser) => {
   return masterRoom_id;
 }
 
-export const getActiveMessages = async (currentUser) => {
-
-}
-
-
-export const getMessages = async (chahRoomId) => {
-  const id = "12345"
-  const otherId = "69784"
-  // const messagesQuery = query(collection(db, "messages"), where("group_id", "array-contains", id), where("group_id", "array-contains", otherId));
-  const messagesQuery = query(collection(db, "messages"), where("group_id", "array-contains", otherId));
-
-  const querySnapshot = await getDocs(messagesQuery);
-
-  querySnapshot.forEach((doc) => {
-    console.log(doc.id, "=>");
-  })
-}
-
 export const sendVerificationEmail = async () => {
-    if(!auth.currentUser) return;
-    return await sendEmailVerification(auth.currentUser)
+  if (!auth.currentUser) return;
+  return await sendEmailVerification(auth.currentUser)
+}
+
+export const sendResetPasswordMail = async (email) => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return "success"
+
+  }catch (err) {
+    return "error"
+  }
 }

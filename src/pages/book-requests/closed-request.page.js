@@ -120,18 +120,6 @@ export default function ClosedRequestPage(){
                                          <Table.Cell>
                                              {item.borrowers_name}
                                          </Table.Cell>
-                                         {/* <Table.Cell>
-                                             { item.request_date !== null ? convertTimestamp(item.request_date) : "No Data"}
-                                         </Table.Cell>
-                                         <Table.Cell>
-                                             { item.received_date !== null ? convertTimestamp(item.received_date) : "No Data"}
-                                         </Table.Cell>
-                                         <Table.Cell>
-                                             { item.due_date !== null ? convertTimestamp(item.due_date) : "No Data"}
-                                         </Table.Cell>
-                                         <Table.Cell>
-                                             { item.return_date !== null ? convertTimestamp(item.return_date) : "No Data"}
-                                         </Table.Cell> */}
                                          <Table.Cell>
                                              {item.request_status}
                                          </Table.Cell>
