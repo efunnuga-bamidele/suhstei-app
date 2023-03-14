@@ -12,7 +12,6 @@ import FormInput from '../../components/form-input/form-input.component'
 import { createNewBook } from '../../utils/firebase/firebase.utils'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '../../store/user/user.selector'
-import AlertComponent from '../../components/alert-component/alert-component'
 
 //list of data
 import { bookCategory } from "../../utils/bookCategory";
