@@ -32,6 +32,7 @@ import BorrowRequestPage from './pages/book-requests/borrow-request.page';
 import ClosedRequstPage from './pages/book-requests/closed-request.page';
 import ActiveMessagePage from './pages/messages/active-messages.page';
 import NewMessagePage from './pages/messages/new-messages.page';
+import ProfilePage from './pages/profile/profile.page';
 
 // Protection Routes
 import { ProtectedLayout } from './components/protected-layout/protected-layout.component';
@@ -202,6 +203,16 @@ function App() {
               element={
                 <ProfileLayout>
                   <SettingsPage />
+                </ProfileLayout>
+              }
+              errorElement={<ErrorPage />}
+          />
+
+          <Route
+              path='/profile'
+              element={
+                <ProfileLayout>
+                  <ProfilePage />
                 </ProfileLayout>
               }
               errorElement={<ErrorPage />}
