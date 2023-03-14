@@ -14,34 +14,9 @@ import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '../../store/user/user.selector'
 import AlertComponent from '../../components/alert-component/alert-component'
 
-const bookCategory = [
-    'Science',
-    'Philosophy',
-    'Art',
-    'Business',
-    'Self-Help',
-    'Development',
-    'Motivational',
-    'Health',
-    'Families & Relationships',
-    'Guide / How-to',
-    'Maths',
-    'History',
-    'Encyclopedia',
-    'Autobiography',
-    'Action and Adventure',
-    'Fantasy',
-    'Science Fiction',
-    'Economics',
-    'Non-fiction',
-    'Others'
-]
-
-const bookStatus = [
-    'Available',
-    'Requested',
-    'Not Available'
-]
+//list of data
+import { bookCategory } from "../../utils/bookCategory";
+import { bookStatus } from "../../utils/bookStatus";
 
 const defaultFormField = {
     book_owner: '',
