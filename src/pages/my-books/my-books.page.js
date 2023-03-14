@@ -18,36 +18,12 @@ import { Button, Modal, Tooltip, Alert } from "flowbite-react";
 import FormInput from '../../components/form-input/form-input.component'
 import { setUserBookMap } from "../../store/userBook/userBook.action";
 import { selectUserBooksMap } from "../../store/userBook/userBook.selector";
-// import { createNewBook } from '../../utils/firebase/firebase.utils'
 
-const bookCategory = [
-    'Science',
-    'Philosophy',
-    'Art',
-    'Business',
-    'Self-Help',
-    'Development',
-    'Motivational',
-    'Health',
-    'Families & Relationships',
-    'Guide / How-to',
-    'Maths',
-    'History',
-    'Encyclopedia',
-    'Autobiography',
-    'Action and Adventure',
-    'Fantasy',
-    'Science Fiction',
-    'Economics',
-    'Non-fiction',
-    'Others'
-]
+//list of data
+import { bookCategory } from "../../utils/bookCategory";
+import { bookStatus } from "../../utils/bookStatus";
 
-const bookStatus = [
-    'Available',
-    'Requested',
-    'Not Available'
-]
+
 
 const defaultFormField = {
     book_owner: '',
@@ -58,11 +34,6 @@ const defaultFormField = {
     book_author: ''
 }
 
-// let indexOfLastItem = null
-// let indexOfFirstPost = null
-// let currentItems = []
-// let currentItemsFiltered = []
-// let pageNumber = []
 
 export default function MyBooksPage() {
 

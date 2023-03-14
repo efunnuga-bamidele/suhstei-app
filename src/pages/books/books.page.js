@@ -12,29 +12,9 @@ import { setMyBooksMap } from '../../store/myBooks/myBooks.action';
 import { Link } from 'react-router-dom'
 import PaginationComponent from '../../components/pagination/pagination-component'
 
-const bookCategory = [
-    'All',
-    'Science',
-    'Philosophy',
-    'Art',
-    'Business',
-    'Self-Help',
-    'Development',
-    'Motivational',
-    'Health',
-    'Families & Relationships',
-    'Guide / How-to',
-    'Maths',
-    'History',
-    'Encyclopedia',
-    'Autobiography',
-    'Action and Adventure',
-    'Fantasy',
-    'Science Fiction',
-    'Economics',
-    'Non-fiction',
-    'Others'
-]
+import { bookCategory } from '../../utils/bookCategory'
+//Add All to book category
+bookCategory.unshift('All');
 
 
 let indexOfLastItem = null
