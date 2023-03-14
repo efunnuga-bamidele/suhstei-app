@@ -449,7 +449,7 @@ export default function MyBooksPage() {
                 <SidebarNavigation />
                 <section className="bg-white mt-12 m-2 p-2 w-full rounded-md">
                     {/* <section className='bg-gray-100 mt-20'> */}
-                    <h1 className="font-bold text-xl text-center underline text-slate-500">My Books</h1>
+                    <h1 className="font-bold text-xl text-right pr-4 underline text-slate-500">My Books</h1>
                     <div className='overflow-x-hidden grid justify-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-10 px-2'>{/* */}
                         {isLoading ? (
                             <div className="grid col-span-full place-items-center h-56">
@@ -462,7 +462,7 @@ export default function MyBooksPage() {
                                 />
                             </div>
                         ) : (
-                          
+
                             (currentItems.length > 0) ? (
                                 currentItems.map((item, index) => (
                                     <div key={index} className="relative group/div">
@@ -490,7 +490,7 @@ export default function MyBooksPage() {
                                 ))
                             ) : (
                                 <div className="grid col-span-full place-items-center h-56">
-                                        <h1>You do not have any books....</h1>
+                                    <h1>You do not have any books....</h1>
 
                                 </div>
                             )

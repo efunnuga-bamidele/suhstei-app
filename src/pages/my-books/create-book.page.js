@@ -176,7 +176,7 @@ export default function CreateBookPage() {
                     <div className='container px-6 py-12 h-full'>
                         <form onSubmit={handleSubmit}>
                             <div className='relative z-0 mb-6 w-full group'>
-                                <h1 className='text-1xl sm:text-2xl md:text-3xl font-bold my-auto mb-4 text-primary'>Create New Book</h1>
+                                <h1 className='text-1xl sm:text-2xl md:text-3xl font-bold my-auto mb-4 text-primary text-right pr-4'>Create New Book</h1>
                             </div>
                             <div className="relative z-0 mb-6 w-full group">
                                 {error &&

@@ -89,7 +89,7 @@ export default function ClosedRequestPage(){
 
                 <SidebarNavigation />
                 <section className="bg-white mt-12 m-2 p-2 w-full rounded-md relative overflow-x-auto">
-                        <h1 className="font-bold text-lg text-center underline text-gray-600">Closed Book Requests</h1>
+                        <h1 className="font-bold text-xl text-right pr-4 underline text-slate-500">Closed Book Requests</h1>
                        
 
                         <Table className="mt-6" hoverable={true}>
