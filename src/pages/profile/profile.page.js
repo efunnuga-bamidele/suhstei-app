@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react'
-import { Alert } from 'flowbite-react'
+import { Alert, Modal } from 'flowbite-react'
 import { HiOutlineInformationCircle } from "react-icons/hi"
 import Footer from '../../components/footer/footer.component'
 import Navigation from '../../components/navigation/navigation.component'
@@ -9,18 +9,18 @@ import { selectCurrentUser } from '../../store/user/user.selector'
 import FormInput from '../../components/form-input/form-input.component'
 import FileResizer from 'react-image-file-resizer'
 import { getUserProfileData } from '../../utils/firebase/firebase.utils'
+import { FallingLines } from 'react-loader-spinner'
 
 const defaultFormField = {
     // display_name: '',
-    // email: '',
-    first_name: '',
-    last_name: '',
+    firstName: '',
+    lastName: '',
     country: '',
     state: '',
     city: '',
     zipcode: '',
     address: '',
-    mobile_phone: ''
+    mobilePhone: ''
 }
 
 export default function ProfilePage() {
@@ -28,12 +28,13 @@ export default function ProfilePage() {
     const [error, setError] = useState();
     const [success, setSuccess] = useState();
     const [formFields, setFormFields] = useState(defaultFormField);
+    const [profileData, setProfileData] = useState([]);
     const [showModal, setShowmodal] = useState(false);
     let [tumbnail, setTumbnail] = useState(null);
 
     // get userdata from useSelector Redux
     const currentUser = useSelector(selectCurrentUser);
-    const { first_name, last_name, country, state, city, zipcode, mobile_phone, address } = formFields;
+    const { firstName, lastName, country, state, city, zipcode, mobilePhone, address } = formFields;
 
     // Image File Resizing function
 
@@ -52,17 +53,20 @@ export default function ProfilePage() {
                 "file"
             );
         });
-        
-            useEffect(() => {
-                // get user detail from database here
-                const data = async() => {
-                    await getUserProfileData(currentUser.uid);
-                }
-        
-                data();
-                
-        
-            }, [])
+
+    useEffect(() => {
+        // get user detail from database here
+
+        const data = async () => {
+            const res = await getUserProfileData(currentUser.uid);
+            setProfileData(res);
+        }
+
+        data();
+
+        // console.log(profileData)
+
+    }, [])
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -70,8 +74,35 @@ export default function ProfilePage() {
         console.log(formFields)
     }
 
-    const handleUpdate = () => {
+    const handleUpload = async (event) => {
+        console.log("Upload Triggered")
+        setTumbnail(null);
+        let selected = event.target.files[0];
+        const resizedImage = await resizeFile(selected);
+
+        if (!resizedImage) {
+            setError("Please select a file");
+            setTimeout(() => setError(''), 10000);
+            return;
+        }
+        if (!resizedImage.type.includes('image')) {
+            setError("Selected file must be an image");
+            setTimeout(() => setError(''), 10000);
+            return;
+        }
+        if (resizedImage.size > 1000000) {
+            setError("Image file size must beless than 1mb");
+            setTimeout(() => setError(''), 10000);
+            return;
+        }
+        setError('')
+        setShowmodal(!showModal);
+        setTumbnail(resizedImage);
+    }
+    const handleUpdate = (event) => {
+        event.preventDefault();
         console.log("Update Triggered")
+        setShowmodal(!showModal);
     }
 
     const handleVerifyAccount = () => {
@@ -89,12 +120,32 @@ export default function ProfilePage() {
         console.log("Reset Password Triggered")
     }
 
+
     return (
         <div className='bg-gray-100 font-body scroll-smooth h-0'>
             <Navigation />
             <main className='bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap'>
                 <Fragment>
                     {/* Updating Modal here */}
+                    <Modal
+                        show={showModal}
+                        size="md"
+                        popup={true}
+                        onClose={showModal}
+                        className="max-md:pt-32 mt-10 bg-opacity-60"
+                    >
+                        <Modal.Body>
+                            <div className="grid col-span-full place-items-center h-56">
+                                <FallingLines
+                                    color="#1e94cc"
+                                    width="120"
+                                    visible={true}
+                                    arialLabel='falling-lines-loading'
+                                />
+                            </div>
+                        </Modal.Body>
+
+                    </Modal>
                 </Fragment>
                 <SidebarNavigation />
                 <section className='bg-white mt-12 m-2 p-2 w-full rounded-md'>
@@ -139,6 +190,17 @@ export default function ProfilePage() {
                                         <input id="thumbnail" name='thumbnail' type="file" className="hidden" />
                                     </label>
                                 </div>
+                                <div className='relative z-0 mb-6 w-auto group'>
+                                    <button
+                                        type="button"
+                                        className="inline-block px-1 py-1 mt-0 bg-blue-600 text-white font-medium text-sm leading-snug lowercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
+                                        data-mdb-ripple="true"
+                                        data-mdb-ripple-color="light"
+                                        onClick={handleUpload}
+                                    >
+                                        Upload
+                                    </button>
+                                </div>
                             </div>
                             <div className='grid md:grid-cols-2 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
@@ -167,21 +229,21 @@ export default function ProfilePage() {
                             <div className='grid md:grid-cols-2 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <FormInput
-                                        name='first_name'
+                                        name='firstName'
                                         label='First Name'
                                         type='text'
                                         onChange={handleChange}
-                                        value={first_name}
+                                        value={firstName}
                                         request={'required'}
                                     />
                                 </div>
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <FormInput
-                                        name='last_name'
+                                        name='lastName'
                                         label='Last Name'
                                         type='text'
                                         onChange={handleChange}
-                                        value={last_name}
+                                        value={lastName}
                                         request={'required'}
                                     />
                                 </div>
@@ -241,11 +303,11 @@ export default function ProfilePage() {
                                 </div>
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <FormInput
-                                        name='mobile_phone'
+                                        name='mobilePhone'
                                         label='Mobile Number ( e.g +2348000000000)'
                                         type='text'
                                         onChange={handleChange}
-                                        value={mobile_phone}
+                                        value={mobilePhone}
                                     />
                                 </div>
                             </div>
@@ -263,7 +325,7 @@ export default function ProfilePage() {
                                 <div className='relative z-0 mb-6 w-50 group flex-auto'>
                                     <button
                                         type="button"
-                                        className="inline-block px-7 py-3 mt-0 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-slate-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
+                                        className="inline-block px-7 py-3 mt-0 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
                                         data-mdb-ripple="true"
                                         data-mdb-ripple-color="light"
                                         onClick={handleVerifyAccount}

@@ -637,7 +637,7 @@ export const userOnlineStstus = async (userUID) => {
   //     state: 'offline',
   //     last_changed: serverTimestamp()
   // };
-  
+
   // var isOnlineForDatabase = {
   //     state: 'online',
   //     last_changed: serverTimestamp()
@@ -681,14 +681,50 @@ export const userOnlineStstus = async (userUID) => {
 export const getUserProfileData = async (userID) => {
   if (!userID) return;
 
-  const profileQuery =  doc(db, "users", userID.trim())
+  const profileQuery = doc(db, "users", userID.trim())
   const QuerySnapShot = await getDoc(profileQuery);
 
-  if (QuerySnapShot.exists())
-  {
-    console.log('Profile Data: ',QuerySnapShot.data())
+  if (QuerySnapShot.exists()) {
+    return QuerySnapShot.data()
   }
 }
+
+// upload Profile Image
+export const uploadProfileImage = async (userID, thumbnail) => {
+
+  const storage = getStorage();
+  const storageRef = ref(storage, `thumbnails/${userID}/profile/${thumbnail.name}`);
+
+  const img = await uploadBytes(storageRef, thumbnail);
+
+  return await getDownloadURL(img.ref);
+
+}
+
+// Book creation
+export const updateProfile = async (userID, thumbnail, profileDetail) => {
+  if (!userID) return "error";
+
+  const photoURL ='';
+
+  if (thumbnail) {
+    photoURL = await uploadProfileImage(userID, thumbnail);
+
+  }
+
+  const docRef = doc(db, 'users', userID);
+  const docSnapshot = await getDoc(docRef);
+
+  if (docSnapshot.exists()) {
+    if (thumbnail) {
+      await updateDoc(docRef, { ...profileDetail, photoURL })
+      return "success";
+    } else {
+      await updateDoc(docRef, { ...profileDetail })
+      return "success";
+    }
+  }
+};
 
 
 
