@@ -14,9 +14,11 @@ import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../store/user/user.selector'
 
 //firebase import 
-import { signOutUser } from '../../utils/firebase/firebase.utils';
+import { db, signOutUser, userOnlineStstus } from '../../utils/firebase/firebase.utils';
 
 import './navigation.css';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { getDatabase } from 'firebase/database';
 
 
 export default function Navigation() {
@@ -26,10 +28,42 @@ export default function Navigation() {
 
 
     const [navClick, setNavClick] = useState();
-  
+    const [user, setUser] = useState();
     useEffect(() => {
       window.scrollTo(0, 0);
     }, [navClick]);
+
+    useEffect(() => {
+      if (currentUser !== null){
+        setUser(currentUser.uid)
+        console.log("initial status update")
+        userOnlineStstus(currentUser.uid);
+      }else{
+        userOnlineStstus(user);
+      }
+
+    }, [])
+
+    // useEffect(() => {
+    //   // const db = getDatabase()
+      
+    //   if (currentUser !== null){
+        
+    //     console.log("check status update")
+    //     const userStatusFirestoreRef = doc(db, '/status/' + currentUser.uid)
+    //     // onSnapshot
+    //     onSnapshot(userStatusFirestoreRef, (doc) => {
+    //       var isOnline = doc.data().state == 'online';
+    //       console.log("User Status: ",isOnline)
+    //     });
+    //     //   const unsub = onSnapshot(userStatusFirestoreRef, (doc) => {
+    //     //     var isOnline = doc.data().state == 'online';
+    //     //     console.log("User Status: ",isOnline)
+    //     // });
+
+    //     // return unsub()
+    //   }
+    // }, [])
 
 
     const logoutHandle = async () => {
@@ -123,26 +157,6 @@ export default function Navigation() {
                   Messages
                 </NavLink>
         </Dropdown.Item>
-        {/* <Dropdown
-            id= "collapsable-dropdown"
-            color="white"
-            label="Messages"
-            placement="bottom-start"
-            dismissOnClick={false}
-          >
-              <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/active-message" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
-                  Active Messages
-                </NavLink>
-              </Dropdown.Item>
-              <Dropdown.Item className="cursor-default grid md:hidden">
-                <NavLink to="/messages" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
-                  Messages
-                </NavLink>
-              </Dropdown.Item>
-        </Dropdown> */}
-        {/* End */}
-        {/* collapsable Menu */}
         <Dropdown
             id= "collapsable-dropdown"
             color="white"
@@ -183,7 +197,6 @@ export default function Navigation() {
         </Dropdown.Item>
    </Dropdown> ) : (
     <Navbar className='list-none'>
-      {/* <HiLogin className="mr-2" size={22}/> */}
       <NavLink to="/login" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
         Sign-In
       </NavLink>
@@ -208,11 +221,6 @@ export default function Navigation() {
     <NavLink to="/contact" className="nav_hover" onClick={() => setNavClick(!navClick)}>
       Contact
     </NavLink>
-    {/* {currentUser &&
-    <NavLink to="/profile" className="nav_hover">
-      Profile
-    </NavLink>
-    } */}
    
  </Navbar.Collapse>
 </Navbar>
