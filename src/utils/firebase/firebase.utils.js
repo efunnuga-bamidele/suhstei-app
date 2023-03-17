@@ -26,6 +26,8 @@ import {
   arrayRemove,
   where,
   query,
+  onSnapshot,
+  FieldValue,
 } from 'firebase/firestore'
 
 import {
@@ -36,6 +38,17 @@ import {
   deleteObject,
 
 } from 'firebase/storage'
+
+import {
+  getDatabase,
+  onDisconnect,
+  ref as dRef,
+  onValue,
+  push,
+  set,
+  serverTimestamp,
+  child
+} from 'firebase/database'
 
 const firebaseConfig = {
   apiKey: "AIzaSyCQn8z4Z8OnN3xXCHRafwvgqhI_MIeWbag",
@@ -75,6 +88,8 @@ export const signInWithFacebookPopup = async () => {
 
 // Firestore initialization
 export const db = getFirestore();
+
+export const database = getDatabase();
 
 // Firebase Collections
 const colBookRef = collection(db, 'books');
@@ -591,7 +606,89 @@ export const sendResetPasswordMail = async (email) => {
     await sendPasswordResetEmail(auth, email);
     return "success"
 
-  }catch (err) {
+  } catch (err) {
     return "error"
   }
 }
+
+export const userOnlineStstus = async (userUID) => {
+
+  // if (userUID) {
+  //   console.log("Current user: ", userUID);
+  //   var uid = userUID
+
+
+
+
+  //   const userStatusDatabaseRef = dRef(database, '/status/' + uid)
+  //   const userStatusFirestoreRef = doc(db, '/status/' + uid);
+
+  //   const isOfflineForFirestore = {
+  //     state: 'offline',
+  //     last_changed: serverTimestamp()
+  //   }
+
+  //   const isOnlineForFirestore = {
+  //     state: 'online',
+  //     last_changed: serverTimestamp()
+  //   }
+
+  //   var isOfflineForDatabase = {
+  //     state: 'offline',
+  //     last_changed: serverTimestamp()
+  // };
+  
+  // var isOnlineForDatabase = {
+  //     state: 'online',
+  //     last_changed: serverTimestamp()
+  // };
+
+
+  //   dRef(database, '.info/connected').on('value', (snapshot) => {
+  //     if (snapshot.val() == false) {
+  //       userStatusFirestoreRef.set(isOfflineForFirestore);
+  //       return;
+  //     };
+
+  //     userStatusDatabaseRef.onDisconnect().set(isOfflineForDatabase).then(function () {
+  //       userStatusDatabaseRef.set(isOnlineForDatabase);
+
+  //       // We'll also add Firestore set here for when we come online.
+  //       userStatusFirestoreRef.set(isOnlineForFirestore);
+  //     });
+  //   })
+  // }
+
+  // collection('status')
+  //   .where('state', '==', 'online')
+  //   .onSnapshot(function(snapshot) {
+  //       snapshot.docChanges().forEach(function(change) {
+  //           if (change.type === 'added') {
+  //               var msg = 'User ' + change.doc.id + ' is online.';
+  //               console.log(msg);
+  //               // ...
+  //           }
+  //           if (change.type === 'removed') {
+  //               var msg = 'User ' + change.doc.id + ' is offline.';
+  //               console.log(msg);
+  //               // ...
+  //           }
+  //       });
+  //   });
+
+}
+
+export const getUserProfileData = async (userID) => {
+  if (!userID) return;
+
+  const profileQuery =  doc(db, "users", userID.trim())
+  const QuerySnapShot = await getDoc(profileQuery);
+
+  if (QuerySnapShot.exists())
+  {
+    console.log('Profile Data: ',QuerySnapShot.data())
+  }
+}
+
+
+

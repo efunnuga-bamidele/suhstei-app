@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '../../store/user/user.selector'
 import FormInput from '../../components/form-input/form-input.component'
 import FileResizer from 'react-image-file-resizer'
+import { getUserProfileData } from '../../utils/firebase/firebase.utils'
 
 const defaultFormField = {
     // display_name: '',
@@ -51,6 +52,17 @@ export default function ProfilePage() {
                 "file"
             );
         });
+        
+            useEffect(() => {
+                // get user detail from database here
+                const data = async() => {
+                    await getUserProfileData(currentUser.uid);
+                }
+        
+                data();
+                
+        
+            }, [])
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -58,9 +70,24 @@ export default function ProfilePage() {
         console.log(formFields)
     }
 
-    useEffect(() => {
-        // get user detail from database here
-    }, [])
+    const handleUpdate = () => {
+        console.log("Update Triggered")
+    }
+
+    const handleVerifyAccount = () => {
+        console.log("Verify Account Triggered")
+    }
+    const handleDelete = () => {
+        console.log("Delete Account Triggered")
+    }
+
+    const handleResetMail = () => {
+        console.log("Reset Mail Triggered")
+    }
+
+    const handleResetPassword = () => {
+        console.log("Reset Password Triggered")
+    }
 
     return (
         <div className='bg-gray-100 font-body scroll-smooth h-0'>
@@ -73,7 +100,7 @@ export default function ProfilePage() {
                 <section className='bg-white mt-12 m-2 p-2 w-full rounded-md'>
                     <h1 className='font-bold text-xl text-right pr-4 underline text-slate-500'>Profile</h1>
                     <div className='container px-6 py-12 h-full'>
-                        <form onSubmit={""}>
+                        <form onSubmit={handleUpdate}>
                             {/* Alert section */}
                             <div className='relative z-0 mb-6 w-full group'>
                                 {/* error alert */}
@@ -103,13 +130,13 @@ export default function ProfilePage() {
                             {/* Profile Image Section */}
                             <div className='grid md:grid-cols-9 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
-                                    <label for="thumbnail" className="flex flex-col cursor-pointer">
+                                    <label htmlFor="thumbnail" className="flex flex-col cursor-pointer">
                                         <img
                                             className="mb-3 h-28 w-28 rounded-full shadow-lg"
                                             src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
                                             alt="Bonnie image"
                                         />
-                                        <input id="tumbnail" name='tumbnail' type="file" className="hidden" />
+                                        <input id="thumbnail" name='thumbnail' type="file" className="hidden" />
                                     </label>
                                 </div>
                             </div>
@@ -222,8 +249,8 @@ export default function ProfilePage() {
                                     />
                                 </div>
                             </div>
-                            <div className="grid md:grid-cols-4 md:gap-6">
-                                <div className='relative z-0 mb-6 w-full group'>
+                            <div className="flex flex-wrap gap-4">
+                                <div className='relative z-0 mb-6 w-50 group flex-auto'>
                                     <button
                                         type="submit"
                                         className="inline-block px-7 py-3 mt-0 bg-gray-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
@@ -233,32 +260,46 @@ export default function ProfilePage() {
                                         Update Profile
                                     </button>
                                 </div>
-                                <div className='relative z-0 mb-6 w-full group'>
+                                <div className='relative z-0 mb-6 w-50 group flex-auto'>
                                     <button
-                                        type="submit"
+                                        type="button"
+                                        className="inline-block px-7 py-3 mt-0 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-slate-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
+                                        data-mdb-ripple="true"
+                                        data-mdb-ripple-color="light"
+                                        onClick={handleVerifyAccount}
+                                    >
+                                        Verify Account
+                                    </button>
+                                </div>
+                                <div className='relative z-0 mb-6 w-50 group flex-auto'>
+                                    <button
+                                        type="button"
                                         className="inline-block px-7 py-3 mt-0 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
                                         data-mdb-ripple="true"
                                         data-mdb-ripple-color="light"
+                                        onClick={handleResetMail}
                                     >
                                         Reset Email
                                     </button>
                                 </div>
-                                <div className='relative z-0 mb-6 w-full group'>
+                                <div className='relative z-0 mb-6 w-50 group flex-auto'>
                                     <button
-                                        type="submit"
+                                        type="button"
                                         className="inline-block px-7 py-3 mt-0 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
                                         data-mdb-ripple="true"
                                         data-mdb-ripple-color="light"
+                                        onClick={handleResetPassword}
                                     >
                                         Reset Password
                                     </button>
                                 </div>
-                                <div className='relative z-0 mb-6 w-full group'>
+                                <div className='relative z-0 mb-6 w-50 group flex-auto'>
                                     <button
-                                        type="submit"
+                                        type="button"
                                         className="inline-block px-7 py-3 mt-0 bg-red-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
                                         data-mdb-ripple="true"
                                         data-mdb-ripple-color="light"
+                                        onClick={handleDelete}
                                     >
                                         Delete Account
                                     </button>
