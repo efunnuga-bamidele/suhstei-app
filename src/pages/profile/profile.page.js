@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '../../store/user/user.selector'
 import FormInput from '../../components/form-input/form-input.component'
 import FileResizer from 'react-image-file-resizer'
-import { getUserProfileData } from '../../utils/firebase/firebase.utils'
+import { getUserProfileData, updateProfile } from '../../utils/firebase/firebase.utils'
 import { FallingLines } from 'react-loader-spinner'
 
 const defaultFormField = {
@@ -20,7 +20,8 @@ const defaultFormField = {
     city: '',
     zipcode: '',
     address: '',
-    mobilePhone: ''
+    mobilePhone: '',
+    gender: ''
 }
 
 export default function ProfilePage() {
@@ -30,11 +31,11 @@ export default function ProfilePage() {
     const [formFields, setFormFields] = useState(defaultFormField);
     const [profileData, setProfileData] = useState([]);
     const [showModal, setShowmodal] = useState(false);
-    let [tumbnail, setTumbnail] = useState(null);
+    let [thumbnail, setThumbnail] = useState(null);
 
     // get userdata from useSelector Redux
     const currentUser = useSelector(selectCurrentUser);
-    const { firstName, lastName, country, state, city, zipcode, mobilePhone, address } = formFields;
+    const { firstName, lastName, country, state, city, zipcode, mobilePhone, address, gender } = formFields;
 
     // Image File Resizing function
 
@@ -58,8 +59,9 @@ export default function ProfilePage() {
         // get user detail from database here
 
         const data = async () => {
-            const res = await getUserProfileData(currentUser.uid);
-            setProfileData(res);
+            // const res = await getUserProfileData(currentUser.uid);
+            // setProfileData(res);
+
         }
 
         data();
@@ -74,9 +76,9 @@ export default function ProfilePage() {
         console.log(formFields)
     }
 
-    const handleUpload = async (event) => {
+    const handleFileChange = async (event) => {
         console.log("Upload Triggered")
-        setTumbnail(null);
+        setThumbnail(null);
         let selected = event.target.files[0];
         const resizedImage = await resizeFile(selected);
 
@@ -96,13 +98,16 @@ export default function ProfilePage() {
             return;
         }
         setError('')
-        setShowmodal(!showModal);
-        setTumbnail(resizedImage);
+        // setShowmodal(!showModal);
+        setThumbnail(resizedImage);
     }
-    const handleUpdate = (event) => {
+
+    const handleUpdate = async (event) => {
         event.preventDefault();
         console.log("Update Triggered")
-        setShowmodal(!showModal);
+        // setShowmodal(!showModal);
+        // await updateProfile(currentUser.uid, thumbnail, {'country': 'Ghana'})
+        // setThumbnail(null);
     }
 
     const handleVerifyAccount = () => {
@@ -187,10 +192,10 @@ export default function ProfilePage() {
                                             src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
                                             alt="Bonnie image"
                                         />
-                                        <input id="thumbnail" name='thumbnail' type="file" className="hidden" />
+                                        <input id="thumbnail" name='thumbnail' type="file" className="hidden" onChange= {handleFileChange}/>
                                     </label>
                                 </div>
-                                <div className='relative z-0 mb-6 w-auto group'>
+                                {/* <div className='relative z-0 mb-6 w-auto group'>
                                     <button
                                         type="button"
                                         className="inline-block px-1 py-1 mt-0 bg-blue-600 text-white font-medium text-sm leading-snug lowercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
@@ -200,7 +205,7 @@ export default function ProfilePage() {
                                     >
                                         Upload
                                     </button>
-                                </div>
+                                </div> */}
                             </div>
                             <div className='grid md:grid-cols-2 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
@@ -226,7 +231,7 @@ export default function ProfilePage() {
                                     />
                                 </div>
                             </div>
-                            <div className='grid md:grid-cols-2 md:gap-6'>
+                            <div className='grid md:grid-cols-3 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <FormInput
                                         name='firstName'
@@ -247,8 +252,18 @@ export default function ProfilePage() {
                                         request={'required'}
                                     />
                                 </div>
+                                <div className='relative z-0 mb-6 w-full group'>
+                                    <FormInput
+                                        name='gender'
+                                        label='Gender'
+                                        type='text'
+                                        onChange={handleChange}
+                                        value={gender}
+                                        // request={'required'}
+                                    />
+                                </div>
                             </div>
-                            <div className='grid md:grid-cols-1 md:gap-6'>
+                            {/* <div className='grid md:grid-cols-1 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <FormInput
                                         name='address'
@@ -258,7 +273,7 @@ export default function ProfilePage() {
                                         value={address}
                                     />
                                 </div>
-                            </div>
+                            </div> */}
                             <div className='grid md:grid-cols-3 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <FormInput
@@ -291,7 +306,7 @@ export default function ProfilePage() {
                                     />
                                 </div>
                             </div>
-                            <div className='grid md:grid-cols-2 md:gap-6'>
+                            {/* <div className='grid md:grid-cols-2 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <FormInput
                                         name='zipcode'
@@ -310,7 +325,7 @@ export default function ProfilePage() {
                                         value={mobilePhone}
                                     />
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="flex flex-wrap gap-4">
                                 <div className='relative z-0 mb-6 w-50 group flex-auto'>
                                     <button

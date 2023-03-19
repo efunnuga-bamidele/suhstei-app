@@ -705,7 +705,7 @@ export const uploadProfileImage = async (userID, thumbnail) => {
 export const updateProfile = async (userID, thumbnail, profileDetail) => {
   if (!userID) return "error";
 
-  const photoURL ='';
+  let photoURL ='';
 
   if (thumbnail) {
     photoURL = await uploadProfileImage(userID, thumbnail);
