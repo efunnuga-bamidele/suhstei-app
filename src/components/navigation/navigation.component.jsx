@@ -36,7 +36,7 @@ export default function Navigation() {
     useEffect(() => {
       if (currentUser !== null){
         setUser(currentUser.uid)
-        console.log("initial status update")
+        // console.log("initial status update")
         userOnlineStstus(currentUser.uid);
       }else{
         userOnlineStstus(user);

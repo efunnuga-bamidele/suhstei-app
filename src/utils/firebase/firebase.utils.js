@@ -121,7 +121,7 @@ export const createUserDocumentFromAuth = async (userAuth, additionalinformation
       // console.log('error creating the user : ', error.message)
     }
   }
-  return userDocRef;
+  return userSnapshot.data();
 }
 
 //create new user with email and password
@@ -702,12 +702,13 @@ export const uploadProfileImage = async (userID, thumbnail) => {
 }
 
 // Book creation
-export const updateProfile = async (userID, thumbnail, profileDetail) => {
+export const updateProfile = async (userID, thumbnail, imageUrl, profileDetail) => {
   if (!userID) return "error";
 
-  const photoURL ='';
+  let photoURL ='';
 
   if (thumbnail) {
+    imageDelete(imageUrl);
     photoURL = await uploadProfileImage(userID, thumbnail);
 
   }
@@ -725,6 +726,17 @@ export const updateProfile = async (userID, thumbnail, profileDetail) => {
     }
   }
 };
+
+export const retrieveProfileUpdate = async (userID) => {
+  const docRef = doc(db, 'users', userID);
+  const docSnapshot = await getDoc(docRef);
+
+  if (docSnapshot.exists()) {
+    console.log(docSnapshot.data())
+    return docSnapshot.data();
+  }
+  
+}
 
 
 
