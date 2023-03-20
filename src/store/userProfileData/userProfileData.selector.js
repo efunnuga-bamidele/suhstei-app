@@ -1,0 +1,1 @@
+export const selectCurrentUserProfile = (state) => state.userProfile.currentUserProfile;
