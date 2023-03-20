@@ -72,7 +72,7 @@ export default function SignupPage() {
                 setError('Cannot create user, email already in use');
                 setTimeout(() => setError(''), 10000)
             }else{
-                setError('user creation encounted an error: ');
+                setError('user creation encounted an error');
                 // console.log(err.message)
                 setTimeout(() => setError(''), 10000)
             }
@@ -83,7 +83,6 @@ export default function SignupPage() {
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormFields({...formFields, [name]:value});
-        console.log(formFields)
     }
 
     const logGooglePopUser = async () => {

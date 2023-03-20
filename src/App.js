@@ -10,6 +10,7 @@ import {
 //redux import
 import { useDispatch } from 'react-redux';
 import { setCurrentUser } from './store/user/user.action'
+import { setProfileData } from './store/userProfileData/userProfileData.action';
 
 //pages
 import ErrorPage from './pages/error/error.page';
@@ -46,15 +47,29 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChangedListener((user) => {
+    const unsubscribe = onAuthStateChangedListener(async (user) => {
+      let userDataRes = '';
       if (user){
-        createUserDocumentFromAuth(user);
+        userDataRes = await createUserDocumentFromAuth(user);
       }
       dispatch(setCurrentUser(user))
+      dispatch(setProfileData(userDataRes))
     });
 
     return unsubscribe;
   }, [dispatch])
+
+  // get currentUser Profile
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChangedListener((user) => {
+  //     if (user){
+  //       createUserDocumentFromAuth(user);
+  //     }
+  //     dispatch(setCurrentUser(user))
+  //   });
+
+  //   return unsubscribe;
+  // }, [dispatch])
   
 
 

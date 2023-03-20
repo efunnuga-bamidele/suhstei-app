@@ -6,36 +6,43 @@ import Navigation from '../../components/navigation/navigation.component'
 import SidebarNavigation from '../../components/sidebar/sidebar.component'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '../../store/user/user.selector'
+import { selectCurrentUserProfile } from '../../store/userProfileData/userProfileData.selector'
+import { setProfileData } from '../../store/userProfileData/userProfileData.action'
+import { useDispatch } from 'react-redux'
+
 import FormInput from '../../components/form-input/form-input.component'
 import FileResizer from 'react-image-file-resizer'
-import { getUserProfileData, updateProfile } from '../../utils/firebase/firebase.utils'
+import { getUserProfileData, retrieveProfileUpdate, updateProfile } from '../../utils/firebase/firebase.utils'
 import { FallingLines } from 'react-loader-spinner'
 
-const defaultFormField = {
-    // display_name: '',
-    firstName: '',
-    lastName: '',
-    country: '',
-    state: '',
-    city: '',
-    zipcode: '',
-    address: '',
-    mobilePhone: '',
-    gender: ''
-}
+// const defaultFormField = {
+//     displayName: '',
+//     email:'',
+//     firstName: '',
+//     lastName: '',
+//     country: '',
+//     state: '',
+//     city: '',
+//     gender: ''
+// }
 
 export default function ProfilePage() {
 
     const [error, setError] = useState();
     const [success, setSuccess] = useState();
-    const [formFields, setFormFields] = useState(defaultFormField);
-    const [profileData, setProfileData] = useState([]);
+    // const [formFields, setFormFields] = useState(defaultFormField);
+    // const [profileData, setProfileData] = useState([]);
     const [showModal, setShowmodal] = useState(false);
     let [thumbnail, setThumbnail] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null)
 
     // get userdata from useSelector Redux
     const currentUser = useSelector(selectCurrentUser);
-    const { firstName, lastName, country, state, city, zipcode, mobilePhone, address, gender } = formFields;
+    const currentUserProfile = useSelector(selectCurrentUserProfile);
+    const [userData, setUserData] = useState(currentUserProfile)
+    // const { firstName, lastName, country, state, city, gender, displayName, email } = userData;
+    const { firstName, lastName, country, state, city, gender, displayName, email, photoURL } = userData;
+    const dispatch = useDispatch();
 
     // Image File Resizing function
 
@@ -72,14 +79,15 @@ export default function ProfilePage() {
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setFormFields({ ...formFields, [name]: value });
-        console.log(formFields)
+        setUserData((recentData) => ({ ...recentData, [name]: value }));
+        // console.log(userData)
     }
 
     const handleFileChange = async (event) => {
-        console.log("Upload Triggered")
+        // console.log("Upload Triggered")
         setThumbnail(null);
         let selected = event.target.files[0];
+        setImagePreview(URL.createObjectURL(event.target.files[0]));
         const resizedImage = await resizeFile(selected);
 
         if (!resizedImage) {
@@ -100,14 +108,42 @@ export default function ProfilePage() {
         setError('')
         // setShowmodal(!showModal);
         setThumbnail(resizedImage);
+
     }
 
     const handleUpdate = async (event) => {
         event.preventDefault();
-        console.log("Update Triggered")
-        // setShowmodal(!showModal);
-        // await updateProfile(currentUser.uid, thumbnail, {'country': 'Ghana'})
-        // setThumbnail(null);
+        // console.log("Update Triggered")
+        const updateData = {
+            displayName: userData.displayName,
+            email: userData.email,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            gender: userData.gender,
+            country: userData.country,
+            state: userData.state,
+            city: userData.city
+        }
+        // console.log("Data to Update: ", updateData)
+        setShowmodal(!showModal);
+        const res = await updateProfile(currentUser.uid, thumbnail, userData.photoURL, updateData)
+
+        const data = await retrieveProfileUpdate(currentUser.uid)
+        dispatch(setProfileData(data))
+        setUserData(data);
+        if( res === 'success'){
+            setSuccess("User profile updated successfully")
+            setShowmodal(false);
+            setTimeout(() => setSuccess(''), 10000);
+        }
+        else{
+            setError("Failed to update user profile")
+            setShowmodal(false);
+            setTimeout(() => setError(''), 10000);
+        }
+        setThumbnail(null);
+        setImagePreview(null);
+        
     }
 
     const handleVerifyAccount = () => {
@@ -184,37 +220,27 @@ export default function ProfilePage() {
                                 }
                             </div>
                             {/* Profile Image Section */}
-                            <div className='grid md:grid-cols-9 md:gap-6'>
+                            <div className='grid grid-cols-2 min-[350px]:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <label htmlFor="thumbnail" className="flex flex-col cursor-pointer">
                                         <img
                                             className="mb-3 h-28 w-28 rounded-full shadow-lg"
-                                            src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-                                            alt="Bonnie image"
+                                            src={imagePreview ? imagePreview : photoURL}
+                                            alt={displayName && displayName}
                                         />
                                         <input id="thumbnail" name='thumbnail' type="file" className="hidden" onChange= {handleFileChange}/>
                                     </label>
                                 </div>
-                                {/* <div className='relative z-0 mb-6 w-auto group'>
-                                    <button
-                                        type="button"
-                                        className="inline-block px-1 py-1 mt-0 bg-blue-600 text-white font-medium text-sm leading-snug lowercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
-                                        data-mdb-ripple="true"
-                                        data-mdb-ripple-color="light"
-                                        onClick={handleUpload}
-                                    >
-                                        Upload
-                                    </button>
-                                </div> */}
+
                             </div>
                             <div className='grid md:grid-cols-2 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <FormInput
-                                        name='display_name'
+                                        name='displayName'
                                         label='Display Name'
                                         type='text'
                                         onChange={handleChange}
-                                        value={currentUser.displayName}
+                                        value={displayName && displayName}
                                         request={'required'}
                                         disabled
                                     />
@@ -225,7 +251,7 @@ export default function ProfilePage() {
                                         label='Email Address'
                                         type='email'
                                         onChange={handleChange}
-                                        value={currentUser.email}
+                                        value={email && email}
                                         request={'required'}
                                         disabled
                                     />
@@ -238,7 +264,7 @@ export default function ProfilePage() {
                                         label='First Name'
                                         type='text'
                                         onChange={handleChange}
-                                        value={firstName}
+                                        value={firstName && firstName}
                                         request={'required'}
                                     />
                                 </div>
@@ -248,7 +274,7 @@ export default function ProfilePage() {
                                         label='Last Name'
                                         type='text'
                                         onChange={handleChange}
-                                        value={lastName}
+                                        value={lastName && lastName}
                                         request={'required'}
                                     />
                                 </div>
@@ -258,22 +284,11 @@ export default function ProfilePage() {
                                         label='Gender'
                                         type='text'
                                         onChange={handleChange}
-                                        value={gender}
+                                        value={gender && gender}
                                         // request={'required'}
                                     />
                                 </div>
                             </div>
-                            {/* <div className='grid md:grid-cols-1 md:gap-6'>
-                                <div className='relative z-0 mb-6 w-full group'>
-                                    <FormInput
-                                        name='address'
-                                        label='Address ( e.g 123, First Avenue Street )'
-                                        type='text'
-                                        onChange={handleChange}
-                                        value={address}
-                                    />
-                                </div>
-                            </div> */}
                             <div className='grid md:grid-cols-3 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <FormInput
@@ -281,7 +296,7 @@ export default function ProfilePage() {
                                         label='Country'
                                         type='text'
                                         onChange={handleChange}
-                                        value={country}
+                                        value={country && country} 
                                         request={'required'}
                                     />
                                 </div>
@@ -291,7 +306,7 @@ export default function ProfilePage() {
                                         label='State'
                                         type='text'
                                         onChange={handleChange}
-                                        value={state}
+                                        value={state && state}
                                         request={'required'}
                                     />
                                 </div>
@@ -301,7 +316,7 @@ export default function ProfilePage() {
                                         label='City'
                                         type='text'
                                         onChange={handleChange}
-                                        value={city}
+                                        value={city && city}
                                         request={'required'}
                                     />
                                 </div>
