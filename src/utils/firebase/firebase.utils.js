@@ -112,6 +112,12 @@ export const createUserDocumentFromAuth = async (userAuth, additionalinformation
       await setDoc(userDocRef, {
         id: userAuth.uid,
         status: "online",
+        firstName: "",
+        lastName: "",
+        gender: "",
+        state: "",
+        city: "",
+        country: "",
         displayName,
         email,
         createdAt,
