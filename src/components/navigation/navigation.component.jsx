@@ -12,58 +12,26 @@ import ProfileImage from '../../assets/auth/icons8_male_user_500px.png';
 //redux imports
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../store/user/user.selector'
+import { selectCurrentUserProfile } from '../../store/userProfileData/userProfileData.selector';
 
 //firebase import 
-import { db, signOutUser, userOnlineStstus } from '../../utils/firebase/firebase.utils';
+import { signOutUser, userOnlineStstus } from '../../utils/firebase/firebase.utils';
 
 import './navigation.css';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { getDatabase } from 'firebase/database';
 
 
 export default function Navigation() {
 
   const currentUser = useSelector(selectCurrentUser);
+  const currentUserProfile = useSelector(selectCurrentUserProfile)
   const navigate = useNavigate();
 
 
     const [navClick, setNavClick] = useState();
-    const [user, setUser] = useState();
+
     useEffect(() => {
       window.scrollTo(0, 0);
     }, [navClick]);
-
-    useEffect(() => {
-      if (currentUser !== null){
-        setUser(currentUser.uid)
-        // console.log("initial status update")
-        userOnlineStstus(currentUser.uid);
-      }else{
-        userOnlineStstus(user);
-      }
-
-    }, [])
-
-    // useEffect(() => {
-    //   // const db = getDatabase()
-      
-    //   if (currentUser !== null){
-        
-    //     console.log("check status update")
-    //     const userStatusFirestoreRef = doc(db, '/status/' + currentUser.uid)
-    //     // onSnapshot
-    //     onSnapshot(userStatusFirestoreRef, (doc) => {
-    //       var isOnline = doc.data().state == 'online';
-    //       console.log("User Status: ",isOnline)
-    //     });
-    //     //   const unsub = onSnapshot(userStatusFirestoreRef, (doc) => {
-    //     //     var isOnline = doc.data().state == 'online';
-    //     //     console.log("User Status: ",isOnline)
-    //     // });
-
-    //     // return unsub()
-    //   }
-    // }, [])
 
 
     const logoutHandle = async () => {
@@ -89,9 +57,7 @@ export default function Navigation() {
      className="ml-4 h-12 sm:h-12"
      alt="Suhstei Logo"
    />
-   {/* <span className="self-center whitespace-nowrap text-xl font-bold dark:text-white">
-     Suhstei
-   </span> */}
+
  </Navbar.Brand>
  <div className="flex md:order-2">
     {
@@ -102,9 +68,9 @@ export default function Navigation() {
      label={
       <Avatar 
         alt="User settings" 
-        img={ProfileImage} 
+        img={currentUserProfile.photoURL !== "" ? currentUserProfile.photoURL : ProfileImage} 
         rounded={true}
-        status="online"
+        status={currentUserProfile.status}
         statusPosition="top-right"
       />
     }
@@ -112,7 +78,7 @@ export default function Navigation() {
    >
      <Dropdown.Header>
        <span className="block text-sm mb-2">
-         {currentUser.displayName}
+         Hi {currentUserProfile.firstName !== "" ? currentUserProfile.firstName : currentUser.displayName}
        </span>
        <span className="block truncate text-sm font-medium">
          {currentUser.email}
