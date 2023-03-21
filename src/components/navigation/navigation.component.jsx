@@ -147,12 +147,12 @@ export default function Navigation() {
               </Dropdown.Item>
 
           </Dropdown>
-        <Dropdown.Item className="cursor-default">
+        {/* <Dropdown.Item className="cursor-default">
         <HiOutlineAdjustments className='mr-2' size={22} />
           <NavLink to="/settings" className="dropdown_hover" onClick={() => setNavClick(!navClick)}>
             Settings
           </NavLink>
-        </Dropdown.Item>
+        </Dropdown.Item> */}
 
         <Dropdown.Divider />
         <Dropdown.Item className="cursor-default">
