@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import emailjs from '@emailjs/browser'
 import {
   getAuth,
   signInWithPopup,
@@ -742,6 +743,11 @@ export const retrieveProfileUpdate = async (userID) => {
     return docSnapshot.data();
   }
   
+}
+
+
+export const sendContactMessage = async (form) => {
+  return await emailjs.sendForm("service_wwju1ee", "template_6qgf5z8", form, "ODzKrI1eM90wmFfxS")
 }
 
 
