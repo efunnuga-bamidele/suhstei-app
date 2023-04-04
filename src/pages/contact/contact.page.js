@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { Modal, Alert, Textarea, Label } from 'flowbite-react'
 import { FallingLines } from 'react-loader-spinner'
 import Footer from '../../components/footer/footer.component'
@@ -6,32 +6,67 @@ import Navigation from '../../components/navigation/navigation.component'
 import FormInput from '../../components/form-input/form-input.component'
 import ContactImage from '../../assets/icons/undraw-contact.svg'
 import { HiOutlineInformationCircle } from 'react-icons/hi'
-
+import { sendContactMessage } from '../../utils/firebase/firebase.utils'
+import { init } from '@emailjs/browser'
+import { selectCurrentUser } from '../../store/user/user.selector'
+import { useSelector } from 'react-redux'
 
 
 const defaultFormFields = {
-  displayname: '',
-  email: '',
-  subject: '',
-  message: ''
+  user_subject: '',
+  user_message: ''
 }
 
 export default function ContactPage() {
 
+  init("ODzKrI1eM90wmFfxS");
+  const form = useRef()
+
   const [formField, setFormField] = useState(defaultFormFields);
-  const { displayname, email, subject, message } = formField;
+  const { user_subject, user_message } = formField;
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const currentUser = useSelector(selectCurrentUser)
 
   const resetFields = () => {
     setFormField(defaultFormFields)
   }
 
+
   useEffect(() => {
     setShowModal(true);
-    setTimeout(() => setShowModal(false), 5000);
+    setTimeout(() => {
+      setShowModal(false)
+
+    }, 2000);
   }, [])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setShowModal(true);
+    const result = await sendContactMessage(form.current)
+    if (result.status === 200 && result.text === "OK") {
+      setSuccess("Message Sent Successfully")
+      setTimeout(() => {
+        setSuccess("")
+        setShowModal(false);
+        resetFields();
+      }, 1000)
+
+    } else {
+
+      setError("Message Not Sent! Please Try Again.")
+      setTimeout(() => {
+        setError("")
+        setShowModal(false)
+      }, 1000)
+    }
+  };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormField({ ...formField, [name]: value })
+  }
 
   return (
     <div className='h-0 overscroll-none'>
@@ -63,7 +98,7 @@ export default function ContactPage() {
               <img src={ContactImage} className="w-full" alt="Phoneimage" />
             </div>
             <div className='md:w-8/12 lg:w-5/12 lg:ml-20'>
-              <form>
+              <form onSubmit={handleSubmit} ref={form}>
                 <div className="relative z-0 mb-6 w-full group">
                   <h1 className='text-2xl sm:text-3xl md:text-5xl font-bold my-auto mb-4 text-primary text-right'>Contact Us</h1>
                 </div>
@@ -94,28 +129,49 @@ export default function ContactPage() {
                     name="display_name"
                     label="Display name"
                     type="text"
+                    required={true}
+                    disabled
+                    value={currentUser.displayName}
+                    onChange={handleChange}
+
                   />
                 </div>
                 <div className="relative z-0 mb-6 w-full group">
                   <FormInput
-                    name="email"
+                    name="user_address"
                     label="Email address"
                     type="email"
+                    required={true}
+                    disabled
+                    value={currentUser.email}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="relative z-0 mb-6 w-full group">
+                  <FormInput
+                    name="user_subject"
+                    label="Subject"
+                    type="text"
+                    value={user_subject}
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="relative z-0 mb-6 w-full group">
                   <div className="mb-2 block">
                     <Label
-                      htmlFor="comment"
+                      htmlFor="user_message"
                       value="Your message"
                       className='text-slate-500'
                     />
                   </div>
                   <Textarea
-                    id="comment"
-                    placeholder="Leave a comment..."
+                    id="user_message"
+                    name="user_message"
+                    placeholder="Leave a message..."
                     required={true}
+                    value={user_message}
                     rows={8}
+                    onChange={handleChange}
                   />
                 </div>
                 <button
@@ -124,7 +180,7 @@ export default function ContactPage() {
                   data-mdb-ripple="true"
                   data-mdb-ripple-color="light"
                 >
-                  Send comment
+                  Send Message
                 </button>
               </form>
             </div>

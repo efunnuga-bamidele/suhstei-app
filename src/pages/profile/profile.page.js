@@ -62,20 +62,6 @@ export default function ProfilePage() {
             );
         });
 
-    useEffect(() => {
-        // get user detail from database here
-
-        const data = async () => {
-            // const res = await getUserProfileData(currentUser.uid);
-            // setProfileData(res);
-
-        }
-
-        data();
-
-        // console.log(profileData)
-
-    }, [])
 
     const handleChange = (event) => {
         const { name, value } = event.target;
