@@ -122,7 +122,8 @@ export default function BooksPage() {
             <Navigation />
             <section className='bg-gray-100 mt-20 '>
                 <nav className="bg-gray-100 px-10 py-3 rounded-md w-full">
-                    <h1 className="font-bold text-xl pb-2 pr-4 underline text-slate-500">Categories</h1>
+                    {/* <h1 className="font-bold text-xl pb-2 pr-4 underline text-slate-500 my-4">Categories</h1> */}
+                    <h1 className="font-bold text-xl text-right pr-4 underline text-slate-500 my-4">Categories</h1>
 
                     <ol className="list-reset flex flex-wrap">
                         {bookCategory.map((item, index) => (

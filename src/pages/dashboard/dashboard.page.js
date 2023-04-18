@@ -62,7 +62,7 @@ export default function DashboardPage(){
                   
                     <SidebarNavigation />
                     <section className="bg-white mt-12 m-2 p-2 w-full rounded-lg relative overflow-x-auto shadow-md">
-                        <h1 className="font-bold text-lg text-center underline">My Dashboard</h1>
+                        <h1 className="font-bold text-xl text-right pr-4 underline text-slate-500 my-4">My Dashboard</h1>
                         {isLoading ? (
                             <div className="grid col-span-full place-items-center h-56">
 
@@ -86,7 +86,7 @@ export default function DashboardPage(){
                                 <Table.HeadCell>
                                     Owner
                                 </Table.HeadCell>
-                                <Table.HeadCell>
+                                <Table.HeadCell className="text-center">
                                     Quantity
                                 </Table.HeadCell>
                             </Table.Head>
@@ -101,7 +101,7 @@ export default function DashboardPage(){
                                     <Table.Cell>
                                         {currentUser.displayName}
                                     </Table.Cell>
-                                    <Table.Cell>
+                                    <Table.Cell className="font-bold text-lg text-primary text-center">
                                         {myBooks.length !== 0 ? myBooks.length : '0'}
                                     </Table.Cell>
                                 </Table.Row>
@@ -116,7 +116,7 @@ export default function DashboardPage(){
                                     <Table.Cell>
                                         {currentUser.displayName}
                                     </Table.Cell>
-                                    <Table.Cell>
+                                    <Table.Cell className="font-bold text-lg text-primary text-center">
                                         {myAvailableBooks.length !== 0 ? myAvailableBooks.length : '0'}
                                     </Table.Cell>
                                 </Table.Row>
@@ -130,7 +130,7 @@ export default function DashboardPage(){
                                     <Table.Cell>
                                         {currentUser.displayName}
                                     </Table.Cell>
-                                    <Table.Cell>
+                                    <Table.Cell className="font-bold text-lg text-primary text-center">
                                         {myRequestedBooks.length !== 0 ? myRequestedBooks.length : '0'}
                                     </Table.Cell>
                                 </Table.Row>
@@ -144,7 +144,7 @@ export default function DashboardPage(){
                                     <Table.Cell>
                                     {currentUser.displayName}
                                     </Table.Cell>
-                                    <Table.Cell>
+                                    <Table.Cell className="font-bold text-lg text-primary text-center">
                                     {myNotAvailableBooks.length !== 0 ? myNotAvailableBooks.length : '0'}
                                     </Table.Cell>
                                 </Table.Row>
