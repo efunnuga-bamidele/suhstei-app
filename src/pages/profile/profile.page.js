@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect, useMemo } from 'react'
 import { Alert, Modal } from 'flowbite-react'
 import { HiOutlineInformationCircle } from "react-icons/hi"
 import Footer from '../../components/footer/footer.component'
@@ -14,6 +14,8 @@ import FormInput from '../../components/form-input/form-input.component'
 import FileResizer from 'react-image-file-resizer'
 import { getUserProfileData, retrieveProfileUpdate, updateProfile } from '../../utils/firebase/firebase.utils'
 import { FallingLines } from 'react-loader-spinner'
+import countryList from 'react-select-country-list'
+// import Select from 'react-select'
 
 // const defaultFormField = {
 //     displayName: '',
@@ -30,8 +32,7 @@ export default function ProfilePage() {
 
     const [error, setError] = useState();
     const [success, setSuccess] = useState();
-    // const [formFields, setFormFields] = useState(defaultFormField);
-    // const [profileData, setProfileData] = useState([]);
+    const [value, setValue] = useState('')
     const [showModal, setShowmodal] = useState(false);
     let [thumbnail, setThumbnail] = useState(null);
     const [imagePreview, setImagePreview] = useState(null)
@@ -43,6 +44,10 @@ export default function ProfilePage() {
     // const { firstName, lastName, country, state, city, gender, displayName, email } = userData;
     const { firstName, lastName, country, state, city, gender, displayName, email, photoURL } = userData;
     const dispatch = useDispatch();
+
+    // get country data from package
+    const options = useMemo(() => countryList().getData(), [])
+
 
     // Image File Resizing function
 
@@ -101,8 +106,8 @@ export default function ProfilePage() {
         event.preventDefault();
         // console.log("Update Triggered")
         const updateData = {
-            displayName: userData.displayName,
-            email: userData.email,
+            displayName: currentUser['displayName'],
+            email: currentUser['email'],
             firstName: userData.firstName,
             lastName: userData.lastName,
             gender: userData.gender,
@@ -117,19 +122,19 @@ export default function ProfilePage() {
         const data = await retrieveProfileUpdate(currentUser.uid)
         dispatch(setProfileData(data))
         setUserData(data);
-        if( res === 'success'){
+        if (res === 'success') {
             setSuccess("User profile updated successfully")
             setShowmodal(false);
             setTimeout(() => setSuccess(''), 10000);
         }
-        else{
+        else {
             setError("Failed to update user profile")
             setShowmodal(false);
             setTimeout(() => setError(''), 10000);
         }
         setThumbnail(null);
         setImagePreview(null);
-        
+
     }
 
     const handleVerifyAccount = () => {
@@ -214,7 +219,7 @@ export default function ProfilePage() {
                                             src={imagePreview ? imagePreview : photoURL}
                                             alt={displayName && displayName}
                                         />
-                                        <input id="thumbnail" name='thumbnail' type="file" className="hidden" onChange= {handleFileChange}/>
+                                        <input id="thumbnail" name='thumbnail' type="file" className="hidden" onChange={handleFileChange} />
                                     </label>
                                 </div>
 
@@ -226,8 +231,9 @@ export default function ProfilePage() {
                                         label='Display Name'
                                         type='text'
                                         onChange={handleChange}
-                                        value={displayName && displayName}
+                                        value={currentUser['displayName']}
                                         request={'required'}
+                                        readonly
                                         disabled
                                     />
                                 </div>
@@ -237,8 +243,9 @@ export default function ProfilePage() {
                                         label='Email Address'
                                         type='email'
                                         onChange={handleChange}
-                                        value={email && email}
+                                        value={currentUser['email']}
                                         request={'required'}
+                                        readonly
                                         disabled
                                     />
                                 </div>
@@ -265,26 +272,63 @@ export default function ProfilePage() {
                                     />
                                 </div>
                                 <div className='relative z-0 mb-6 w-full group'>
-                                    <FormInput
+                                    {/* <FormInput
                                         name='gender'
                                         label='Gender'
                                         type='text'
                                         onChange={handleChange}
                                         value={gender && gender}
                                         // request={'required'}
-                                    />
+                                    /> */}
+                                    <select
+                                        id="gender"
+                                        className="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        name="gender"
+                                        onChange={handleChange}
+                                        required
+                                    >
+                                        {gender ?
+                                            <option defaultValue={gender}>{gender}</option>
+                                            :
+                                            <option defaultValue="...Select Gender">...Select Gender</option>
+                                        }
+                                        <option defaultValue="Male">Male</option>
+                                        <option defaultValue="Female">Female</option>
+                                        <option defaultValue="Others">Others</option>
+                                    </select>
+                                    <label
+                                        htmlFor="gender"
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        Gender
+                                    </label>
                                 </div>
                             </div>
                             <div className='grid md:grid-cols-3 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
-                                    <FormInput
-                                        name='country'
-                                        label='Country'
-                                        type='text'
+                                    <select
+                                        id="country"
+                                        className="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        name="country"
                                         onChange={handleChange}
-                                        value={country && country} 
-                                        request={'required'}
-                                    />
+                                        required
+                                    >
+                                        {country ?
+                                            <option defaultValue={country}>{country}</option>
+                                            :
+                                            <option defaultValue="...Select Country">...Select Country</option>
+                                        }
+                                        {/* <option value={value}>{value}</option> */}
+                                        {options.map((item, index) => (
+                                            <option key={index} defaultValue={item.label}>{item.label}</option>
+                                        ))}
+                                    </select>
+                                    <label
+                                        htmlFor="country"
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        Country
+                                    </label>
                                 </div>
                                 <div className='relative z-0 mb-6 w-full group'>
                                     <FormInput
