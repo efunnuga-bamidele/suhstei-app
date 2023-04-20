@@ -141,7 +141,7 @@ export default function NewMessagePage() {
             <main className="bg-gray-300 mt-5 flex flex-wrap-reverse md:flex-nowrap overflow-x-hidden">
 
                 <SidebarNavigation />
-                <section className="bg-white mt-12 m-2 p-2 w-full rounded-lg relative overflow-x-auto shadow-md">
+                <section className="bg-white mt-12 m-2 p-2 w-full rounded-lg relative overflow-x-auto shadow-md max-h-[70vh]">
                     <h1 className="font-bold text-xl text-right pr-4 underline text-slate-500 my-4">Message Room</h1>
                     <div className='grid grid-cols-1 md:grid-cols-4 gap-2'>
                         <div className='bg-gray-100 hidden border-2 border-slate-200 p-2 md:block max-h-[60vh] md:col-span-1 overflow-y-scroll scroll-smooth'>
