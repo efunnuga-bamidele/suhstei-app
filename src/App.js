@@ -31,7 +31,6 @@ import SettingsPage from './pages/settings/settings.page';
 import LendingRequestPage from './pages/book-requests/lending-request.page';
 import BorrowRequestPage from './pages/book-requests/borrow-request.page';
 import ClosedRequstPage from './pages/book-requests/closed-request.page';
-import ActiveMessagePage from './pages/messages/active-messages.page';
 import NewMessagePage from './pages/messages/new-messages.page';
 import ProfilePage from './pages/profile/profile.page';
 
@@ -192,16 +191,6 @@ function App() {
             }
             errorElement={<ErrorPage />}
           />
-{/* 
-          <Route
-            path='/active-message'
-            element={
-              <ProfileLayout>
-                <ActiveMessagePage />
-              </ProfileLayout>
-            }
-            errorElement={<ErrorPage />}
-          /> */}
 
           <Route
             path='/messages'
