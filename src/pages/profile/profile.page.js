@@ -12,21 +12,10 @@ import { useDispatch } from 'react-redux'
 
 import FormInput from '../../components/form-input/form-input.component'
 import FileResizer from 'react-image-file-resizer'
-import { getUserProfileData, retrieveProfileUpdate, updateProfile } from '../../utils/firebase/firebase.utils'
+import { getUserProfileData, retrieveProfileUpdate, sendVerificationEmail, updateProfile } from '../../utils/firebase/firebase.utils'
 import { FallingLines } from 'react-loader-spinner'
 import countryList from 'react-select-country-list'
-// import Select from 'react-select'
 
-// const defaultFormField = {
-//     displayName: '',
-//     email:'',
-//     firstName: '',
-//     lastName: '',
-//     country: '',
-//     state: '',
-//     city: '',
-//     gender: ''
-// }
 
 export default function ProfilePage() {
 
@@ -41,7 +30,6 @@ export default function ProfilePage() {
     const currentUser = useSelector(selectCurrentUser);
     const currentUserProfile = useSelector(selectCurrentUserProfile);
     const [userData, setUserData] = useState(currentUserProfile)
-    // const { firstName, lastName, country, state, city, gender, displayName, email } = userData;
     const { firstName, lastName, country, state, city, gender, displayName, email, photoURL } = userData;
     const dispatch = useDispatch();
 
@@ -137,9 +125,20 @@ export default function ProfilePage() {
 
     }
 
-    const handleVerifyAccount = () => {
-        console.log("Verify Account Triggered")
+    const handleVerifyAccount = async () => {
+        const res = await sendVerificationEmail()
+        if (res === 'success') {
+            setSuccess("Verification email sent successfully!")
+            setShowmodal(false);
+            setTimeout(() => setSuccess(''), 10000);
+        }
+        else {
+            setError("Failed to send verification email")
+            setShowmodal(false);
+            setTimeout(() => setError(''), 10000);
+        }
     }
+
     const handleDelete = () => {
         console.log("Delete Account Triggered")
     }
@@ -151,7 +150,6 @@ export default function ProfilePage() {
     const handleResetPassword = () => {
         console.log("Reset Password Triggered")
     }
-
 
     return (
         <div className='bg-gray-100 font-body scroll-smooth h-0'>
@@ -181,7 +179,9 @@ export default function ProfilePage() {
                 </Fragment>
                 <SidebarNavigation />
                 <section className='bg-white mt-12 m-2 p-2 w-full rounded-md'>
-                    <h1 className='font-bold text-xl text-right pr-4 underline text-slate-500'>Profile</h1>
+                    <h1 className='font-bold text-xl text-right pr-4 underline text-slate-500'>
+                        Profile
+                    </h1>
                     <div className='container px-6 py-12 h-full'>
                         <form onSubmit={handleUpdate}>
                             {/* Alert section */}
@@ -223,6 +223,17 @@ export default function ProfilePage() {
                                     </label>
                                 </div>
 
+                            </div>
+                            <div className='grid md:grid-cols-1 md:gap-6'>
+                                <div className='relative z-0 mb-6 w-full group'>
+                                    <h1 className='font-bold text-lg text-left pr-4'>
+                                        {
+                                            currentUser.emailVerified === true
+                                                ? <p className='text-blue-700'>Verified Account</p>
+                                                : <p className='text-red-700'>Unverified Account</p>
+                                        }
+                                    </h1>
+                                </div>
                             </div>
                             <div className='grid md:grid-cols-2 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
@@ -272,14 +283,6 @@ export default function ProfilePage() {
                                     />
                                 </div>
                                 <div className='relative z-0 mb-6 w-full group'>
-                                    {/* <FormInput
-                                        name='gender'
-                                        label='Gender'
-                                        type='text'
-                                        onChange={handleChange}
-                                        value={gender && gender}
-                                        // request={'required'}
-                                    /> */}
                                     <select
                                         id="gender"
                                         className="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
@@ -351,26 +354,6 @@ export default function ProfilePage() {
                                     />
                                 </div>
                             </div>
-                            {/* <div className='grid md:grid-cols-2 md:gap-6'>
-                                <div className='relative z-0 mb-6 w-full group'>
-                                    <FormInput
-                                        name='zipcode'
-                                        label='ZipCode'
-                                        type='text'
-                                        onChange={handleChange}
-                                        value={zipcode}
-                                    />
-                                </div>
-                                <div className='relative z-0 mb-6 w-full group'>
-                                    <FormInput
-                                        name='mobilePhone'
-                                        label='Mobile Number ( e.g +2348000000000)'
-                                        type='text'
-                                        onChange={handleChange}
-                                        value={mobilePhone}
-                                    />
-                                </div>
-                            </div> */}
                             <div className="flex flex-wrap gap-4">
                                 <div className='relative z-0 mb-6 w-50 group flex-auto'>
                                     <button
@@ -382,18 +365,23 @@ export default function ProfilePage() {
                                         Update Profile
                                     </button>
                                 </div>
-                                <div className='relative z-0 mb-6 w-50 group flex-auto'>
-                                    <button
-                                        type="button"
-                                        className="inline-block px-7 py-3 mt-0 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
-                                        data-mdb-ripple="true"
-                                        data-mdb-ripple-color="light"
-                                        onClick={handleVerifyAccount}
-                                    >
-                                        Verify Account
-                                    </button>
-                                </div>
-                                <div className='relative z-0 mb-6 w-50 group flex-auto'>
+                                {
+                                    currentUser.emailVerified === true
+                                        ? <span></span>
+                                        :<div className='relative z-0 mb-6 w-50 group flex-auto'>
+                                            <button
+                                                type="button"
+                                                className="inline-block px-7 py-3 mt-0 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
+                                                data-mdb-ripple="true"
+                                                data-mdb-ripple-color="light"
+                                                onClick={handleVerifyAccount}
+                                            >
+                                                Verify Account
+                                            </button>
+                                        </div>
+                                }
+
+                                <div className='relative z-0 mb-6 w-50 group flex-auto hidden'>
                                     <button
                                         type="button"
                                         className="inline-block px-7 py-3 mt-0 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
@@ -404,7 +392,7 @@ export default function ProfilePage() {
                                         Reset Email
                                     </button>
                                 </div>
-                                <div className='relative z-0 mb-6 w-50 group flex-auto'>
+                                <div className='relative z-0 mb-6 w-50 group flex-auto hidden'>
                                     <button
                                         type="button"
                                         className="inline-block px-7 py-3 mt-0 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
@@ -415,7 +403,7 @@ export default function ProfilePage() {
                                         Reset Password
                                     </button>
                                 </div>
-                                <div className='relative z-0 mb-6 w-50 group flex-auto'>
+                                <div className='relative z-0 mb-6 w-50 group flex-auto hidden'>
                                     <button
                                         type="button"
                                         className="inline-block px-7 py-3 mt-0 bg-red-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
