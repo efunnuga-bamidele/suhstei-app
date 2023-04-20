@@ -12,6 +12,7 @@ import {
   sendEmailVerification,
   updateEmail,
   sendPasswordResetEmail,
+  deleteUser, 
   reauthenticateWithCredential
 
 } from 'firebase/auth';
@@ -603,11 +604,42 @@ export const createRoom = async (secondUser, currentUser) => {
   return masterRoom_id;
 }
 
+// Email verification mail
 export const sendVerificationEmail = async () => {
   if (!auth.currentUser) return;
-  return await sendEmailVerification(auth.currentUser)
+  try {
+    await sendEmailVerification(auth.currentUser)
+    return "success"
+
+  } catch (err) {
+    return "error"
+  }
 }
 
+// Reset email account
+export const updateUserEmail = async (newEmail) => {
+  try {
+    await updateEmail(auth.currentUser, newEmail)
+    return "Email updated"
+
+  } catch (err) {
+    return "error"
+  }
+}
+
+//Delete user Account
+export const deleteAccount = async () => {
+  const user = auth.currentUser;
+  try {
+    await deleteUser(user)
+    return "User deleted"
+
+  } catch (err) {
+    return "error"
+  }
+}
+
+//Reset password Mail
 export const sendResetPasswordMail = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
@@ -712,7 +744,7 @@ export const uploadProfileImage = async (userID, thumbnail) => {
 export const updateProfile = async (userID, thumbnail, imageUrl, profileDetail) => {
   if (!userID) return "error";
 
-  let photoURL ='';
+  let photoURL = '';
 
   if (thumbnail) {
     imageDelete(imageUrl);
@@ -742,13 +774,14 @@ export const retrieveProfileUpdate = async (userID) => {
     console.log(docSnapshot.data())
     return docSnapshot.data();
   }
-  
+
 }
 
 
 export const sendContactMessage = async (form) => {
   return await emailjs.sendForm("service_wwju1ee", "template_6qgf5z8", form, "ODzKrI1eM90wmFfxS")
 }
+
 
 
 
