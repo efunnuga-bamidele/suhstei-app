@@ -61,10 +61,7 @@ export default function LoginPage() {
 
         try {
             await sighAuthUserInWithEmailAndPassword(formField.email, formField.password)
-            // console.log(user)
-
             resetFields();
-
         } catch (err) {
             switch (err.code) {
                 case "auth/user-not-found":

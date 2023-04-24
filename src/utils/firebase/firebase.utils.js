@@ -73,14 +73,21 @@ facebookProvider.setCustomParameters({
 
 export const auth = getAuth();
 export const signInWithGooglePopup = async () => {
-  // console.log('signInWithGooglePopup Fired')
-  await signInWithPopup(auth, googleProvider);
+  const result = await signInWithPopup(auth, googleProvider);
+  await updateDoc(doc(db, "users", result.user.uid), {
+    isOnline: true,
+  });
 }
+
 
 export const signInWithFacebookPopup = async () => {
   // console.log('signInWithFacebookPopup Fired')
-  await signInWithPopup(auth, facebookProvider)
+  const result = await signInWithPopup(auth, facebookProvider)
+  await updateDoc(doc(db, "users", result.user.uid), {
+    isOnline: true,
+  });
 }
+
 
 // Firestore initialization
 export const db = getFirestore();
@@ -107,7 +114,7 @@ export const createUserDocumentFromAuth = async (userAuth, additionalinformation
     try {
       await setDoc(userDocRef, {
         id: userAuth.uid,
-        status: "online",
+        isOnline: true,
         firstName: "",
         lastName: "",
         gender: "",
@@ -135,17 +142,23 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
 //signin with email and password
 export const sighAuthUserInWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
-  // await signInWithEmailAndPassword(auth, email, password);
-  // if (auth.currentUser['emailVerified'] === false){
 
-  // }
-  return await signInWithEmailAndPassword(auth, email, password);
+  const result = await signInWithEmailAndPassword(auth, email, password);
+
+  await updateDoc(doc(db, "users", result.user.uid), {
+    isOnline: true,
+  });
+  return result;
 };
 
 //Signout user
 export const signOutUser = async () => {
   try {
+    await updateDoc(doc(db, "users", auth.currentUser.uid), {
+      isOnline: false,
+    })
     await signOut(auth);
+
     return "success"
   } catch (error) {
     return "failed"
