@@ -17,6 +17,7 @@ const Message = ({ msg, user1, chat, currentUserProfile }) => {
             
             <div className="chat-image avatar">
                 <div className="w-10 rounded-full">
+       
                     <img src={msg.from === user1 ? (
                         currentUserProfile.photoURL ? currentUserProfile.photoURL : Img
                     ) : (
