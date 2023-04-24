@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect, useMemo } from 'react'
-import { Alert, Modal } from 'flowbite-react'
+import { Alert, Modal, Tooltip } from 'flowbite-react'
 import { HiOutlineInformationCircle } from "react-icons/hi"
+import { BsCameraFill } from "react-icons/bs"
 import Footer from '../../components/footer/footer.component'
 import Navigation from '../../components/navigation/navigation.component'
 import SidebarNavigation from '../../components/sidebar/sidebar.component'
@@ -21,7 +22,6 @@ export default function ProfilePage() {
 
     const [error, setError] = useState();
     const [success, setSuccess] = useState();
-    const [value, setValue] = useState('')
     const [showModal, setShowmodal] = useState(false);
     let [thumbnail, setThumbnail] = useState(null);
     const [imagePreview, setImagePreview] = useState(null)
@@ -85,14 +85,12 @@ export default function ProfilePage() {
             return;
         }
         setError('')
-        // setShowmodal(!showModal);
         setThumbnail(resizedImage);
 
     }
 
     const handleUpdate = async (event) => {
         event.preventDefault();
-        // console.log("Update Triggered")
         const updateData = {
             displayName: currentUser['displayName'],
             email: currentUser['email'],
@@ -103,7 +101,7 @@ export default function ProfilePage() {
             state: userData.state,
             city: userData.city
         }
-        // console.log("Data to Update: ", updateData)
+        
         setShowmodal(!showModal);
         const res = await updateProfile(currentUser.uid, thumbnail, userData.photoURL, updateData)
 
@@ -213,13 +211,20 @@ export default function ProfilePage() {
                             {/* Profile Image Section */}
                             <div className='grid grid-cols-2 min-[350px]:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 md:gap-6'>
                                 <div className='relative z-0 mb-6 w-full group'>
+
+
                                     <label htmlFor="thumbnail" className="flex flex-col cursor-pointer">
+                                        <BsCameraFill 
+                                            color='white' 
+                                            size={28} 
+                                            style={{ cursor: "pointer", top:"38%", left:"38%", position:"absolute"}} 
+                                            className='hidden transition delay-700 duration-300 ease-in-out group-hover:block '/>
                                         <img
                                             className="mb-3 h-28 w-28 rounded-full shadow-lg"
                                             src={imagePreview ? imagePreview : photoURL}
                                             alt={displayName && displayName}
                                         />
-                                        <input id="thumbnail" name='thumbnail' type="file" className="hidden" onChange={handleFileChange} />
+                                        <input id="thumbnail" name='thumbnail' type="file" accept='image/*' className="hidden" onChange={handleFileChange} />
                                     </label>
                                 </div>
 
@@ -368,7 +373,7 @@ export default function ProfilePage() {
                                 {
                                     currentUser.emailVerified === true
                                         ? <span></span>
-                                        :<div className='relative z-0 mb-6 w-50 group flex-auto'>
+                                        : <div className='relative z-0 mb-6 w-50 group flex-auto'>
                                             <button
                                                 type="button"
                                                 className="inline-block px-7 py-3 mt-0 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"

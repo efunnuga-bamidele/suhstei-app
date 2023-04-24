@@ -92,8 +92,8 @@ export default function LendingRequestPage() {
     }
 
     const handleMessage = async (itemDetail) => {
-        const res = await createRoom(itemDetail.borrowers_name, currentUser, currentUserProfile)
-         navigate('/messages', { state: { room_id: res } });
+        // const res = await createRoom(itemDetail.borrowers_name, currentUser, currentUserProfile)
+        //  navigate('/messages', { state: { room_id: res } });
      }
 
     return (

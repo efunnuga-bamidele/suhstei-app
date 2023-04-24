@@ -29,6 +29,7 @@ import {
   where,
   query,
   onSnapshot,
+  Timestamp,
   FieldValue,
 } from 'firebase/firestore'
 
@@ -57,7 +58,7 @@ const firebaseConfig = {
 
 //https://suhstei-d0d28.firebaseapp.com/__/auth/handler
 
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 // Google authentication
 const googleProvider = new GoogleAuthProvider();
 
@@ -71,7 +72,7 @@ facebookProvider.setCustomParameters({
   'display': 'popup'
 });
 
-export const auth = getAuth();
+export const auth = getAuth(app);
 export const signInWithGooglePopup = async () => {
   const result = await signInWithPopup(auth, googleProvider);
   await updateDoc(doc(db, "users", result.user.uid), {
@@ -90,9 +91,10 @@ export const signInWithFacebookPopup = async () => {
 
 
 // Firestore initialization
-export const db = getFirestore();
+export const db = getFirestore(app);
 
 export const database = getDatabase();
+export const storage = getStorage(app);
 
 // Firebase Collections
 const colBookRef = collection(db, 'books');
@@ -109,11 +111,11 @@ export const createUserDocumentFromAuth = async (userAuth, additionalinformation
 
   if (!userSnapshot.exists()) {
     const { displayName, email } = userAuth;
-    const createdAt = new Date();
+    const createdAt = Timestamp.fromDate(new Date());
 
     try {
       await setDoc(userDocRef, {
-        id: userAuth.uid,
+        id: userAuth.uid.trim(),
         isOnline: true,
         firstName: "",
         lastName: "",
@@ -475,151 +477,151 @@ export const RequestResponse = async (originalBook, requestedBook, canceledAt, c
 }
 
 
-export const createRoom = async (secondUser, currentUser, currentUserProfile) => {
-  // check for book owner profile in database
-  const secondUserRef = collection(db, 'users');
-  const queryCol = query(secondUserRef, where("displayName", "==", secondUser))
-  const querySnapshot = await getDocs(queryCol);
+// export const createRoom = async (secondUser, currentUser, currentUserProfile) => {
+//   // check for book owner profile in database
+//   const secondUserRef = collection(db, 'users');
+//   const queryCol = query(secondUserRef, where("displayName", "==", secondUser))
+//   const querySnapshot = await getDocs(queryCol);
 
-  //Store ID and photoURL in variable
-  let secondUserId = "";
-  let secondUserAvatarURL = ""
-  querySnapshot.forEach((doc) => {
-    secondUserId = doc.data().id;
-    secondUserAvatarURL = doc.data().photoURL
-  });
+//   //Store ID and photoURL in variable
+//   let secondUserId = "";
+//   let secondUserAvatarURL = ""
+//   querySnapshot.forEach((doc) => {
+//     secondUserId = doc.data().id;
+//     secondUserAvatarURL = doc.data().photoURL
+//   });
 
-  // Create room document using currentuser and bookowner id
-  const chatRoom_id = currentUser.uid.trim() + "_" + secondUserId.trim()
-  const reversedChatRoom_id = secondUserId.trim() + "_" + currentUser.uid.trim()
+//   // Create room document using currentuser and bookowner id
+//   const chatRoom_id = currentUser.uid.trim() + "_" + secondUserId.trim()
+//   const reversedChatRoom_id = secondUserId.trim() + "_" + currentUser.uid.trim()
 
-  let masterRoom_id = "";
-  const createdAt = new Date();
-
-
-  const senderProfile = doc(db, "users", currentUser.uid.trim());
-  const receiverProfile = doc(db, "users", secondUserId.trim());
-  const getSenderProfile = await getDoc(senderProfile);
-  const getReceiverProfile = await getDoc(receiverProfile);
+//   let masterRoom_id = "";
+//   const createdAt = new Date();
 
 
-  // Handle Sender Update
-  if (getSenderProfile.data()['chat']) { //checks if chat has been created
-    // check if room_id exist in user profile
-    const res = getSenderProfile.data()['chat'].filter((items) => items.room_id === chatRoom_id || items.room_id === reversedChatRoom_id)
-    if (res.length === 1) {
-      // console.log("Can not create duplicate room: ", res[0].room_id);
-      masterRoom_id = res[0].room_id;
-
-    } else {
-      // console.log("No data")
-      // update sender user detail with chat room details  as well as previous rooms details
-      await updateDoc(senderProfile, {
-        chat: [...getSenderProfile.data()['chat'], {
-          room_id: chatRoom_id,
-          receiver_id: secondUserId.trim(),
-          receiver_name: secondUser,
-          sender_id: currentUser.uid,
-          sender_name: currentUser.displayName,
-          createdAt: createdAt
-
-        }
-        ]
-      })
-    }
-
-  } else {
-    await updateDoc(senderProfile, {
-      chat: [{
-        room_id: chatRoom_id,
-        receiver_id: secondUserId.trim(),
-        receiver_name: secondUser,
-        sender_id: currentUser.uid,
-        sender_name: currentUser.displayName,
-        createdAt: createdAt
-
-      }
-      ]
-    })
-  }
-
-  // Handle receiver update
-  if (getReceiverProfile.data()['chat']) { //checks if chat has been created
-    // check if room_id exist
-    const res = getReceiverProfile.data()['chat'].filter((items) => items.room_id === chatRoom_id || items.room_id === reversedChatRoom_id)
-    if (res.length === 1) {
-      // console.log("Can not create duplicate room: ", res[0].room_id)
-    } else {
-      // console.log("No data")
-      // update receiver user detail with chat room details
-      await updateDoc(receiverProfile, {
-        chat: [...getReceiverProfile.data()['chat'], {
-          room_id: chatRoom_id,
-          receiver_id: secondUserId.trim(),
-          receiver_name: secondUser,
-          sender_id: currentUser.uid,
-          sender_name: currentUser.displayName,
-          createdAt: createdAt
-
-        }
-        ]
-      })
+//   const senderProfile = doc(db, "users", currentUser.uid.trim());
+//   const receiverProfile = doc(db, "users", secondUserId.trim());
+//   const getSenderProfile = await getDoc(senderProfile);
+//   const getReceiverProfile = await getDoc(receiverProfile);
 
 
-    }
+//   // Handle Sender Update
+//   if (getSenderProfile.data()['chat']) { //checks if chat has been created
+//     // check if room_id exist in user profile
+//     const res = getSenderProfile.data()['chat'].filter((items) => items.room_id === chatRoom_id || items.room_id === reversedChatRoom_id)
+//     if (res.length === 1) {
+//       // console.log("Can not create duplicate room: ", res[0].room_id);
+//       masterRoom_id = res[0].room_id;
 
-  } else {
-    // update receiver user detail with chat room details
-    await updateDoc(receiverProfile, {
-      chat: [{
-        room_id: chatRoom_id,
-        receiver_id: secondUserId.trim(),
-        receiver_name: secondUser,
-        sender_id: currentUser.uid,
-        sender_name: currentUser.displayName,
-        createdAt: createdAt
+//     } else {
+//       // console.log("No data")
+//       // update sender user detail with chat room details  as well as previous rooms details
+//       await updateDoc(senderProfile, {
+//         chat: [...getSenderProfile.data()['chat'], {
+//           room_id: chatRoom_id,
+//           receiver_id: secondUserId.trim(),
+//           receiver_name: secondUser,
+//           sender_id: currentUser.uid,
+//           sender_name: currentUser.displayName,
+//           createdAt: createdAt
 
-      }
-      ]
-    })
-  }
+//         }
+//         ]
+//       })
+//     }
 
-  const createChatRoom = doc(db, "messages", chatRoom_id);
-  const createChatRoom_rev = doc(db, "messages", reversedChatRoom_id);
-  const getChatRoom = await getDoc(createChatRoom);
-  const getChatRoom_rev = await getDoc(createChatRoom_rev);
+//   } else {
+//     await updateDoc(senderProfile, {
+//       chat: [{
+//         room_id: chatRoom_id,
+//         receiver_id: secondUserId.trim(),
+//         receiver_name: secondUser,
+//         sender_id: currentUser.uid,
+//         sender_name: currentUser.displayName,
+//         createdAt: createdAt
 
-  if (getChatRoom.exists()) {
-    masterRoom_id = chatRoom_id;
-    // console.log("chat exists: ", chatRoom_id)
-  }
-  else if (getChatRoom_rev.exists()) {
-    masterRoom_id = reversedChatRoom_id;
-    // console.log("chat exists", reversedChatRoom_id)
-  }
-  else if (!getChatRoom.exists() || !getChatRoom_rev.exists()) {
-    masterRoom_id = chatRoom_id;
-    let avatarURL = ""
-    if (currentUserProfile.photoURL) {
-      avatarURL = currentUserProfile.photoURL
-    }else{
-      avatarURL = avatarURL = ""
-    }
-    await setDoc(createChatRoom, {
-      room_uid: chatRoom_id,
-      sender: currentUser.displayName,
-      senderId: currentUser.uid,
-      senderAvatar: avatarURL,
-      receiver: secondUser,
-      receiverId: secondUserId.trim(),
-      receiverAvatar: secondUserAvatarURL,
-      createdAt: createdAt,
-      chat: [
-      ]
-    })
-  }
-  return masterRoom_id;
-}
+//       }
+//       ]
+//     })
+//   }
+
+//   // Handle receiver update
+//   if (getReceiverProfile.data()['chat']) { //checks if chat has been created
+//     // check if room_id exist
+//     const res = getReceiverProfile.data()['chat'].filter((items) => items.room_id === chatRoom_id || items.room_id === reversedChatRoom_id)
+//     if (res.length === 1) {
+//       // console.log("Can not create duplicate room: ", res[0].room_id)
+//     } else {
+//       // console.log("No data")
+//       // update receiver user detail with chat room details
+//       await updateDoc(receiverProfile, {
+//         chat: [...getReceiverProfile.data()['chat'], {
+//           room_id: chatRoom_id,
+//           receiver_id: secondUserId.trim(),
+//           receiver_name: secondUser,
+//           sender_id: currentUser.uid,
+//           sender_name: currentUser.displayName,
+//           createdAt: createdAt
+
+//         }
+//         ]
+//       })
+
+
+//     }
+
+//   } else {
+//     // update receiver user detail with chat room details
+//     await updateDoc(receiverProfile, {
+//       chat: [{
+//         room_id: chatRoom_id,
+//         receiver_id: secondUserId.trim(),
+//         receiver_name: secondUser,
+//         sender_id: currentUser.uid,
+//         sender_name: currentUser.displayName,
+//         createdAt: createdAt
+
+//       }
+//       ]
+//     })
+//   }
+
+//   const createChatRoom = doc(db, "messages", chatRoom_id);
+//   const createChatRoom_rev = doc(db, "messages", reversedChatRoom_id);
+//   const getChatRoom = await getDoc(createChatRoom);
+//   const getChatRoom_rev = await getDoc(createChatRoom_rev);
+
+//   if (getChatRoom.exists()) {
+//     masterRoom_id = chatRoom_id;
+//     // console.log("chat exists: ", chatRoom_id)
+//   }
+//   else if (getChatRoom_rev.exists()) {
+//     masterRoom_id = reversedChatRoom_id;
+//     // console.log("chat exists", reversedChatRoom_id)
+//   }
+//   else if (!getChatRoom.exists() || !getChatRoom_rev.exists()) {
+//     masterRoom_id = chatRoom_id;
+//     let avatarURL = ""
+//     if (currentUserProfile.photoURL) {
+//       avatarURL = currentUserProfile.photoURL
+//     }else{
+//       avatarURL = avatarURL = ""
+//     }
+//     await setDoc(createChatRoom, {
+//       room_uid: chatRoom_id,
+//       sender: currentUser.displayName,
+//       senderId: currentUser.uid,
+//       senderAvatar: avatarURL,
+//       receiver: secondUser,
+//       receiverId: secondUserId.trim(),
+//       receiverAvatar: secondUserAvatarURL,
+//       createdAt: createdAt,
+//       chat: [
+//       ]
+//     })
+//   }
+//   return masterRoom_id;
+// }
 
 // Email verification mail
 export const sendVerificationEmail = async () => {
