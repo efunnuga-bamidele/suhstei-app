@@ -35,7 +35,7 @@ export default function NewMessagePage() {
     const currentUserProfile = useSelector(selectCurrentUserProfile);
     const [content, setContent] = useState('');
     const [users, setUsers] = useState([]);
-    const [chat, setChat] = useState();
+    const [chat, setChat] = useState(null);
     const [img, setImg] = useState("");
     const [msgs, setMsgs] = useState([]);
     const [error, setError] = useState();
