@@ -10,6 +10,7 @@ import PaginationComponent from "../../components/pagination/pagination-componen
 import { useDispatch, useSelector } from "react-redux";
 import { selectBookRequest } from "../../store/booksRequest/booksRequest.selector";
 import { selectCurrentUser } from "../../store/user/user.selector";
+import  { selectCurrentUserProfile } from "../../store/userProfileData/userProfileData.selector"
 import { setBookRequest } from "../../store/booksRequest/booksRequest.action";
 
 import Footer from "../../components/footer/footer.component";
@@ -27,6 +28,7 @@ export default function BorrowRequestPage() {
     const dispatch = useDispatch();
     const AllBookRequest = useSelector(selectBookRequest);
     const currentUser = useSelector(selectCurrentUser);
+    const currentUserProfile = useSelector(selectCurrentUserProfile)
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [profileData, setProfileData] = useState();
@@ -79,7 +81,7 @@ export default function BorrowRequestPage() {
         }
     }
     const handleMessage = async (itemDetail) => {
-       const res = await createRoom(itemDetail.book_owner, currentUser)
+       const res = await createRoom(itemDetail.book_owner, currentUser, currentUserProfile)
         navigate('/messages', { state: { room_id: res } });
     }
 

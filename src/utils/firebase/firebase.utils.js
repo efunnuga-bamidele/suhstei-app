@@ -468,17 +468,21 @@ export const RequestResponse = async (originalBook, requestedBook, canceledAt, c
 }
 
 
-export const createRoom = async (secondUser, currentUser) => {
+export const createRoom = async (secondUser, currentUser, currentUserProfile) => {
+  // check for book owner profile in database
   const secondUserRef = collection(db, 'users');
   const queryCol = query(secondUserRef, where("displayName", "==", secondUser))
   const querySnapshot = await getDocs(queryCol);
 
+  //Store ID and photoURL in variable
   let secondUserId = "";
+  let secondUserAvatarURL = ""
   querySnapshot.forEach((doc) => {
     secondUserId = doc.data().id;
-
+    secondUserAvatarURL = doc.data().photoURL
   });
 
+  // Create room document using currentuser and bookowner id
   const chatRoom_id = currentUser.uid.trim() + "_" + secondUserId.trim()
   const reversedChatRoom_id = secondUserId.trim() + "_" + currentUser.uid.trim()
 
@@ -588,14 +592,20 @@ export const createRoom = async (secondUser, currentUser) => {
   }
   else if (!getChatRoom.exists() || !getChatRoom_rev.exists()) {
     masterRoom_id = chatRoom_id;
+    let avatarURL = ""
+    if (currentUserProfile.photoURL) {
+      avatarURL = currentUserProfile.photoURL
+    }else{
+      avatarURL = avatarURL = ""
+    }
     await setDoc(createChatRoom, {
       room_uid: chatRoom_id,
       sender: currentUser.displayName,
       senderId: currentUser.uid,
-      senderAvatar: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
+      senderAvatar: avatarURL,
       receiver: secondUser,
       receiverId: secondUserId.trim(),
-      receiverAvatar: "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
+      receiverAvatar: secondUserAvatarURL,
       createdAt: createdAt,
       chat: [
       ]
