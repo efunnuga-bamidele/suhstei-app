@@ -43,22 +43,16 @@ import {
 
 import {
   getDatabase,
-  onDisconnect,
-  ref as dRef,
-  onValue,
-  push,
-  set,
-  serverTimestamp,
-  child
-} from 'firebase/database'
+  } from 'firebase/database'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCQn8z4Z8OnN3xXCHRafwvgqhI_MIeWbag",
-  authDomain: "suhstei-d0d28.firebaseapp.com",
-  projectId: "suhstei-d0d28",
-  storageBucket: "suhstei-d0d28.appspot.com",
-  messagingSenderId: "407226505523",
-  appId: "1:407226505523:web:2972a1824fe5a9de9e0646"
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_DATABASE_URL,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
 };
 
 //https://suhstei-d0d28.firebaseapp.com/__/auth/handler
