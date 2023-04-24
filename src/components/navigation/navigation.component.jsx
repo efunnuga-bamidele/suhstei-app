@@ -71,7 +71,7 @@ export default function Navigation() {
                       alt="User settings"
                       img={currentUserProfile.photoURL !== "" ? currentUserProfile.photoURL : ProfileImage}
                       rounded={true}
-                      status={currentUserProfile.status}
+                      status={currentUserProfile.isOnline ? "online" : "offline"}
                       statusPosition="top-right"
                     />
                   </>
