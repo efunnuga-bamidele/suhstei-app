@@ -82,7 +82,7 @@ export default function BorrowRequestPage() {
     }
     const handleMessage = async (itemDetail) => {
     //    const res = await createRoom(itemDetail.book_owner, currentUser, currentUserProfile)
-    //     navigate('/messages', { state: { room_id: res } });
+        navigate('/messages', { state: { name: itemDetail.book_owner } });
     }
 
     const handleProfileView = async (profileID) => {
