@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
 import { selectCurrentUser } from '../../store/user/user.selector';
 import { selectCurrentUserProfile } from '../../store/userProfileData/userProfileData.selector';
 import { useSelector, useDispatch } from 'react-redux';
@@ -260,7 +259,7 @@ export default function NewMessagePage() {
                             <div className='bg-slate-300 border border-gray-300 rounded-lg px-4 row-span-5 overflow-y-scroll scroll-smooth'>
                                 {/* Message */}
 
-                                <div className="messages">
+                                <div className="">
                                     {msgs.length
                                         ? msgs.map((msg, index) => (
                                             <Message key={index} msg={msg} user1={user1} chat={chat} currentUserProfile={currentUserProfile} />
