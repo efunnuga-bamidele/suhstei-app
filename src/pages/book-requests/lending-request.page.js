@@ -10,14 +10,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectBookRequest } from "../../store/booksRequest/booksRequest.selector";
 import { selectCurrentUser } from "../../store/user/user.selector";
 import { setBookRequest } from "../../store/booksRequest/booksRequest.action";
-import  { selectCurrentUserProfile } from "../../store/userProfileData/userProfileData.selector"
+import { selectCurrentUserProfile } from "../../store/userProfileData/userProfileData.selector"
 
 import Footer from "../../components/footer/footer.component";
 import Navigation from "../../components/navigation/navigation.component";
 import SidebarNavigation from "../../components/sidebar/sidebar.component";
-import { getBookById, getBookRequests, RequestResponse, getProfile, createRoom } from "../../utils/firebase/firebase.utils";
+import { getBookById, getBookRequests, RequestResponse, getProfileByName } from "../../utils/firebase/firebase.utils";
 import { Link, useNavigate } from "react-router-dom";
-
+import Img from "../../assets/auth/icons8_male_user_500px.png"
 
 export default function LendingRequestPage() {
     const [showLoadingModal, setShowLoadingModal] = useState(false);
@@ -38,7 +38,7 @@ export default function LendingRequestPage() {
             setShowLoadingModal(true)
             const response = await getBookRequests(currentUser.uid);
             if (response !== undefined) {
-            dispatch(setBookRequest(response.book_requests))
+                dispatch(setBookRequest(response.book_requests))
             }
             setShowLoadingModal(false)
         }
@@ -80,11 +80,15 @@ export default function LendingRequestPage() {
         }
     }
 
-    const handleProfileView = async (profileID) => {
-        setShowProfileModal(true)
-        const data = await getProfile(profileID);
-        setProfileData(data)
+    const handleApproval = async (event) => {
+        // setShowLoadingModal(true);
+    }
 
+    const handleProfileView = async (profileName) => {
+        
+        setShowProfileModal(true)
+        const res = await getProfileByName(profileName);
+        setProfileData(res[0])
     }
 
     const handleClose = () => {
@@ -92,10 +96,8 @@ export default function LendingRequestPage() {
     }
 
     const handleMessage = async (itemDetail) => {
-        // const res = await createRoom(itemDetail.borrowers_name, currentUser, currentUserProfile)
-        //  navigate('/messages', { state: { room_id: res } });
         navigate('/messages', { state: { name: itemDetail.borrowers_name } });
-     }
+    }
 
     return (
         <div className='bg-gray-100 mx-1 font-body scroll-smooth h-0'>
@@ -176,27 +178,24 @@ export default function LendingRequestPage() {
                                         <div className="flex flex-col items-center pb-10">
                                             <img
                                                 className="mb-3 h-24 w-24 rounded-full shadow-lg"
-                                                src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
+                                                src={profileData.photoURL || Img}
                                                 alt="Bonnie image"
                                             />
                                             <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-                                                {profileData.displayName}
+                                                {profileData.displayName || "display name"}
                                             </h5>
                                             <span className="text-sm text-gray-500 dark:text-gray-400">
-                                                {profileData.email}
+                                                {profileData.state || "state"} || {profileData.country || "country"}
+                                            </span>
+                                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                                                {profileData.email || "email address"}
                                             </span>
 
-                                            <span className="text-sm text-gray-500 dark:text-gray-400 flex">
+                                            {/* <span className="text-sm text-gray-500 dark:text-gray-400 flex">
                                                 <p className="pt-3">13 x </p><FcRating size={40} />
-                                            </span>
-                                            <div className="mt-4 flex space-x-3 lg:mt-6">
-                                                <a
-                                                    href="#"
-                                                    className="inline-flex items-center rounded-lg border border-gray-300 bg-white py-2 px-4 text-center text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-                                                >
-                                                    Message
-                                                </a>
-                                            </div>
+                                            </span> */}
+
+
                                         </div>
                                     ) : (
                                         <div className="grid col-span-full place-items-center h-56">
@@ -255,13 +254,13 @@ export default function LendingRequestPage() {
                                         {item.book_title}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <Link className="text-primary underline" onClick={() => handleProfileView(item.book_owner_id)}>{item.borrowers_name}</Link>
+                                        <Link className="text-primary underline" onClick={() => handleProfileView(item.borrowers_name)}>{item.borrowers_name}</Link>
                                     </Table.Cell>
                                     <Table.Cell>
                                         {item.request_status}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <ButtonComponent btnColor="blue" btnValue="Approve" btnSize="px-4 py-2 mt-2" />
+                                        <ButtonComponent btnColor="blue" btnValue="Approve" btnSize="px-4 py-2 mt-2" btnClick={() => handleApproval(item)} />
                                     </Table.Cell>
                                     <Table.Cell>
                                         <ButtonComponent btnColor="red" btnValue="Decline" btnSize="px-4 py-2 mt-2" btnClick={() => handleConfirmationModal(item)} />

@@ -16,9 +16,9 @@ import { setBookRequest } from "../../store/booksRequest/booksRequest.action";
 import Footer from "../../components/footer/footer.component";
 import Navigation from "../../components/navigation/navigation.component";
 import SidebarNavigation from "../../components/sidebar/sidebar.component";
-import { createRoom, db, getBookById, getBookRequests, getProfile, RequestResponse } from "../../utils/firebase/firebase.utils";
+import { createRoom, db, getBookById, getBookRequests, getProfileByName, RequestResponse } from "../../utils/firebase/firebase.utils";
 import { Link, useNavigate } from "react-router-dom";
-
+import Img from "../../assets/auth/icons8_male_user_500px.png"
 
 export default function BorrowRequestPage() {
     const [showLoadingModal, setShowLoadingModal] = useState(false);
@@ -85,10 +85,11 @@ export default function BorrowRequestPage() {
         navigate('/messages', { state: { name: itemDetail.book_owner } });
     }
 
-    const handleProfileView = async (profileID) => {
+    const handleProfileView = async (profileName) => {
         setShowProfileModal(true)
-        const data = await getProfile(profileID);
-        setProfileData(data)
+        const res = await getProfileByName(profileName);
+        setProfileData(res[0])
+        
 
     }
     const handleClose = () => {
@@ -175,19 +176,22 @@ export default function BorrowRequestPage() {
                                         <div className="flex flex-col items-center pb-10">
                                             <img
                                                 className="mb-3 h-24 w-24 rounded-full shadow-lg"
-                                                src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
+                                                src={profileData.photoURL || Img}
                                                 alt="Bonnie image"
                                             />
                                             <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-                                                {profileData.displayName}
+                                                {profileData.displayName || "display name"}
                                             </h5>
                                             <span className="text-sm text-gray-500 dark:text-gray-400">
-                                                {profileData.email}
+                                                {profileData.state || "state"} || {profileData.country || "country"}
+                                            </span>
+                                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                                                {profileData.email || "email address"}
                                             </span>
 
-                                            <span className="text-sm text-gray-500 dark:text-gray-400 flex">
+                                            {/* <span className="text-sm text-gray-500 dark:text-gray-400 flex">
                                                 <p className="pt-3">13 x </p><FcRating size={40} />
-                                            </span>
+                                            </span> */}
                                             <div className="mt-4 flex space-x-3 lg:mt-6">
                                                 <a
                                                     href="#"
@@ -253,7 +257,7 @@ export default function BorrowRequestPage() {
                                     </Table.Cell>
                                     <Table.Cell>
                                         {/* To redirect to profile */}
-                                        <Link className="text-primary underline" onClick={() => handleProfileView(item.book_owner_id)}>{item.book_owner}</Link>
+                                        <Link className="text-primary underline" onClick={() => handleProfileView(item.book_owner)}>{item.book_owner}</Link>
                                     </Table.Cell>
                                     <Table.Cell>
                                         {item.request_status}
