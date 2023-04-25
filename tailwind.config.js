@@ -4,21 +4,22 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
     "./node_modules/tw-elements/dist/js/**/*.js",
     './node_modules/flowbite/**/*.{js,jsx,ts,tsx}',
-    'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}'
+    'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
+    './node_modules/daisyui/**/*.{js,jsx,ts,tsx}'
   ],
   theme: {
     extend: {
       colors: {
-        primary:'#007bff',
-        secondary:'#6c757d',
-        accent:'#FF6363',
-        error:'#FF5252',
+        primary: '#007bff',
+        secondary: '#6c757d',
+        accent: '#FF6363',
+        error: '#FF5252',
         success: '#28a745',
         info: '#17a2b8',
         warning: '#ffc107',
         danger: '#dc3545',
       },
-      fontFamily:{
+      fontFamily: {
         body: ['Nunito'],
         poppins: ['Poppins'],
         signika: ['Signika'],
@@ -34,7 +35,7 @@ module.exports = {
   },
   plugins: [
     require('tw-elements/dist/plugin'),
-    require("daisyui"),
+    require('daisyui'),
     require('flowbite/plugin')
   ],
 }
